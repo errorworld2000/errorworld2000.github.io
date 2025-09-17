@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Pimpl/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/unity%E5%8D%8F%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/Pimpl/" class="post-title-link" itemprop="url">Pimpl</a>
+            <a href="/gameframework/unity%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">Unity协程</a>
         </h2>
 
         <div class="post-meta">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                  <a href="/categories/gameframework/" itemprop="url" rel="index"><span itemprop="name">gameframework</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/Pimpl/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/Pimpl/" itemprop="commentCount"></span>
+    <a title="valine" href="/gameframework/unity%E5%8D%8F%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/gameframework/unity%E5%8D%8F%E7%A8%8B/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>442</span>
+              <span>1.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,21 +269,71 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="Pimpl">Pimpl</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// my_class.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span> &#123;</span><br><span class="line">   <span class="comment">//  ... all public and protected stuff goes here ...</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   <span class="keyword">class</span> <span class="title class_">impl</span>; unique_ptr&lt;impl&gt; pimpl; <span class="comment">// opaque type here</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// my_class.cpp</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span>::impl &#123;  <span class="comment">// defined privately here</span></span><br><span class="line">  <span class="comment">// ... all private data and functions: all of these</span></span><br><span class="line">  <span class="comment">//     can now change without recompiling callers ...</span></span><br><span class="line">&#125;;</span><br><span class="line">my_class::<span class="built_in">my_class</span>(): <span class="built_in">pimpl</span>( <span class="keyword">new</span> impl )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// ... set impl values ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <h1>Unity 协程 vs Update轮询 笔记</h1>
+<h2 id="1-本质概念">1. 本质概念</h2>
 <ul>
-<li>
-<p>减少编译依赖</p>
-</li>
-<li>
-<p>分离接口和实现</p>
-</li>
-<li>
-<p>可移植性</p>
+<li><strong>Update轮询</strong>：每一帧主动检测状态（例：请求完成了吗？动画播完了吗？）。</li>
+<li><strong>协程 Coroutine</strong>：逻辑暂停，等待条件满足时，<strong>Unity自动</strong>帮你恢复执行。</li>
+</ul>
+<h2 id="2-核心区别对比">2. 核心区别对比</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Update轮询</th>
+<th>协程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>检查方式</td>
+<td>每帧自己 if 检查</td>
+<td><code>yield return</code> 后自动等待</td>
+</tr>
+<tr>
+<td>CPU开销</td>
+<td>多对象轮询，累积大</td>
+<td>统一协程队列，调度轻</td>
+</tr>
+<tr>
+<td>写法复杂度</td>
+<td>高，状态机复杂</td>
+<td>低，顺序逻辑清晰</td>
+</tr>
+<tr>
+<td>可读性</td>
+<td>乱，容易出错</td>
+<td>像同步代码，自然直观</td>
+</tr>
+<tr>
+<td>出错概率</td>
+<td>高，容易漏判、重复判</td>
+<td>低，写完就能跑</td>
+</tr>
+</tbody>
+</table>
 <blockquote>
-<p>以虚函数作为接口在二进制兼容性方面有本质困难：“一旦发布，不能修改”。</p>
+<p><strong>一句话总结</strong>：协程让&quot;等待&quot;自动化，而不用自己傻傻地每帧查。</p>
 </blockquote>
-</li>
+<hr>
+<h2 id="3-使用-Update-检测请求（传统写法）">3. 使用 Update 检测请求（传统写法）</h2>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UnityWebRequest m_Request;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StartRequest</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    m_Request = UnityWebRequest.Get(url);</span><br><span class="line">    m_Request.SendWebRequest();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_Request == <span class="literal">null</span> || !m_Request.isDone)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (m_Request.result == UnityWebRequest.Result.ConnectionError || m_Request.result == UnityWebRequest.Result.ProtocolError)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError(<span class="string">&quot;Request Error: &quot;</span> + m_Request.error);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Request Success: &quot;</span> + m_Request.downloadHandler.text);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_Request = <span class="literal">null</span>; <span class="comment">// 清空，避免重复处理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>缺点：Update里增加负担，需要手动管理状态。</p>
+</blockquote>
+<hr>
+<h2 id="4-使用协程检测请求（推荐写法）">4. 使用协程检测请求（推荐写法）</h2>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StartRequest</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    StartCoroutine(RequestCoroutine(url));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> IEnumerator <span class="title">RequestCoroutine</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span> (UnityWebRequest request = UnityWebRequest.Get(url))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> request.SendWebRequest();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.LogError(<span class="string">&quot;Request Error: &quot;</span> + request.error);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Request Success: &quot;</span> + request.downloadHandler.text);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>优点：自动挂起等待，不用管完成时机，写法直观，逻辑自然。</p>
+</blockquote>
+<hr>
+<h2 id="5-协程背后的调度机制（理解协程为什么高效）">5. 协程背后的调度机制（理解协程为什么高效）</h2>
+<ul>
+<li><code>yield return</code> 后，协程对象会被挂起。</li>
+<li>Unity引擎<strong>集中管理所有挂起协程</strong>。</li>
+<li>每帧检查协程状态量非常小（而不是 N 个对象各自检查）。</li>
+<li>完成时直接从挂起队列里<strong>唤醒并继续执行</strong>。</li>
 </ul>
 
       

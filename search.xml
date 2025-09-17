@@ -1,900 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Pimpl</title>
-    <url>/other/Pimpl/</url>
-    <content><![CDATA[Pimpl
-// my_class.hclass my_class &#123;   //  ... all public and protected stuff goes here ...private:   class impl; unique_ptr&lt;impl&gt; pimpl; // opaque type here&#125;;// my_class.cppclass my_class::impl &#123;  // defined privately here  // ... all private data and functions: all of these  //     can now change without recompiling callers ...&#125;;my_class::my_class(): pimpl( new impl )&#123;  // ... set impl values ...&#125;
-
-
-减少编译依赖
-
-
-分离接口和实现
-
-
-可移植性
-
-以虚函数作为接口在二进制兼容性方面有本质困难：“一旦发布，不能修改”。
-
-
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-        <tag>design pattern</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spring</title>
-    <url>/other/Spring/</url>
-    <content><![CDATA[
-一、Spring XML 配置与注解
-1.1 beans.xml 中的自动扫描配置
-&lt;context:component-scan base-package=&quot;com.example&quot;/&gt;
-
-
-作用：Spring 会扫描指定包及其子包下的类，如果类上标有如下注解：
-
-@Component
-@Service
-@Repository
-@Controller
-
-则会将其注册为 Spring 管理的 Bean。
-
-
-
-1.2 常见注解解释
-
-
-
-注解
-说明
-
-
-
-
-@Component
-标注普通组件，交给 Spring 容器管理
-
-
-@Service
-业务逻辑层组件，语义化更清晰
-
-
-@Repository
-DAO 层组件，支持异常转换
-
-
-@Controller
-控制层组件，处理 Web 请求
-
-
-@Autowired
-按类型自动注入依赖
-
-
-@Qualifier(&quot;beanName&quot;)
-与 @Autowired 配合，按名称注入
-
-
-@PostConstruct
-初始化方法（容器加载后执行）
-
-
-@PreDestroy
-销毁方法（容器关闭前执行）
-
-
-@Scope(&quot;singleton&quot;)
-单例（默认）
-
-
-@Scope(&quot;prototype&quot;)
-多例，每次获取新对象
-
-
-
-
-二、Spring AOP 与 AspectJ 区别
-2.1 Spring AOP
-
-方式：基于 JDK 或 CGLIB 动态代理
-原理：在运行时为目标对象生成代理类，拦截方法调用，插入增强逻辑
-优点：非侵入式，简单易用
-缺点：运行时生成代理，存在性能开销
-
-2.2 AspectJ
-
-方式：
-
-编译时织入（Compile-Time Weaving）
-类加载时织入（Load-Time Weaving）
-
-
-原理：修改字节码，将切面代码插入目标类
-优点：性能更高，控制更精细
-缺点：配置复杂，侵入性强
-
-
-三、项目结构分层（经典三层架构）
-controller --&gt; service --&gt; dao     |            |          | Web层     业务逻辑层   数据访问层
-
-POJO（Plain Old Java Object）：表示数据结构的简单 Java 类，常用于 entity 或 pojo 包中。
-控制器 (Controller)：接收请求、返回响应；
-服务层 (Service)：封装具体业务逻辑；
-DAO 层 (Dao)：对数据库进行 CRUD 操作。
-
-
-四、MySQL 数据库设计范式（Normalization）
-✅ 第一范式（1NF）——字段原子性
-
-每列必须是不可再拆分的最小数据单位。
-✅ 示例：姓名 字段不能为 &quot;张三,李四&quot;，应拆成多条记录。
-
-
-✅ 第二范式（2NF）——消除部分依赖
-
-非主键字段必须完全依赖于主键，不能依赖于主键的一部分（适用于复合主键）。
-✅ 示例：主键是 学生ID+课程ID，若 学生姓名 只依赖 学生ID，应将其拆分成新表。
-
-
-✅ 第三范式（3NF）——消除传递依赖
-
-非主键字段不能依赖于另一个非主键字段。
-✅ 示例：班级编号 → 班主任 → 电话号，此时电话号依赖于班主任，应拆表。
-
-
-🔚 总结
-
-Spring 支持注解与 XML 配置并用，提高了开发灵活性。
-Spring AOP 简单易用适合常规开发；AspectJ 适合对性能有更高要求的场景。
-三层架构利于职责分离、项目维护。
-数据库设计中应遵循范式，避免冗余和异常依赖关系。
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-        <tag>spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>aysnc</title>
-    <url>/other/async/</url>
-    <content><![CDATA[static async Task Main(string[] args)        &#123;            // 同步倒咖啡            Coffee cup = PourCoffee();            Console.WriteLine(&quot;coffee is ready&quot;);            // 并发开始煎蛋、炸薯饼、烤吐司            var eggsTask = FryEggsAsync(2);            var hashBrownTask = FryHashBrownsAsync(3);            var toastTask = MakeToastWithButterAndJamAsync(2);            var breakfastTasks = new List&lt;Task&gt; &#123; eggsTask, hashBrownTask, toastTask &#125;;            while (breakfastTasks.Count &gt; 0)            &#123;                // 等待任意一个任务完成                Task finishedTask = await Task.WhenAny(breakfastTasks);                if (finishedTask == eggsTask)                    Console.WriteLine(&quot;eggs are ready&quot;);                else if (finishedTask == hashBrownTask)                    Console.WriteLine(&quot;hash browns are ready&quot;);                else if (finishedTask == toastTask)                    Console.WriteLine(&quot;toast is ready&quot;);                // 可选：处理异常                await finishedTask;                // 从任务列表移除                breakfastTasks.Remove(finishedTask);            &#125;            // 同步倒橙汁            Juice oj = PourOJ();            Console.WriteLine(&quot;oj is ready&quot;);            Console.WriteLine(&quot;Breakfast is ready!&quot;);        &#125;
-🔹 I/O Bound（CPU 用于等待）
-
-
-解释：程序主要瓶颈在等待外部资源返回结果，CPU 实际上大部分时间都在空等。
-
-
-做法：
-✅ 使用 await 等待异步操作结果，释放线程资源，避免阻塞主线程或线程池。
-
-
-await 会：
-
-挂起当前 UI 线程方法（比如 Button 点击回调）。
-把控制权交还给 UI 消息循环，不会阻塞界面。
-等到请求返回结果后，再切回 UI 线程继续执行。
-
-示例：
-var result = await HttpClient.GetAsync(&quot;https://api.example.com&quot;);
-
-
-官方文档参考：
-Async in depth | Microsoft Docs
-
-
-
-🔸 CPU Bound（CPU 用于计算）
-
-
-解释：程序瓶颈在本地 CPU 运算，I/O 操作极少，计算密集。
-
-
-做法：
-✅ 使用 Task.Run(() =&gt; {...}) 将任务放到线程池，并行执行，减轻主线程负担。
-示例：
-var result = await Task.Run(() =&gt; CalculateSomethingHeavy());
-
-
-官方文档参考：
-同样是 Async in depth | Microsoft Docs
-
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>c#</tag>
-        <tag>async</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>fastest-decent</title>
-    <url>/other/fastest-decent/</url>
-    <content><![CDATA[最速降线
-T=∫xAxB1+[y′(x)]22g(yA−y(x))dx
-T=\int_{x_A}^{x_B}\frac{\sqrt{1+[y&#x27;(x)]^2}}{\sqrt{2g(y_A-y(x))}}dx
-T=∫xA​xB​​2g(yA​−y(x))​1+[y′(x)]2​​dx
-泛函
-I=∫x1x2f(x,y,y′)dx
-I=\int_{x_1}^{x_2}f(x,y,y&#x27;)dx
-I=∫x1​x2​​f(x,y,y′)dx
-Y=y+ϵδ(x)
-Y=y+\epsilon\delta(x)
-Y=y+ϵδ(x)
-I[y+ϵδ(x)]=∫x1x2f(x,Y,Y′)dx
-I[y+\epsilon\delta(x)]=\int_{x_1}^{x_2}f(x,Y,Y&#x27;)dx
-I[y+ϵδ(x)]=∫x1​x2​​f(x,Y,Y′)dx
-y为极值，Y为关于ε的函数，满足
-δ(x1)=δ(x2)=0
-\delta(x_1)=\delta(x_2)=0
-δ(x1​)=δ(x2​)=0
-当ε=0时泛函数取到极值，故我们泛函取极值的必要条件就是：
-dF(ϵ)dϵ∣ϵ=0=0
-\left.\frac{dF(\epsilon)}{d\epsilon}\right|_{\epsilon=0}=0
-dϵdF(ϵ)​​ϵ=0​=0
-dF(ϵ)dϵ=∫x1x2[∂f∂Y−ddx(∂f∂Y′)]δ(x)dx
-\frac{dF(\epsilon)}{d\epsilon}=\int_{x_1}^{x_2}\left[\frac{\partial f}{\partial Y}-\frac{d}{dx}\left(\frac{\partial f}{\partial Y&#x27;}\right)\right]\delta(x)dx
-dϵdF(ϵ)​=∫x1​x2​​[∂Y∂f​−dxd​(∂Y′∂f​)]δ(x)dx
-对于任意δ(x)都要满足，故得到欧拉-拉格朗日方程：
-∂f∂Y−ddx(∂f∂Y′)=0
-\frac{\partial f}{\partial Y}-\frac{d}{dx}\left(\frac{\partial f}{\partial Y&#x27;}\right)=0
-∂Y∂f​−dxd​(∂Y′∂f​)=0
-贝尔特拉米积分
-设F(y,y’)满足欧拉-拉格朗日方程：
-ddx(∂F∂y′)=∂F∂y
-\frac{d}{dx}\left(\frac{\partial F}{\partial y&#x27;}\right)=\frac{\partial F}{\partial y}
-dxd​(∂y′∂F​)=∂y∂F​
-定义量：
-E=F−y′∂F∂y′
-E=F-y&#x27;\frac{\partial F}{\partial y&#x27;}
-E=F−y′∂y′∂F​
-得：
-F−y′∂F∂y′=C
-F-y&#x27;\frac{\partial F}{\partial y&#x27;}=C
-F−y′∂y′∂F​=C
-求解
-L(y,y′)=1+y′22g(yA−y)
-L(y,y&#x27;)=\frac{\sqrt{1+y&#x27;^2}}{\sqrt{2g(y_A-y)}}
-L(y,y′)=2g(yA​−y)​1+y′2​​
-由于不显含x，使用贝尔特拉米积分：
-∂L∂y′=y′2g(yA−y)1+y′2
-\frac{\partial L}{\partial y&#x27;}=\frac{y&#x27;}{\sqrt{2g(y_A-y)}\sqrt{1+y&#x27;^2}}
-∂y′∂L​=2g(yA​−y)​1+y′2​y′​
-解得：
-1+y′2=12gC2(yA−y)
-1+y&#x27;^2=\frac{1}{2gC^2(y_A-y)}
-1+y′2=2gC2(yA​−y)1​
-令y=yA-u得：
-u12gC2−udu=dx
-\sqrt{\frac{u}{\frac{1}{2gC^2}-u}}du=dx
-2gC21​−uu​​du=dx
-令v=2gC²u得：
-dx=12gC2v1−vdv
-dx=\frac{1}{2gC^2}\sqrt{\frac{v}{1-v}}dv
-dx=2gC21​1−vv​​dv
-令v=sin²θ并积分得：
-x=12gC2∫2sin⁡2θdθ=12gC2(θ−sin⁡2θ2)+D
-x=\frac{1}{2gC^2}\int2\sin^2\theta d\theta=\frac{1}{2gC^2}(\theta-\frac{\sin2\theta}{2})+D
-x=2gC21​∫2sin2θdθ=2gC21​(θ−2sin2θ​)+D
-其中D为一个积分常数。
-再回代得
-y=yA−sin⁡2θ2gC2
-y=y_A-\frac{\sin^2\theta}{2gC^2}
-y=yA​−2gC2sin2θ​
-x=14gC2(α−sin⁡α)+D
-x=\frac{1}{4gC^2}(\alpha-\sin\alpha)+D
-x=4gC21​(α−sinα)+D
-y=yA−14gC2(1−cos⁡α)
-y=y_A-\frac{1}{4gC^2}(1-\cos\alpha)
-y=yA​−4gC21​(1−cosα)
-可写成摆线方程：
-x=a(θ−sin⁡θ)+xA
-x=a(\theta-\sin\theta)+x_A
-x=a(θ−sinθ)+xA​
-y=−a(1−cos⁡θ)+yA
-y=-a(1-\cos\theta)+y_A
-y=−a(1−cosθ)+yA​
-a=14gC2
-a=\frac{1}{4gC^2}
-a=4gC21​
-a为滚动圆半径^a
-参考：
-最速降线的数学模型—变分法 - 简书
-摆线的那些事儿——数学界的大型装逼事件 - 知乎
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>math</tag>
-        <tag>physics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>gc</title>
-    <url>/other/gc/</url>
-    <content><![CDATA[为什么要有 GC（GC 出现的背景）
-
-
-在 C/C++ 等语言中，内存分配（malloc/new）和释放（free/delete）需要手动管理。
-
-
-手动管理常出错，例如：
-
-
-内存泄漏：分配了但忘记释放。
-
-
-悬空指针：释放了但还有引用指向那块内存。
-
-
-
-
-GC（垃圾回收）使这类问题自动化处理，减轻程序员负担，但带来性能和暂停（stop-the-world）等代价。
-
-
-GC 的几种核心算法 / 实现方法及其原理
-下面是几种经典或主流 GC 算法的简要原理、优缺点对比：
-
-
-
-算法
-核心原理
-优点
-缺点
-
-
-
-
-Mark-Sweep（标记-清除）
-从“根”（root）开始标记所有可达对象 → 遍历堆，把未标记的对象清除。
-不移动对象 → 指针引用简单；空间利用率还算不错（除碎片问题）
-清扫阶段扫描整个堆；产生内存碎片；暂停时间长（必须停止应用线程）
-
-
-复制算法（Copying / Semi-space / Cheney 的算法）
-将堆分为两个半区：一边分配（from-space），满了之后将所有活对象复制到另一半（to-space），然后交换两边。
-分配速度快；无需空闲列表管理；自动避免外部碎片；活对象移动后，新生代 gc 开销较低（年轻对象死亡率高）
-需要两倍空间（两个半区）；复制活对象本身也有成本；指针更新复杂（因为对象被移动）
-
-
-标记-压缩（Mark-Compact / 标记-整理）
-先标记可达对象；然后将可达对象向堆的一端紧凑移动，更新所有指向这些对象的引用。
-消除碎片；保持堆连续性，有利于缓存局部性；比传统标记-清除在碎片多时更稳定。
-移动对象代价；必须更新所有指针引用；压缩阶段通常暂停时间较长。
-
-
-分代 GC（Generational GC）
-将对象分代（年轻代 / 老年代等），假设大多数对象很快死亡 → 年轻代频繁清理，用复制算法／较快垃圾回收；老年代较少清理，用标记-清除或压缩算法。
-减少多数 GC 的暂停时间；年轻代 GC 快且频繁，整体开销低；效率高。
-老年代回收仍然可能是高成本；跨代对象指针管理复杂；晋升策略调优不当可能导致老年代“存活”对象过多。
-
-
-
-
-# 深度探索垃圾回收器(GC)
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>computer science</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>git开发流程</title>
-    <url>/other/git/</url>
-    <content><![CDATA[Git 协作流程核心摘要
-1. 各分支核心职责 (Core Responsibilities of Each Branch)
-
-
-
-分支类型
-生命周期
-核心职责
-
-
-
-
-master
-永久
-只读。永远指向最新已发布版本的代码快照。是生产环境代码的最终来源。
-
-
-release/x.y.z
-长期，随版本存在
-开发、测试、修复的主战场。所有面向该版本的 feature 和 hotfix 都合并到这里。新版本从上一个 release 分支创建。
-
-
-feature/xxx
-短期，随任务生灭
-开发新功能。必须从其目标 release 分支创建，并最终合并回该 release 分支。
-
-
-hotfix/xxx
-短期，紧急修复用
-修复线上紧急 Bug。从出问题的 release 分支创建，修复后合并回该分支，并必须同步到所有后续的 release 分支中。
-
-
-
-2. 个人开发标准流程 (Standard Workflow for Individual Developers)
-这是一个开发者从接到任务到提交 PR 的完整步骤。
-第一步：同步并创建分支
-从你任务对应的 目标 release 分支 拉取最新代码，并创建你的功能分支。
-# 1. 切换到目标 release 分支（例如 1.11.0）git checkout release/1.11.0# 2. 拉取最新代码，确保本地是最新状态git pull origin release/1.11.0# 3. 创建你的功能分支git checkout -b feature/your-task-name
-第二步：本地开发与提交
-在你的 feature 分支上进行编码，并进行多次原子化的提交。
-git add .git commit -m &quot;feat: implement user login modal&quot;git add .git commit -m &quot;fix: resolve button style issue&quot;
-第三步：整理提交记录 (提交 PR 前的关键一步)
-在发起 PR 前，使用交互式 rebase (rebase -i) 来清理你的提交历史，将多个零碎的 commit 合并成一个或几个有意义的 commit。
-# 1. 拉取远程 release 分支的最新变动，以防冲突git fetch origin# 2. 以远程 release 分支为基准，进行交互式 rebasegit rebase -i origin/release/1.11.0
-第四步：推送并创建 PR
-由于 rebase 修改了 git 历史，你需要强制推送到你的远程分支。
-# -f 是 --force 的缩写，强制推送git push -f origin feature/your-task-name
-最后，在 GitHub / GitLab 等平台上，从你的 feature/your-task-name 分支向目标 release/1.11.0 分支发起 Pull Request。
-3. PR 审查与合并流程 (PR Review and Merge Process)
-这是项目维护者 (Maintainer) 或团队负责人收到 PR 后的操作流程。
-第一步：代码审查 (Code Review)
-
-逻辑审查：检查代码的业务逻辑、健壮性和潜在风险。
-规范审查：检查代码风格、命名是否符合团队规范。
-目标分支确认：确保 PR 提交的目标分支是正确的 release 分支。
-至少需要一名或多名成员 Approve。
-
-第二步：合并前检查
-
-CI/CD 状态：确保所有自动化检查（如测试、构建）都已通过。
-提交历史：检查 PR 的 commit 记录是否已按要求整理干净。如果未整理，要求提交者返回上一步（个人流程的第三步）进行 rebase。
-合并冲突：确保 PR 没有合并冲突。如有冲突，要求提交者在本地解决冲突后再提交。
-
-第三步：执行合并 (推荐在 Git 平台 UI 上操作)
-强烈推荐使用以下两种合并策略，严禁使用 Merge Commit。
-
-
-
-合并方式
-操作方式
-优点
-
-
-
-
-Squash and Merge (推荐)
-在平台点击 “Squash and Merge” 按钮。
-将 PR 内所有 commit 合并成一个，生成一个非常干净的 release 分支历史。
-
-
-Rebase and Merge (可选)
-在平台点击 “Rebase and Merge” 按钮。
-将 PR 内已整理好的 commit 按顺序追加到 release 分支，保持线性历史。
-
-
-
-第四步：清理分支
-PR 合并后，应立即删除已被合并的 feature 分支，保持仓库整洁。
-
-在 Git 平台上，通常在合并后会有**“Delete branch”**的按钮，直接点击即可。
-如果需要手动删除远程分支，可执行：# 删除远程的 feature 分支git push origin --delete feature/your-task-name
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>tool</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ow架构</title>
-    <url>/other/ow%E6%9E%B6%E6%9E%84/</url>
-    <content><![CDATA[核心架构与 ECS（实体-组件-系统）
-
-
-Overwatch 用 ECS 架构 管理复杂度
-
-
-Entity 是一个 ID + 一组组件（Component，仅存储状态，无行为）
-
-
-System 执行行为（Behavior），关注某些组件的组合（tuple / component-slice），在这些组件上做处理
-
-
-
-
-优点：将状态与行为分离，System 更纯洁可组合；组件只做数据存储，行为集中在 System 中
-
-
-多数 System 是纯函数式（只读组件），只有少数 System 修改状态
-
-
-单例组件（Singleton Component）用于存储那种全局共享但需要被多个 System 用的数据／状态，例如输入状态（键盘等），以减少 System 间耦合
-
-
-Utility 函数用于封装共享行为（被多个 System 调用的小逻辑），要求依赖少数组件、低副作用，避免 System 之间互相调用
-
-
-
-ECS 中的设计规范与权衡
-
-
-组件（Component）没有行为，System 尽量无状态
-
-
-如果 System 需要状态，改为放在 Singleton Component 中
-
-
-副作用严格控制：
-
-
-“推迟执行”（deferred execution）机制：把某些副作用（例如创建实体、特效等）暂存到帧尾或某个统一阶段统一处理
-
-
-防止多个 System 在帧中间互相依赖造成脏状态或竞态行为
-
-
-
-
-实体创建与销毁处理谨慎：通常 “销毁推迟到帧末端” 安全；但 “创建推迟” 有可能造成某些 System 在同一帧中无法获取新实体的问题
-
-
-
-网络同步 / Netcode 机制
-
-
-预测 &amp; 回滚（Prediction &amp; Reconciliation）
-
-
-客户端响应用户输入时立即做预测（比如移动、技能释放），不等服务器确认。
-
-
-用固定帧率／命令帧（command frames）制度，客户端和服务器都按这些帧同步模拟。
-
-
-客户端保存输入历史 + 移动状态历史，以便在收到服务器确认后回滚到最后一个确认帧，然后重放客户端输入直至当前帧。
-
-
-
-
-输入滑动窗口 + 丢包补偿
-
-
-客户端在每个发送包里包含从最后确认以来的所有输入帧，保证丢包时输入不遗失。
-
-
-服务器有一个缓冲区用来接受这些输入／补充丢失的输入。
-
-
-
-
-延迟 / 缓冲 /时间膨胀（Buffering / Time Dilation）
-
-如果网络不稳定（高延迟 + 丢包 + 抖动），客户端会加速（time dilation）或扩大缓冲区，以减少预测错误造成卡顿体验。恢复稳定后再缩小这些。
-
-
-
-命中判定（Hit Registration）
-
-
-客户端可能预测子弹命中，但服务器是最终权威。
-
-
-对于远端实体（non-local），使用插值；服务端回滚远端实体状态以做准确命中判断。
-
-
-在某些高延迟情况下，如果 Ping 太大，会放弃客户端预测，直接等待服务器确认。
-
-
-
-
-
-总结的关键教训／设计原则
-
-
-架构要为可维护性、可扩展性服务，ECS + 严格准则（组件无行为，System少状态）帮助控制复杂度
-
-
-网络同步设计里，预测 + 回滚是必须的，以保证响应性，同时要设计好丢包、延迟、预测错误的补偿机制
-
-
-Utility、Singleton、Deferred 操作这些技术是用来缓解 System 之间耦合和帧内副作用带来的问题
-
-
-
-如果你愿意，我可以给你做个简图＋对比表，展示 Overwatch 的 netcode 与一般游戏／模块在这些机制上的差别（预测误差、延迟容忍、权威位置 etc.），会比较清晰。你要吗？
-《守望先锋》架构设计和网络同步
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>game development</tag>
-        <tag>architecture</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>neuronNet</title>
-    <url>/other/neuronNet/</url>
-    <content><![CDATA[Python神经网络代码总结 (Python Neural Network Code Summary)
-这份代码是一个从零开始实现的、基础的前馈神经网络（Feedforward Neural Network）。它不依赖任何外部机器学习库，清晰地展示了神经网络的核心工作原理。
-
-1. 核心概述 (Core Overview) 🧠
-该代码通过三个核心类构建了一个简单的神经网络：
-
-Neuron: 网络的基本计算单元。
-NeuronLayer: 由多个神经元组成的层。
-NeuronNet: 整合输入层、隐藏层和输出层，并负责网络的训练和预测。
-
-其关键功能包括：
-
-前向传播 (Feed Forward): 将输入数据从输入层传到输出层，得到预测结果。
-反向传播 (Backpropagation): 计算预测误差，并将误差从输出层反向传播，用于更新神经元的权重（weights）和偏置（bias）。
-
-
-2. 类结构与功能 (Class Structure &amp; Functionality)
-Neuron 类
-这是最基础的构建模块。
-
-功能 (Functionality): 模拟单个神经元，负责接收输入、计算加权和、通过激活函数输出结果，并计算用于反向传播的梯度。
-关键属性 (Key Attributes):
-
-weights: 权重列表，决定了每个输入信号的重要性。
-bias: 偏置项，用于调整神经元的激活阈值。
-
-
-关键方法 (Key Methods):
-
-calculate_output(inputs): 接收输入，计算加权和 (calculate_total_net_input)，并通过 Sigmoid 激活函数 (squash) 得到输出。
-squash(total_net_input): 激活函数，公式为 f(x)=frac11+e−x。它将任意输入值压缩到 (0, 1) 区间。
-pd_... 方法: “pd” 代表 “Partial Derivative” (偏导数)。这些方法是反向传播算法的核心，用于计算误差对网络中各个参数（权重、偏置）的梯度。例如 pd_error_wrt_total_net_output 计算的是误差对神经元输出值的偏导数。
-
-
-
-NeuronLayer 类
-神经元的集合。
-
-功能 (Functionality): 管理一层中的所有神经元，并将输入数据传递给该层的所有神经元进行处理。
-关键属性 (Key Attributes):
-
-neurons: 一个包含多个 Neuron 对象的列表。
-
-
-关键方法 (Key Methods):
-
-feed_forward(inputs): 遍历层内所有神经元，收集它们的输出，并将输出列表作为该层的最终输出。
-
-
-
-NeuronNet 类
-完整的神经网络。
-
-功能 (Functionality): 构建并管理整个网络（包含一个隐藏层和一个输出层）。它负责初始化权重、执行完整的前向传播，并通过训练数据来更新整个网络的参数。
-关键属性 (Key Attributes):
-
-hidden_layer: 隐藏层 (NeuronLayer 对象)。
-output_layer: 输出层 (NeuronLayer 对象)。
-learning_rate: 学习率，控制每次训练时权重和偏置的更新幅度。
-
-
-关键方法 (Key Methods):
-
-feed_forward(inputs): 驱动数据流过整个网络，从隐藏层到输出层。
-train(training_inputs, training_outputs): 最核心的方法。它实现了完整的反向传播和梯度下降算法来学习。
-
-
-
-
-3. 关键算法：train 方法解析 (Key Algorithm: train Method Explained)
-train 方法是网络学习的关键，它严格遵循反向传播的步骤：
-
-前向传播 (Forward Pass): 首先调用 feed_forward 计算当前网络对输入数据的预测输出。
-计算输出层误差 (Calculate Output Layer Error):
-
-计算每个输出层神经元的误差对“加权输入总和”的偏导数 (pd_error_wrt_output_neurons_total_net_input)。这是链式法则的第一步。
-
-
-计算隐藏层误差 (Calculate Hidden Layer Error):
-
-将输出层的误差反向传播回隐藏层。
-对于每个隐藏层神经元，其误差是所有与之相连的输出层神经元误差的加权和。
-
-
-更新权重和偏置 (Update Weights and Biases):
-
-输出层更新: 利用步骤2计算的梯度，结合学习率，更新输出层中每个神经元的权重和偏置。
-隐藏层更新: 利用步骤3计算的梯度，结合学习率，更新隐藏层中每个神经元的权重和偏置。
-更新公式为：新权重 = 旧权重 - 学习率 * 误差梯度。
-
-
-
-Python
-# 伪代码：train方法的核心逻辑# Pseudocode: Core logic of the train method# 1. 计算输出层误差梯度output_layer_gradients = []for each neuron in output_layer:    gradient = calculate_error_gradient(target_output, neuron_output)    output_layer_gradients.append(gradient)# 2. 计算隐藏层误差梯度（反向传播）hidden_layer_gradients = []for each neuron in hidden_layer:    error = sum(output_layer_gradients * weights_connecting_to_it)    gradient = error * neuron_output * (1 - neuron_output) # Sigmoid导数    hidden_layer_gradients.append(gradient)# 3. 更新所有权重和偏置for each neuron in output_layer:    neuron.weights -= learning_rate * output_layer_gradient * hidden_layer_output    neuron.bias -= learning_rate * output_layer_gradientfor each neuron in hidden_layer:    neuron.weights -= learning_rate * hidden_layer_gradient * network_input    neuron.bias -= learning_rate * hidden_layer_gradient
-1.先定义网络:写网络Net的Class，声明网络的实例net=Net()，
-2.定义优化器optimizer=optim.xxx(net.parameters()，lr=xxx)，
-3.再定义损失函数（自己写class或者直接用官方的，compute_loss=nn.MSELoss()或者其他。
-4.在定义完之后，开始一次一次的循环：
-①先清空优化器里的梯度信息，optimizer.zero_grad();
-
-②再将input传入，output=net(input) ，正向传播
-
-③算损失，loss=compute_loss(target,output)   ##这里target就是参考标准值GT，需要自己准备，和之前传入的input一一对应
-
-④误差反向传播，loss.backward()
-
-⑤更新参数，optimizer.step()
-
-参考
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>algorithm</tag>
-        <tag>machine learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>双重抽象</title>
-    <url>/other/%E5%8F%8C%E9%87%8D%E6%8A%BD%E8%B1%A1/</url>
-    <content><![CDATA[双重抽象
-这个设计模式的核心思想是 “双重抽象”，通过抽象类与泛型接口的配合，实现了对象池系统的 类型通用性与类型安全性分离。以下是关键点概括：
-
-设计意图总结
-分工明确的双抽象层
-
-ObjectPoolBase（非泛型抽象类）
-
-提供类型无关的通用操作（如池名称、对象计数、容量管理等）
-允许以统一方式（如ObjectPoolBase[]）处理不同类型对象池的集合操作
-
-
-IObjectPool&lt;T&gt;（泛型接口）
-
-提供类型安全的对象操作（如Spawn&lt;T&gt;、Register&lt;T&gt;）
-确保编译时类型检查，避免运行时类型错误
-
-
-
-
-
-应用场景分离
-
-需要处理多类型池集合时
-（如全局管理、编辑器界面）→ 使用 ObjectPoolBase
-例：统计所有池的基础信息、批量释放资源
-需要操作具体类型对象时
-（如业务逻辑调用）→ 使用 IObjectPool&lt;T&gt;
-例：从特定池中获取UI实例或游戏实体
-
-
-
-实现类ObjectPool的作用
-作为二者具体实现，同时满足：
-
-通过基类支持跨类型统一管理
-通过接口提供类型安全操作
-
-
-
-
-类比说明
-
-
-
-维度
-ObjectPoolBase（抽象类）
-IObjectPool&lt;T&gt;（泛型接口）
-
-
-
-
-类型处理
-忽略具体类型，通用操作
-强类型约束，安全操作
-
-
-典型使用场景
-管理器、编辑器工具等跨类型场景
-业务逻辑如UIManager、EntityGroup
-
-
-设计目的
-提供&quot;集合视角&quot;的统一入口
-提供&quot;具体类型视角&quot;的安全操作
-
-
-
-
-为何不合并？
-
-若仅用泛型接口：无法以统一类型（如数组）管理不同T的池实例。
-若仅用非泛型基类：失去类型安全，需频繁类型转换，增加运行时风险。
-
-此设计通过双重抽象，在类型擦除（集合操作）和类型保留（具体操作）间取得平衡，是框架设计中典型的&quot;分离关注点&quot;实践。
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>design pattern</tag>
-        <tag>c#</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一些数学公式</title>
-    <url>/other/%E4%B8%80%E4%BA%9B%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</url>
-    <content><![CDATA[n阶带拉格朗日余项的泰勒展开式
-f(x)=∑k=0∞f(k)(x0)k!(x−x0)k+f(n+1)(ξ)(n+1)!(x−x0)n+1f(x)=\sum_{k=0}^{\infin}{f^{(k)}(x_0)\over k!}(x-x_0)^k+{f^{(n+1)}(\xi)\over (n+1)!}(x-x_0)^{n+1}
-f(x)=k=0∑∞​k!f(k)(x0​)​(x−x0​)k+(n+1)!f(n+1)(ξ)​(x−x0​)n+1
-欧拉公式
-eix=cosx+isinxe^{ix}=cosx+isinx
-eix=cosx+isinx
-向量运算基础
-⟨x,y⟩=x1⋅y1+x2⋅y2+⋯+xn⋅yn\langle x,y \rangle = x_1 \cdot y_1 + x_2 \cdot y_2 + \cdots + x_n \cdot y_n
-⟨x,y⟩=x1​⋅y1​+x2​⋅y2​+⋯+xn​⋅yn​
-∥x∥=⟨x,x⟩\|x\| = \sqrt{\langle x,x \rangle}
-∥x∥=⟨x,x⟩​
-d(x,y)=∥x−y∥d(x,y) = \|x-y\|
-d(x,y)=∥x−y∥
-最小二乘法
-12∑i=1n(hθ(x(i))−y(i))2=δ\frac{1}{2} \sum_{i=1}^n \left(h_\theta(x^{(i)}) - y^{(i)}\right)^2 = \delta
-21​i=1∑n​(hθ​(x(i))−y(i))2=δ
-∑i=1n[hθ(x(i))−y(i)]2=[hθ(x)−y]T[hθ(x)−y]\sum_{i=1}^n \left[h_\theta(x^{(i)}) - y^{(i)}\right]^2 = \left[h_\theta(x) - y\right]^T \left[h_\theta(x) - y\right]
-i=1∑n​[hθ​(x(i))−y(i)]2=[hθ​(x)−y]T[hθ​(x)−y]
-hθ(x)=Xθ,y=yh_\theta(x) = X\theta, \quad y = y
-hθ​(x)=Xθ,y=y
-(Xθ−y)T(Xθ−y)=δ(X\theta - y)^T (X\theta - y) = \delta
-(Xθ−y)T(Xθ−y)=δ
-2XT(Xθ−y)=02X^T (X\theta - y) = 0
-2XT(Xθ−y)=0
-XTXθ=XTyX^T X \theta = X^T y
-XTXθ=XTy
-θ=(XTX)−1XTy\theta = (X^T X)^{-1} X^T y
-θ=(XTX)−1XTy
-https://zhuanlan.zhihu.com/p/38128785
-https://blog.csdn.net/MoreAction_/article/details/106443383
-矩阵求导公式
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Untitled</title>
-    <url>/gameframework/Untitled/</url>
-    <content><![CDATA[Unity中3C以及Gameplay的一些实现记录
-]]></content>
-      <categories>
-        <category>gameframework</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>图算法</title>
-    <url>/other/%E5%9B%BE%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[#include &lt;algorithm&gt;#include &lt;functional&gt;#include &lt;iostream&gt;#include &lt;map&gt;#include &lt;queue&gt;#include &lt;random&gt;#include &lt;regex&gt;#include &lt;sstream&gt;#include &lt;string&gt;#include &lt;vector&gt;using namespace std;int Floyd(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int m) &#123;  vector&lt;vector&lt;int&gt;&gt; adjacent_matrix(n, vector&lt;int&gt;(n, INT_MAX / 2));  for (const auto &amp;time : times) &#123;    adjacent_matrix[time[0]][time[1]] = time[2];  &#125;  // 计算j，k之间最小距离，i代表j、k可能的中间点，遍历中间点即可求出最小距离  for (int i = 0; i &lt; n; i++) &#123;    for (int j = 0; j &lt; n; j++) &#123;      for (int k = 0; k &lt; n; k++) &#123;        if (adjacent_matrix[j][i] == INT_MAX / 2 ||            adjacent_matrix[i][k] == INT_MAX / 2)          continue;        if (adjacent_matrix[j][i] + adjacent_matrix[i][k] &lt;            adjacent_matrix[j][k]) &#123;          adjacent_matrix[j][k] = adjacent_matrix[j][i] + adjacent_matrix[i][k];        &#125;      &#125;    &#125;  &#125;  int max_res =      *max_element(adjacent_matrix[m].begin(), adjacent_matrix[m].end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Dijkstra_priority(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; he(n, -1), e(times.size()), ne(times.size()), w(times.size());  for (int i = 0; i &lt; times.size(); i++) &#123;    e[i] = times[i][1];    w[i] = times[i][2];    ne[i] = he[times[i][0]];    he[times[i][0]] = i;  &#125;  vector&lt;int&gt; dis(n, INT_MAX / 2);  priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;,                 greater&lt;pair&lt;int, int&gt;&gt;&gt;      pq;  // 通过局部贪心，获取当前距离最小的点  dis[k] = 0;  pq.push(&#123;0, k&#125;);  vector&lt;bool&gt; visited(n, false);  while (!pq.empty()) &#123;    auto i = pq.top();    pq.pop();    int step = i.first, id = i.second;    if (visited[id])      continue;    visited[id] = true;    for (auto j = he[id]; j != -1; j = ne[j]) &#123;      int dst = e[j];      if (dis[dst] &gt; dis[id] + w[j]) &#123;        dis[dst] = dis[id] + w[j];        pq.push(&#123;dis[dst], dst&#125;);      &#125;    &#125;  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Bellman_Ford(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; dis(n, INT_MAX / 2);  dis[k] = 0;  // 相较于dij的贪心算法，bellman利用松弛就可避免局部最优解的情况，0--&gt;1(70),0--&gt;2(80)--&gt;1(-20)，松弛操作时会把2和1一起记录，实际上达到了松弛至少一次的目的；  bool updated = false;  for (int i = 0; i &lt; n; i++) &#123;    updated = false;    for (auto time : times) &#123;      int u = time[0], v = time[1], w = time[2];      if (dis[u] != INT_MAX / 2 &amp;&amp; dis[u] + w &lt; dis[v]) &#123;        dis[v] = dis[u] + w;        updated = true;      &#125;    &#125;    if (!updated)      break;  &#125;  if (updated) &#123;    cerr &lt;&lt; &quot;Negative cycle detected!&quot; &lt;&lt; endl;    return -1; // 存在负环  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Spfa(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; he(n, -1), e(times.size()), ne(times.size()), w(times.size());  for (int i = 0; i &lt; times.size(); i++) &#123;    e[i] = times[i][1];    w[i] = times[i][2];    ne[i] = he[times[i][0]];    he[times[i][0]] = i;  &#125;  vector&lt;int&gt; cnt(n, 0); // 记录每个点被放入队列的次数  vector&lt;int&gt; dis(n, INT_MAX / 2);  dis[k] = 0;  vector&lt;bool&gt; visited(n, false);  queue&lt;int&gt; q;  q.push(k);  visited[k] = true;  // bellman优化  while (!q.empty()) &#123;    auto i = q.front();    q.pop();    visited[i] = false;    for (int j = he[i]; j != -1; j = ne[j]) &#123;      int dst = e[j];      if (dis[i] != INT_MAX / 2 &amp;&amp; dis[dst] &gt; dis[i] + w[j]) &#123;        dis[dst] = dis[i] + w[j];        if (!visited[dst]) &#123;          q.push(dst);          visited[dst] = true;          cnt[dst]++;          if (cnt[dst] &gt; n) &#123;            cerr &lt;&lt; &quot;Negative cycle detected!&quot; &lt;&lt; endl;            return -1;          &#125;        &#125;      &#125;    &#125;  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int main() &#123;  vector&lt;vector&lt;int&gt;&gt; times;  int n, k;  default_random_engine eng;  const int method_nums = 4;  uniform_int_distribution&lt;int&gt; u(0, method_nums - 1);  eng.seed(time(0));  using Algorithm = function&lt;int(vector&lt;vector&lt;int&gt;&gt; &amp;, int, int)&gt;;  vector&lt;Algorithm&gt; algos = &#123;Floyd, Dijkstra_priority, Bellman_Ford, Spfa&#125;;  int res = algos[u(eng)](times, n, k);  return res;&#125;]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>algorithm</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Unity协程</title>
     <url>/gameframework/unity%E5%8D%8F%E7%A8%8B/</url>
     <content><![CDATA[Unity 协程 vs Update轮询 笔记
@@ -973,6 +79,83 @@ Unity引擎集中管理所有挂起协程。
       </tags>
   </entry>
   <entry>
+    <title>缓存系统</title>
+    <url>/leveldb/cache/</url>
+    <content><![CDATA[缓存系统
+基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。
+LRUHandle
+
+哈希表相关: next_hash 用于链接哈希表中的条目。
+链表相关: next 和 prev 用于在 LRU 链表和使用中的链表（in_use）中形成双向链表。
+
+哈希表
+
+
+结构: 哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。
+
+
+插入逻辑：
+
+先找到对应的存储桶。
+比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。
+当条目数量超过容量时，重新调整哈希表的大小。
+
+
+
+LRUCache
+由哈希表、LRU 链表头和 in_use 链表头构成。
+
+插入过程:
+
+加锁。
+根据键创建 handle，引用计数加 1，并插入到 in_use_ 链表。
+将 handle 添加到哈希表中。
+如果键已存在，则返回旧的 handle，并从缓存和链表中删除旧条目，引用计数减 1。
+当缓存容量超出限制且 LRU 链表不为空时，从 LRU 链表中移除第一个条目，并从缓存和链表中删除。
+
+
+查找过程:
+
+加锁。
+在哈希表中查找 handle 并返回，引用计数加 1。
+
+
+释放过程:
+
+使用完 handle 后需要手动释放。
+加锁，引用计数减 1。
+
+
+擦除过程:
+
+加锁，从缓存中移除条目，引用计数减 1。
+
+
+
+SharedLRUCache
+对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。
+
+分片优势: 通过分片将缓存操作分散到多个 LRUCache 实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。
+
+]]></content>
+      <categories>
+        <category>leveldb</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>dataset</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Untitled</title>
+    <url>/gameframework/Untitled/</url>
+    <content><![CDATA[Unity中3C以及Gameplay的一些实现记录
+]]></content>
+      <categories>
+        <category>gameframework</category>
+      </categories>
+  </entry>
+  <entry>
     <title>细节实现</title>
     <url>/gameframework/%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[ReferencePool
@@ -1027,73 +210,6 @@ private void OnCloseUIFormComplete(object sender, CloseUIFormCompleteEventArgs e
       <tags>
         <tag>c#</tag>
         <tag>unity</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>视觉</title>
-    <url>/other/%E8%A7%86%E8%A7%89/</url>
-    <content><![CDATA[1.相机
-1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。
-1.2 传感器尺寸：影响视野大小
-
-1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好
-
-像元尺寸=传感器尺寸/分辨率（像元个数）
-
-1.4 图像精度：精度指一个像素表示实际物体的大小，用（um*um）/pixel表示。精度值越小，精度越高。
-
-
-精度值=视野/分辨率
-
-
-使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素
-
-
-1.5 ISO
-
-传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度
-ISO过大会出现很大噪点
-
-2.镜头
-2.1 焦距（focal length）
-
-当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。
-当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。
-当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。
-定焦镜头的对焦环调整的是像距
-
-
-2.2 视场角（Field of view, 即FOV）
-视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。
-
-2.3 光圈（Iris）
-光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。
-2.4 景深（Depth of view，即DOF）
-
-
-理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。
-
-
-景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。
-景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；
-景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。
-
-2.5 工作距离（Working Distance）
-工作距离指的是镜头的最下端到景物之间的距离。
-
-参考：
-
-工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客
-镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客
-什么是视场角？它的大小是由镜头还是传感器决定的？
-工业相机各种参数计算方法
-
-]]></content>
-      <categories>
-        <category>other</category>
-      </categories>
-      <tags>
-        <tag>vision</tag>
       </tags>
   </entry>
   <entry>
@@ -1186,10 +302,69 @@ assert(valid_); 确保调用 Next() 时，迭代器处于有效状态。
       </tags>
   </entry>
   <entry>
+    <title>读写过程</title>
+    <url>/leveldb/read-write/</url>
+    <content><![CDATA[写入过程
+Leveldb的put/delete操作实际都被转成batch然后write。
+WriteBatch batch;batch.Put(kvp.first, kvp.second);EXPECT_TRUE(db_-&gt;Write(WriteOptions(), &amp;batch).ok());
+在leveldb中，使用Write操作进行写入，流程如下：
+
+创建writer对象并加入队列（同时只允许一个写入操作运行）
+
+Status DBImpl::Write(const WriteOptions&amp; options, WriteBatch* updates) &#123;  Writer w(&amp;mutex_);  w.batch = updates;  w.sync = options.sync;  w.done = false;  MutexLock l(&amp;mutex_);  writers_.push_back(&amp;w);  // 若当前 Writer 不是队列头部，则等待（锁被释放，进入阻塞）  while (!w.done &amp;&amp; &amp;w != writers_.front()) &#123;    w.cv.Wait();  &#125;  if (w.done) &#123;    return w.status;  &#125;  ...&#125;
+
+为写操作分配空间
+
+Status status = MakeRoomForWrite(updates == nullptr);uint64_t last_sequence = versions_-&gt;LastSequence();Writer* last_writer = &amp;w;
+
+构建批次并执行写操作
+
+if (status.ok() &amp;&amp; updates != nullptr) &#123;  WriteBatch* write_batch = BuildBatchGroup(&amp;last_writer);  WriteBatchInternal::SetSequence(write_batch, last_sequence + 1);  last_sequence += WriteBatchInternal::Count(write_batch);  &#123;    mutex_.Unlock();    status = log_-&gt;AddRecord(WriteBatchInternal::Contents(write_batch));    bool sync_error = false;    if (status.ok() &amp;&amp; options.sync) &#123;      status = logfile_-&gt;Sync();      if (!status.ok()) &#123;        sync_error = true;      &#125;    &#125;    if (status.ok()) &#123;      status = WriteBatchInternal::InsertInto(write_batch, mem_);    &#125;    mutex_.Lock();    if (sync_error) &#123;      RecordBackgroundError(status);    &#125;  &#125;  versions_-&gt;SetLastSequence(last_sequence);&#125;
+
+清理并唤醒写操作
+
+while (true) &#123;  Writer* ready = writers_.front();  writers_.pop_front();  if (ready != &amp;w) &#123;    ready-&gt;status = status;    ready-&gt;done = true;    ready-&gt;cv.Signal();  &#125;  if (ready == last_writer) break;&#125;if (!writers_.empty()) &#123;  writers_.front()-&gt;cv.Signal();&#125;
+读取过程
+
+加锁，基于snapshot进行数据读取
+
+Status DBImpl::Get(const ReadOptions&amp; options, const Slice&amp; key,                   std::string* value) &#123;  Status s;  MutexLock l(&amp;mutex_);  SequenceNumber snapshot;  if (options.snapshot != nullptr) &#123;    snapshot =        static_cast&lt;const SnapshotImpl*&gt;(options.snapshot)-&gt;sequence_number();  &#125; else &#123;    snapshot = versions_-&gt;LastSequence();  &#125;    ......&#125;
+
+引用mem、imm以及current version，避免读取过程中被销毁
+
+MemTable* mem = mem_;  MemTable* imm = imm_;  Version* current = versions_-&gt;current();  mem-&gt;Ref();  if (imm != nullptr) imm-&gt;Ref();  current-&gt;Ref();
+
+查询数据，释放锁避免占用cpu时间过长
+
+// Unlock while reading from files and memtables  &#123;    mutex_.Unlock();    // First look in the memtable, then in the immutable memtable (if any).    LookupKey lkey(key, snapshot);    if (mem-&gt;Get(lkey, value, &amp;s)) &#123;      // Done    &#125; else if (imm != nullptr &amp;&amp; imm-&gt;Get(lkey, value, &amp;s)) &#123;      // Done    &#125; else &#123;      s = current-&gt;Get(options, lkey, value, &amp;stats);      have_stat_update = true;    &#125;    mutex_.Lock();  &#125;
+
+压缩解引等操作
+
+if (have_stat_update &amp;&amp; current-&gt;UpdateStats(stats)) &#123;    MaybeScheduleCompaction();  &#125;  mem-&gt;Unref();  if (imm != nullptr) imm-&gt;Unref();  current-&gt;Unref();  return s;
+
+leveldb读取分为三步：
+在memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；
+在冻结的memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；
+按低层至高层的顺序在level i层的sstable文件中查找指定的key，若搜索到符合条件的数据项，结束查找，否则返回Not Found错误，表示数据库中不存在指定的数据；
+注解
+注意leveldb在每一层sstable中查找数据时，都是按序依次查找sstable的。
+0层的文件比较特殊。由于0层的文件中可能存在key重合的情况，因此在0层中，文件编号大的sstable优先查找。理由是文件编号较大的sstable中存储的总是最新的数据。
+非0层文件，一层中所有文件之间的key不重合，因此leveldb可以借助sstable的元数据（一个文件中最小与最大的key值）进行快速定位，每一层只需要查找一个sstable文件的内容。
+
+]]></content>
+      <categories>
+        <category>leveldb</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>dataset</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>日志</title>
     <url>/leveldb/log/</url>
     <content><![CDATA[日志结构
-.wedlvbvsfrnq{zoom:67%;}
+.igniqqufrhes{zoom:67%;}
 
 static const int kBlockSize = 32768;
 // Header is checksum (4 bytes), length (2 bytes), type (1 byte).
@@ -1261,220 +436,31 @@ static const int kHeaderSize = 4 + 2 + 1
       </tags>
   </entry>
   <entry>
-    <title>内存数据库</title>
-    <url>/leveldb/memtable/</url>
-    <content><![CDATA[
-内存数据库
-leveldb内存数据库基于跳表结构。
-跳表
-template &lt;typename Key, class Comparator&gt;class SkipList &#123;    private:    struct Node;&#125;template &lt;typename Key, class Comparator&gt;struct SkipList&lt;Key, Comparator&gt;::Node &#123;    explicit Node(const Key&amp; k) : key(k) &#123;&#125;        const Key key;        Node* Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_acquire);    &#125;        void SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_release);    &#125;        Node* NoBarrier_Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_relaxed);    &#125;        void NoBarrier_SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_relaxed);    &#125;private:    std::atomic&lt;Node*&gt; next_[1];&#125;;
-memory_order 说明
-
-memory_order_relaxed: 只确保操作是原子性的，不对内存顺序做任何保证。
-memory_order_release: 用于写操作，例如 std::atomic::store(T, memory_order_release)，会在写操作之前插入一个 StoreStore屏障，确保屏障之前的所有操作不会重排到屏障之后。
-memory_order_acquire: 用于读操作，例如 std::atomic::load(memory_order_acquire)，会在读操作之后插入一个 LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前。
-memory_order_acq_rel: 等效于 memory_order_acquire 和 memory_order_release 的结合，同时插入一个 StoreStore 屏障与 LoadLoad 屏障，用于读写操作，例如 std::atomic::fetch_add(T, memory_order_acq_rel)。
-
-示例
-// 线程 A (产生者)node-&gt;data = 42;  // 初始化数据list.SetNext(0, node);  // 通过 memory_order_release 让数据对其他线程可见// 线程 B (消费者)Node* node = list.Next(0);  // 使用 memory_order_acquire 获取节点int value = node-&gt;data;  // 确保读取的是线程 A 完全初始化后的数据
-编译器优化：编译器可能会认为，node-&gt;data = 42 和 list.SetNext(0, node) 没有直接依赖关系。因此，它可能将 list.SetNext(0, node) 提前。编译器这种优化是合法的，因为在单线程语境下，它认为不会改变行为。
-模板例子
-template &lt;typename T&gt;class Example &#123;public:    struct NestedType &#123;&#125;;     // 嵌套类型    static int value;         // 静态非类型成员&#125;;template &lt;typename T&gt;void Func() &#123;    typename Example&lt;T&gt;::NestedType* ptr;  // 嵌套类型    Example&lt;T&gt;::value = 42;       // 静态成员&#125;// 对于 Example&lt;T&gt;::NestedType，编译器可能无法区分它是一个类型还是非类型成员（如变量、函数等）。// 在模板类或函数中，如果某个嵌套成员依赖于模板参数，编译器无法在模板实体化之前确定它的具体含义。~~~c++template &lt;typename Key, class Comparator&gt;typename SkipList&lt;Key, Comparator&gt;::Node* SkipList&lt;Key, Comparator&gt;::NewNode(    const Key&amp; key, int height) &#123;  char* const node_memory = arena_-&gt;AllocateAligned(      sizeof(Node) +      sizeof(std::atomic&lt;Node*&gt;) * (height - 1));  // 动态内存分配Node*  return new (node_memory) Node(key);&#125;//t柔性数组和定制内存分配，优化了跳表的内存效率、访问速度
-跳表的查找
-
-根据跳表高度选取最高层的头节点；
-若小于，取该层的下一个节点；
-若等于，则直接返回；
-若大于且层高不为0，降低层高继续查找。
-
-跳表的插入
-
-查找过程中，不断记录每层的前任节点；
-为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；
-
-graph TD    subgraph MemTable_System [&quot;MemTable 系统&quot;]        MemTable --&gt; SkipList        MemTable --&gt; Arena        SkipList --&gt; Entry        Entry --&gt; Arena        SkipList --&gt; KeyComparator    end
-.xkmtcycxyooa{zoom:50%;}]]></content>
-      <categories>
-        <category>leveldb</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-        <tag>dataset</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>缓存系统</title>
-    <url>/leveldb/cache/</url>
-    <content><![CDATA[缓存系统
-基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。
-LRUHandle
-
-哈希表相关: next_hash 用于链接哈希表中的条目。
-链表相关: next 和 prev 用于在 LRU 链表和使用中的链表（in_use）中形成双向链表。
-
-哈希表
+    <title>Pimpl</title>
+    <url>/other/Pimpl/</url>
+    <content><![CDATA[Pimpl
+// my_class.hclass my_class &#123;   //  ... all public and protected stuff goes here ...private:   class impl; unique_ptr&lt;impl&gt; pimpl; // opaque type here&#125;;// my_class.cppclass my_class::impl &#123;  // defined privately here  // ... all private data and functions: all of these  //     can now change without recompiling callers ...&#125;;my_class::my_class(): pimpl( new impl )&#123;  // ... set impl values ...&#125;
 
 
-结构: 哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。
+减少编译依赖
 
 
-插入逻辑：
-
-先找到对应的存储桶。
-比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。
-当条目数量超过容量时，重新调整哈希表的大小。
+分离接口和实现
 
 
+可移植性
 
-LRUCache
-由哈希表、LRU 链表头和 in_use 链表头构成。
+以虚函数作为接口在二进制兼容性方面有本质困难：“一旦发布，不能修改”。
 
-插入过程:
-
-加锁。
-根据键创建 handle，引用计数加 1，并插入到 in_use_ 链表。
-将 handle 添加到哈希表中。
-如果键已存在，则返回旧的 handle，并从缓存和链表中删除旧条目，引用计数减 1。
-当缓存容量超出限制且 LRU 链表不为空时，从 LRU 链表中移除第一个条目，并从缓存和链表中删除。
-
-
-查找过程:
-
-加锁。
-在哈希表中查找 handle 并返回，引用计数加 1。
-
-
-释放过程:
-
-使用完 handle 后需要手动释放。
-加锁，引用计数减 1。
-
-
-擦除过程:
-
-加锁，从缓存中移除条目，引用计数减 1。
-
-
-
-SharedLRUCache
-对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。
-
-分片优势: 通过分片将缓存操作分散到多个 LRUCache 实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。
-
-]]></content>
-      <categories>
-        <category>leveldb</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-        <tag>dataset</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>排序字符串表</title>
-    <url>/leveldb/sstable/</url>
-    <content><![CDATA[
-SSTable
-物理结构
-SSTable 按块划分，默认数据块大小为 4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC 校验码。
-逻辑结构
-
-
-Data Block：存储键值对。
-Filter Block：存储过滤器相关数据，采用专门的 FilterBlock。
-Meta Index Block：存储 Filter Block 在 SSTable 文件中的位置和长度。
-Index Block：存储每个 Data Block 的索引信息。
-Footer：存储 Meta Index Block 和 Index Block 的索引信息。
-
-读写过程
-写过程
-
-读过程
-
-SSTable 使用两种缓存机制：
-
-Table Cache：存储已打开的 SSTable 文件。
-Block Cache：存储已读取的数据块。
-
-Table Cache 的结构如下：
-
-Table 的迭代器
-TwoLevelIterator
-TwoLevelIterator 用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。
-using BlockFunction = Iterator* (*)(void*, const ReadOptions&amp;, const Slice&amp;);explicit TwoLevelIterator(Iterator* index_iter, BlockFunction block_function,                          void* arg, const ReadOptions&amp; options);//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。
-实现思路
-
-索引块迭代器：遍历索引块的迭代器，用来获取每个数据块的元信息。
-数据块读取函数：提供读取数据块的函数，该函数由 TwoLevelIterator 调用以加载具体的数据块。
-封装 TwoLevelIterator：结合索引块迭代器和数据块读取函数，创建 TwoLevelIterator。
 
 
 ]]></content>
       <categories>
-        <category>leveldb</category>
+        <category>other</category>
       </categories>
       <tags>
         <tag>c++</tag>
-        <tag>dataset</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>读写过程</title>
-    <url>/leveldb/read-write/</url>
-    <content><![CDATA[写入过程
-Leveldb的put/delete操作实际都被转成batch然后write。
-WriteBatch batch;batch.Put(kvp.first, kvp.second);EXPECT_TRUE(db_-&gt;Write(WriteOptions(), &amp;batch).ok());
-在leveldb中，使用Write操作进行写入，流程如下：
-
-创建writer对象并加入队列（同时只允许一个写入操作运行）
-
-Status DBImpl::Write(const WriteOptions&amp; options, WriteBatch* updates) &#123;  Writer w(&amp;mutex_);  w.batch = updates;  w.sync = options.sync;  w.done = false;  MutexLock l(&amp;mutex_);  writers_.push_back(&amp;w);  // 若当前 Writer 不是队列头部，则等待（锁被释放，进入阻塞）  while (!w.done &amp;&amp; &amp;w != writers_.front()) &#123;    w.cv.Wait();  &#125;  if (w.done) &#123;    return w.status;  &#125;  ...&#125;
-
-为写操作分配空间
-
-Status status = MakeRoomForWrite(updates == nullptr);uint64_t last_sequence = versions_-&gt;LastSequence();Writer* last_writer = &amp;w;
-
-构建批次并执行写操作
-
-if (status.ok() &amp;&amp; updates != nullptr) &#123;  WriteBatch* write_batch = BuildBatchGroup(&amp;last_writer);  WriteBatchInternal::SetSequence(write_batch, last_sequence + 1);  last_sequence += WriteBatchInternal::Count(write_batch);  &#123;    mutex_.Unlock();    status = log_-&gt;AddRecord(WriteBatchInternal::Contents(write_batch));    bool sync_error = false;    if (status.ok() &amp;&amp; options.sync) &#123;      status = logfile_-&gt;Sync();      if (!status.ok()) &#123;        sync_error = true;      &#125;    &#125;    if (status.ok()) &#123;      status = WriteBatchInternal::InsertInto(write_batch, mem_);    &#125;    mutex_.Lock();    if (sync_error) &#123;      RecordBackgroundError(status);    &#125;  &#125;  versions_-&gt;SetLastSequence(last_sequence);&#125;
-
-清理并唤醒写操作
-
-while (true) &#123;  Writer* ready = writers_.front();  writers_.pop_front();  if (ready != &amp;w) &#123;    ready-&gt;status = status;    ready-&gt;done = true;    ready-&gt;cv.Signal();  &#125;  if (ready == last_writer) break;&#125;if (!writers_.empty()) &#123;  writers_.front()-&gt;cv.Signal();&#125;
-读取过程
-
-加锁，基于snapshot进行数据读取
-
-Status DBImpl::Get(const ReadOptions&amp; options, const Slice&amp; key,                   std::string* value) &#123;  Status s;  MutexLock l(&amp;mutex_);  SequenceNumber snapshot;  if (options.snapshot != nullptr) &#123;    snapshot =        static_cast&lt;const SnapshotImpl*&gt;(options.snapshot)-&gt;sequence_number();  &#125; else &#123;    snapshot = versions_-&gt;LastSequence();  &#125;    ......&#125;
-
-引用mem、imm以及current version，避免读取过程中被销毁
-
-MemTable* mem = mem_;  MemTable* imm = imm_;  Version* current = versions_-&gt;current();  mem-&gt;Ref();  if (imm != nullptr) imm-&gt;Ref();  current-&gt;Ref();
-
-查询数据，释放锁避免占用cpu时间过长
-
-// Unlock while reading from files and memtables  &#123;    mutex_.Unlock();    // First look in the memtable, then in the immutable memtable (if any).    LookupKey lkey(key, snapshot);    if (mem-&gt;Get(lkey, value, &amp;s)) &#123;      // Done    &#125; else if (imm != nullptr &amp;&amp; imm-&gt;Get(lkey, value, &amp;s)) &#123;      // Done    &#125; else &#123;      s = current-&gt;Get(options, lkey, value, &amp;stats);      have_stat_update = true;    &#125;    mutex_.Lock();  &#125;
-
-压缩解引等操作
-
-if (have_stat_update &amp;&amp; current-&gt;UpdateStats(stats)) &#123;    MaybeScheduleCompaction();  &#125;  mem-&gt;Unref();  if (imm != nullptr) imm-&gt;Unref();  current-&gt;Unref();  return s;
-
-leveldb读取分为三步：
-在memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；
-在冻结的memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；
-按低层至高层的顺序在level i层的sstable文件中查找指定的key，若搜索到符合条件的数据项，结束查找，否则返回Not Found错误，表示数据库中不存在指定的数据；
-注解
-注意leveldb在每一层sstable中查找数据时，都是按序依次查找sstable的。
-0层的文件比较特殊。由于0层的文件中可能存在key重合的情况，因此在0层中，文件编号大的sstable优先查找。理由是文件编号较大的sstable中存储的总是最新的数据。
-非0层文件，一层中所有文件之间的key不重合，因此leveldb可以借助sstable的元数据（一个文件中最小与最大的key值）进行快速定位，每一层只需要查找一个sstable文件的内容。
-
-]]></content>
-      <categories>
-        <category>leveldb</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-        <tag>dataset</tag>
+        <tag>design pattern</tag>
       </tags>
   </entry>
   <entry>
@@ -1631,6 +617,1020 @@ Leveldb的整体架构通过 MemTable、Immutable MemTable、Log、SSTable、Man
       <tags>
         <tag>c++</tag>
         <tag>dataset</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>排序字符串表</title>
+    <url>/leveldb/sstable/</url>
+    <content><![CDATA[
+SSTable
+物理结构
+SSTable 按块划分，默认数据块大小为 4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC 校验码。
+逻辑结构
+
+
+Data Block：存储键值对。
+Filter Block：存储过滤器相关数据，采用专门的 FilterBlock。
+Meta Index Block：存储 Filter Block 在 SSTable 文件中的位置和长度。
+Index Block：存储每个 Data Block 的索引信息。
+Footer：存储 Meta Index Block 和 Index Block 的索引信息。
+
+读写过程
+写过程
+
+读过程
+
+SSTable 使用两种缓存机制：
+
+Table Cache：存储已打开的 SSTable 文件。
+Block Cache：存储已读取的数据块。
+
+Table Cache 的结构如下：
+
+Table 的迭代器
+TwoLevelIterator
+TwoLevelIterator 用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。
+using BlockFunction = Iterator* (*)(void*, const ReadOptions&amp;, const Slice&amp;);explicit TwoLevelIterator(Iterator* index_iter, BlockFunction block_function,                          void* arg, const ReadOptions&amp; options);//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。
+实现思路
+
+索引块迭代器：遍历索引块的迭代器，用来获取每个数据块的元信息。
+数据块读取函数：提供读取数据块的函数，该函数由 TwoLevelIterator 调用以加载具体的数据块。
+封装 TwoLevelIterator：结合索引块迭代器和数据块读取函数，创建 TwoLevelIterator。
+
+
+]]></content>
+      <categories>
+        <category>leveldb</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>dataset</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>内存数据库</title>
+    <url>/leveldb/memtable/</url>
+    <content><![CDATA[
+内存数据库
+leveldb内存数据库基于跳表结构。
+跳表
+template &lt;typename Key, class Comparator&gt;class SkipList &#123;    private:    struct Node;&#125;template &lt;typename Key, class Comparator&gt;struct SkipList&lt;Key, Comparator&gt;::Node &#123;    explicit Node(const Key&amp; k) : key(k) &#123;&#125;        const Key key;        Node* Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_acquire);    &#125;        void SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_release);    &#125;        Node* NoBarrier_Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_relaxed);    &#125;        void NoBarrier_SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_relaxed);    &#125;private:    std::atomic&lt;Node*&gt; next_[1];&#125;;
+memory_order 说明
+
+memory_order_relaxed: 只确保操作是原子性的，不对内存顺序做任何保证。
+memory_order_release: 用于写操作，例如 std::atomic::store(T, memory_order_release)，会在写操作之前插入一个 StoreStore屏障，确保屏障之前的所有操作不会重排到屏障之后。
+memory_order_acquire: 用于读操作，例如 std::atomic::load(memory_order_acquire)，会在读操作之后插入一个 LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前。
+memory_order_acq_rel: 等效于 memory_order_acquire 和 memory_order_release 的结合，同时插入一个 StoreStore 屏障与 LoadLoad 屏障，用于读写操作，例如 std::atomic::fetch_add(T, memory_order_acq_rel)。
+
+示例
+// 线程 A (产生者)node-&gt;data = 42;  // 初始化数据list.SetNext(0, node);  // 通过 memory_order_release 让数据对其他线程可见// 线程 B (消费者)Node* node = list.Next(0);  // 使用 memory_order_acquire 获取节点int value = node-&gt;data;  // 确保读取的是线程 A 完全初始化后的数据
+编译器优化：编译器可能会认为，node-&gt;data = 42 和 list.SetNext(0, node) 没有直接依赖关系。因此，它可能将 list.SetNext(0, node) 提前。编译器这种优化是合法的，因为在单线程语境下，它认为不会改变行为。
+模板例子
+template &lt;typename T&gt;class Example &#123;public:    struct NestedType &#123;&#125;;     // 嵌套类型    static int value;         // 静态非类型成员&#125;;template &lt;typename T&gt;void Func() &#123;    typename Example&lt;T&gt;::NestedType* ptr;  // 嵌套类型    Example&lt;T&gt;::value = 42;       // 静态成员&#125;// 对于 Example&lt;T&gt;::NestedType，编译器可能无法区分它是一个类型还是非类型成员（如变量、函数等）。// 在模板类或函数中，如果某个嵌套成员依赖于模板参数，编译器无法在模板实体化之前确定它的具体含义。~~~c++template &lt;typename Key, class Comparator&gt;typename SkipList&lt;Key, Comparator&gt;::Node* SkipList&lt;Key, Comparator&gt;::NewNode(    const Key&amp; key, int height) &#123;  char* const node_memory = arena_-&gt;AllocateAligned(      sizeof(Node) +      sizeof(std::atomic&lt;Node*&gt;) * (height - 1));  // 动态内存分配Node*  return new (node_memory) Node(key);&#125;//t柔性数组和定制内存分配，优化了跳表的内存效率、访问速度
+跳表的查找
+
+根据跳表高度选取最高层的头节点；
+若小于，取该层的下一个节点；
+若等于，则直接返回；
+若大于且层高不为0，降低层高继续查找。
+
+跳表的插入
+
+查找过程中，不断记录每层的前任节点；
+为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；
+
+graph TD    subgraph MemTable_System [&quot;MemTable 系统&quot;]        MemTable --&gt; SkipList        MemTable --&gt; Arena        SkipList --&gt; Entry        Entry --&gt; Arena        SkipList --&gt; KeyComparator    end
+.ppadmhfnjqtn{zoom:50%;}]]></content>
+      <categories>
+        <category>leveldb</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>dataset</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>aysnc</title>
+    <url>/other/async/</url>
+    <content><![CDATA[static async Task Main(string[] args)        &#123;            // 同步倒咖啡            Coffee cup = PourCoffee();            Console.WriteLine(&quot;coffee is ready&quot;);            // 并发开始煎蛋、炸薯饼、烤吐司            var eggsTask = FryEggsAsync(2);            var hashBrownTask = FryHashBrownsAsync(3);            var toastTask = MakeToastWithButterAndJamAsync(2);            var breakfastTasks = new List&lt;Task&gt; &#123; eggsTask, hashBrownTask, toastTask &#125;;            while (breakfastTasks.Count &gt; 0)            &#123;                // 等待任意一个任务完成                Task finishedTask = await Task.WhenAny(breakfastTasks);                if (finishedTask == eggsTask)                    Console.WriteLine(&quot;eggs are ready&quot;);                else if (finishedTask == hashBrownTask)                    Console.WriteLine(&quot;hash browns are ready&quot;);                else if (finishedTask == toastTask)                    Console.WriteLine(&quot;toast is ready&quot;);                // 可选：处理异常                await finishedTask;                // 从任务列表移除                breakfastTasks.Remove(finishedTask);            &#125;            // 同步倒橙汁            Juice oj = PourOJ();            Console.WriteLine(&quot;oj is ready&quot;);            Console.WriteLine(&quot;Breakfast is ready!&quot;);        &#125;
+🔹 I/O Bound（CPU 用于等待）
+
+
+解释：程序主要瓶颈在等待外部资源返回结果，CPU 实际上大部分时间都在空等。
+
+
+做法：
+✅ 使用 await 等待异步操作结果，释放线程资源，避免阻塞主线程或线程池。
+
+
+await 会：
+
+挂起当前 UI 线程方法（比如 Button 点击回调）。
+把控制权交还给 UI 消息循环，不会阻塞界面。
+等到请求返回结果后，再切回 UI 线程继续执行。
+
+示例：
+var result = await HttpClient.GetAsync(&quot;https://api.example.com&quot;);
+
+
+官方文档参考：
+Async in depth | Microsoft Docs
+
+
+
+🔸 CPU Bound（CPU 用于计算）
+
+
+解释：程序瓶颈在本地 CPU 运算，I/O 操作极少，计算密集。
+
+
+做法：
+✅ 使用 Task.Run(() =&gt; {...}) 将任务放到线程池，并行执行，减轻主线程负担。
+示例：
+var result = await Task.Run(() =&gt; CalculateSomethingHeavy());
+
+
+官方文档参考：
+同样是 Async in depth | Microsoft Docs
+
+
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>c#</tag>
+        <tag>async</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring</title>
+    <url>/other/Spring/</url>
+    <content><![CDATA[
+一、Spring XML 配置与注解
+1.1 beans.xml 中的自动扫描配置
+&lt;context:component-scan base-package=&quot;com.example&quot;/&gt;
+
+
+作用：Spring 会扫描指定包及其子包下的类，如果类上标有如下注解：
+
+@Component
+@Service
+@Repository
+@Controller
+
+则会将其注册为 Spring 管理的 Bean。
+
+
+
+1.2 常见注解解释
+
+
+
+注解
+说明
+
+
+
+
+@Component
+标注普通组件，交给 Spring 容器管理
+
+
+@Service
+业务逻辑层组件，语义化更清晰
+
+
+@Repository
+DAO 层组件，支持异常转换
+
+
+@Controller
+控制层组件，处理 Web 请求
+
+
+@Autowired
+按类型自动注入依赖
+
+
+@Qualifier(&quot;beanName&quot;)
+与 @Autowired 配合，按名称注入
+
+
+@PostConstruct
+初始化方法（容器加载后执行）
+
+
+@PreDestroy
+销毁方法（容器关闭前执行）
+
+
+@Scope(&quot;singleton&quot;)
+单例（默认）
+
+
+@Scope(&quot;prototype&quot;)
+多例，每次获取新对象
+
+
+
+
+二、Spring AOP 与 AspectJ 区别
+2.1 Spring AOP
+
+方式：基于 JDK 或 CGLIB 动态代理
+原理：在运行时为目标对象生成代理类，拦截方法调用，插入增强逻辑
+优点：非侵入式，简单易用
+缺点：运行时生成代理，存在性能开销
+
+2.2 AspectJ
+
+方式：
+
+编译时织入（Compile-Time Weaving）
+类加载时织入（Load-Time Weaving）
+
+
+原理：修改字节码，将切面代码插入目标类
+优点：性能更高，控制更精细
+缺点：配置复杂，侵入性强
+
+
+三、项目结构分层（经典三层架构）
+controller --&gt; service --&gt; dao     |            |          | Web层     业务逻辑层   数据访问层
+
+POJO（Plain Old Java Object）：表示数据结构的简单 Java 类，常用于 entity 或 pojo 包中。
+控制器 (Controller)：接收请求、返回响应；
+服务层 (Service)：封装具体业务逻辑；
+DAO 层 (Dao)：对数据库进行 CRUD 操作。
+
+
+四、MySQL 数据库设计范式（Normalization）
+✅ 第一范式（1NF）——字段原子性
+
+每列必须是不可再拆分的最小数据单位。
+✅ 示例：姓名 字段不能为 &quot;张三,李四&quot;，应拆成多条记录。
+
+
+✅ 第二范式（2NF）——消除部分依赖
+
+非主键字段必须完全依赖于主键，不能依赖于主键的一部分（适用于复合主键）。
+✅ 示例：主键是 学生ID+课程ID，若 学生姓名 只依赖 学生ID，应将其拆分成新表。
+
+
+✅ 第三范式（3NF）——消除传递依赖
+
+非主键字段不能依赖于另一个非主键字段。
+✅ 示例：班级编号 → 班主任 → 电话号，此时电话号依赖于班主任，应拆表。
+
+
+🔚 总结
+
+Spring 支持注解与 XML 配置并用，提高了开发灵活性。
+Spring AOP 简单易用适合常规开发；AspectJ 适合对性能有更高要求的场景。
+三层架构利于职责分离、项目维护。
+数据库设计中应遵循范式，避免冗余和异常依赖关系。
+
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>gc</title>
+    <url>/other/gc/</url>
+    <content><![CDATA[为什么要有 GC（GC 出现的背景）
+
+
+在 C/C++ 等语言中，内存分配（malloc/new）和释放（free/delete）需要手动管理。
+
+
+手动管理常出错，例如：
+
+
+内存泄漏：分配了但忘记释放。
+
+
+悬空指针：释放了但还有引用指向那块内存。
+
+
+
+
+GC（垃圾回收）使这类问题自动化处理，减轻程序员负担，但带来性能和暂停（stop-the-world）等代价。
+
+
+GC 的几种核心算法 / 实现方法及其原理
+下面是几种经典或主流 GC 算法的简要原理、优缺点对比：
+
+
+
+算法
+核心原理
+优点
+缺点
+
+
+
+
+Mark-Sweep（标记-清除）
+从“根”（root）开始标记所有可达对象 → 遍历堆，把未标记的对象清除。
+不移动对象 → 指针引用简单；空间利用率还算不错（除碎片问题）
+清扫阶段扫描整个堆；产生内存碎片；暂停时间长（必须停止应用线程）
+
+
+复制算法（Copying / Semi-space / Cheney 的算法）
+将堆分为两个半区：一边分配（from-space），满了之后将所有活对象复制到另一半（to-space），然后交换两边。
+分配速度快；无需空闲列表管理；自动避免外部碎片；活对象移动后，新生代 gc 开销较低（年轻对象死亡率高）
+需要两倍空间（两个半区）；复制活对象本身也有成本；指针更新复杂（因为对象被移动）
+
+
+标记-压缩（Mark-Compact / 标记-整理）
+先标记可达对象；然后将可达对象向堆的一端紧凑移动，更新所有指向这些对象的引用。
+消除碎片；保持堆连续性，有利于缓存局部性；比传统标记-清除在碎片多时更稳定。
+移动对象代价；必须更新所有指针引用；压缩阶段通常暂停时间较长。
+
+
+分代 GC（Generational GC）
+将对象分代（年轻代 / 老年代等），假设大多数对象很快死亡 → 年轻代频繁清理，用复制算法／较快垃圾回收；老年代较少清理，用标记-清除或压缩算法。
+减少多数 GC 的暂停时间；年轻代 GC 快且频繁，整体开销低；效率高。
+老年代回收仍然可能是高成本；跨代对象指针管理复杂；晋升策略调优不当可能导致老年代“存活”对象过多。
+
+
+
+
+# 深度探索垃圾回收器(GC)
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>computer science</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>fastest-decent</title>
+    <url>/other/fastest-decent/</url>
+    <content><![CDATA[最速降线
+T=∫xAxB1+[y′(x)]22g(yA−y(x))dx
+T=\int_{x_A}^{x_B}\frac{\sqrt{1+[y&#x27;(x)]^2}}{\sqrt{2g(y_A-y(x))}}dx
+T=∫xA​xB​​2g(yA​−y(x))​1+[y′(x)]2​​dx
+泛函
+I=∫x1x2f(x,y,y′)dx
+I=\int_{x_1}^{x_2}f(x,y,y&#x27;)dx
+I=∫x1​x2​​f(x,y,y′)dx
+Y=y+ϵδ(x)
+Y=y+\epsilon\delta(x)
+Y=y+ϵδ(x)
+I[y+ϵδ(x)]=∫x1x2f(x,Y,Y′)dx
+I[y+\epsilon\delta(x)]=\int_{x_1}^{x_2}f(x,Y,Y&#x27;)dx
+I[y+ϵδ(x)]=∫x1​x2​​f(x,Y,Y′)dx
+y为极值，Y为关于ε的函数，满足
+δ(x1)=δ(x2)=0
+\delta(x_1)=\delta(x_2)=0
+δ(x1​)=δ(x2​)=0
+当ε=0时泛函数取到极值，故我们泛函取极值的必要条件就是：
+dF(ϵ)dϵ∣ϵ=0=0
+\left.\frac{dF(\epsilon)}{d\epsilon}\right|_{\epsilon=0}=0
+dϵdF(ϵ)​​ϵ=0​=0
+dF(ϵ)dϵ=∫x1x2[∂f∂Y−ddx(∂f∂Y′)]δ(x)dx
+\frac{dF(\epsilon)}{d\epsilon}=\int_{x_1}^{x_2}\left[\frac{\partial f}{\partial Y}-\frac{d}{dx}\left(\frac{\partial f}{\partial Y&#x27;}\right)\right]\delta(x)dx
+dϵdF(ϵ)​=∫x1​x2​​[∂Y∂f​−dxd​(∂Y′∂f​)]δ(x)dx
+对于任意δ(x)都要满足，故得到欧拉-拉格朗日方程：
+∂f∂Y−ddx(∂f∂Y′)=0
+\frac{\partial f}{\partial Y}-\frac{d}{dx}\left(\frac{\partial f}{\partial Y&#x27;}\right)=0
+∂Y∂f​−dxd​(∂Y′∂f​)=0
+贝尔特拉米积分
+设F(y,y’)满足欧拉-拉格朗日方程：
+ddx(∂F∂y′)=∂F∂y
+\frac{d}{dx}\left(\frac{\partial F}{\partial y&#x27;}\right)=\frac{\partial F}{\partial y}
+dxd​(∂y′∂F​)=∂y∂F​
+定义量：
+E=F−y′∂F∂y′
+E=F-y&#x27;\frac{\partial F}{\partial y&#x27;}
+E=F−y′∂y′∂F​
+得：
+F−y′∂F∂y′=C
+F-y&#x27;\frac{\partial F}{\partial y&#x27;}=C
+F−y′∂y′∂F​=C
+求解
+L(y,y′)=1+y′22g(yA−y)
+L(y,y&#x27;)=\frac{\sqrt{1+y&#x27;^2}}{\sqrt{2g(y_A-y)}}
+L(y,y′)=2g(yA​−y)​1+y′2​​
+由于不显含x，使用贝尔特拉米积分：
+∂L∂y′=y′2g(yA−y)1+y′2
+\frac{\partial L}{\partial y&#x27;}=\frac{y&#x27;}{\sqrt{2g(y_A-y)}\sqrt{1+y&#x27;^2}}
+∂y′∂L​=2g(yA​−y)​1+y′2​y′​
+解得：
+1+y′2=12gC2(yA−y)
+1+y&#x27;^2=\frac{1}{2gC^2(y_A-y)}
+1+y′2=2gC2(yA​−y)1​
+令y=yA-u得：
+u12gC2−udu=dx
+\sqrt{\frac{u}{\frac{1}{2gC^2}-u}}du=dx
+2gC21​−uu​​du=dx
+令v=2gC²u得：
+dx=12gC2v1−vdv
+dx=\frac{1}{2gC^2}\sqrt{\frac{v}{1-v}}dv
+dx=2gC21​1−vv​​dv
+令v=sin²θ并积分得：
+x=12gC2∫2sin⁡2θdθ=12gC2(θ−sin⁡2θ2)+D
+x=\frac{1}{2gC^2}\int2\sin^2\theta d\theta=\frac{1}{2gC^2}(\theta-\frac{\sin2\theta}{2})+D
+x=2gC21​∫2sin2θdθ=2gC21​(θ−2sin2θ​)+D
+其中D为一个积分常数。
+再回代得
+y=yA−sin⁡2θ2gC2
+y=y_A-\frac{\sin^2\theta}{2gC^2}
+y=yA​−2gC2sin2θ​
+x=14gC2(α−sin⁡α)+D
+x=\frac{1}{4gC^2}(\alpha-\sin\alpha)+D
+x=4gC21​(α−sinα)+D
+y=yA−14gC2(1−cos⁡α)
+y=y_A-\frac{1}{4gC^2}(1-\cos\alpha)
+y=yA​−4gC21​(1−cosα)
+可写成摆线方程：
+x=a(θ−sin⁡θ)+xA
+x=a(\theta-\sin\theta)+x_A
+x=a(θ−sinθ)+xA​
+y=−a(1−cos⁡θ)+yA
+y=-a(1-\cos\theta)+y_A
+y=−a(1−cosθ)+yA​
+a=14gC2
+a=\frac{1}{4gC^2}
+a=4gC21​
+a为滚动圆半径^a
+参考：
+最速降线的数学模型—变分法 - 简书
+摆线的那些事儿——数学界的大型装逼事件 - 知乎
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
+        <tag>physics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>neuronNet</title>
+    <url>/other/neuronNet/</url>
+    <content><![CDATA[Python神经网络代码总结 (Python Neural Network Code Summary)
+这份代码是一个从零开始实现的、基础的前馈神经网络（Feedforward Neural Network）。它不依赖任何外部机器学习库，清晰地展示了神经网络的核心工作原理。
+
+1. 核心概述 (Core Overview) 🧠
+该代码通过三个核心类构建了一个简单的神经网络：
+
+Neuron: 网络的基本计算单元。
+NeuronLayer: 由多个神经元组成的层。
+NeuronNet: 整合输入层、隐藏层和输出层，并负责网络的训练和预测。
+
+其关键功能包括：
+
+前向传播 (Feed Forward): 将输入数据从输入层传到输出层，得到预测结果。
+反向传播 (Backpropagation): 计算预测误差，并将误差从输出层反向传播，用于更新神经元的权重（weights）和偏置（bias）。
+
+
+2. 类结构与功能 (Class Structure &amp; Functionality)
+Neuron 类
+这是最基础的构建模块。
+
+功能 (Functionality): 模拟单个神经元，负责接收输入、计算加权和、通过激活函数输出结果，并计算用于反向传播的梯度。
+关键属性 (Key Attributes):
+
+weights: 权重列表，决定了每个输入信号的重要性。
+bias: 偏置项，用于调整神经元的激活阈值。
+
+
+关键方法 (Key Methods):
+
+calculate_output(inputs): 接收输入，计算加权和 (calculate_total_net_input)，并通过 Sigmoid 激活函数 (squash) 得到输出。
+squash(total_net_input): 激活函数，公式为 f(x)=frac11+e−x。它将任意输入值压缩到 (0, 1) 区间。
+pd_... 方法: “pd” 代表 “Partial Derivative” (偏导数)。这些方法是反向传播算法的核心，用于计算误差对网络中各个参数（权重、偏置）的梯度。例如 pd_error_wrt_total_net_output 计算的是误差对神经元输出值的偏导数。
+
+
+
+NeuronLayer 类
+神经元的集合。
+
+功能 (Functionality): 管理一层中的所有神经元，并将输入数据传递给该层的所有神经元进行处理。
+关键属性 (Key Attributes):
+
+neurons: 一个包含多个 Neuron 对象的列表。
+
+
+关键方法 (Key Methods):
+
+feed_forward(inputs): 遍历层内所有神经元，收集它们的输出，并将输出列表作为该层的最终输出。
+
+
+
+NeuronNet 类
+完整的神经网络。
+
+功能 (Functionality): 构建并管理整个网络（包含一个隐藏层和一个输出层）。它负责初始化权重、执行完整的前向传播，并通过训练数据来更新整个网络的参数。
+关键属性 (Key Attributes):
+
+hidden_layer: 隐藏层 (NeuronLayer 对象)。
+output_layer: 输出层 (NeuronLayer 对象)。
+learning_rate: 学习率，控制每次训练时权重和偏置的更新幅度。
+
+
+关键方法 (Key Methods):
+
+feed_forward(inputs): 驱动数据流过整个网络，从隐藏层到输出层。
+train(training_inputs, training_outputs): 最核心的方法。它实现了完整的反向传播和梯度下降算法来学习。
+
+
+
+
+3. 关键算法：train 方法解析 (Key Algorithm: train Method Explained)
+train 方法是网络学习的关键，它严格遵循反向传播的步骤：
+
+前向传播 (Forward Pass): 首先调用 feed_forward 计算当前网络对输入数据的预测输出。
+计算输出层误差 (Calculate Output Layer Error):
+
+计算每个输出层神经元的误差对“加权输入总和”的偏导数 (pd_error_wrt_output_neurons_total_net_input)。这是链式法则的第一步。
+
+
+计算隐藏层误差 (Calculate Hidden Layer Error):
+
+将输出层的误差反向传播回隐藏层。
+对于每个隐藏层神经元，其误差是所有与之相连的输出层神经元误差的加权和。
+
+
+更新权重和偏置 (Update Weights and Biases):
+
+输出层更新: 利用步骤2计算的梯度，结合学习率，更新输出层中每个神经元的权重和偏置。
+隐藏层更新: 利用步骤3计算的梯度，结合学习率，更新隐藏层中每个神经元的权重和偏置。
+更新公式为：新权重 = 旧权重 - 学习率 * 误差梯度。
+
+
+
+Python
+# 伪代码：train方法的核心逻辑# Pseudocode: Core logic of the train method# 1. 计算输出层误差梯度output_layer_gradients = []for each neuron in output_layer:    gradient = calculate_error_gradient(target_output, neuron_output)    output_layer_gradients.append(gradient)# 2. 计算隐藏层误差梯度（反向传播）hidden_layer_gradients = []for each neuron in hidden_layer:    error = sum(output_layer_gradients * weights_connecting_to_it)    gradient = error * neuron_output * (1 - neuron_output) # Sigmoid导数    hidden_layer_gradients.append(gradient)# 3. 更新所有权重和偏置for each neuron in output_layer:    neuron.weights -= learning_rate * output_layer_gradient * hidden_layer_output    neuron.bias -= learning_rate * output_layer_gradientfor each neuron in hidden_layer:    neuron.weights -= learning_rate * hidden_layer_gradient * network_input    neuron.bias -= learning_rate * hidden_layer_gradient
+1.先定义网络:写网络Net的Class，声明网络的实例net=Net()，
+2.定义优化器optimizer=optim.xxx(net.parameters()，lr=xxx)，
+3.再定义损失函数（自己写class或者直接用官方的，compute_loss=nn.MSELoss()或者其他。
+4.在定义完之后，开始一次一次的循环：
+①先清空优化器里的梯度信息，optimizer.zero_grad();
+
+②再将input传入，output=net(input) ，正向传播
+
+③算损失，loss=compute_loss(target,output)   ##这里target就是参考标准值GT，需要自己准备，和之前传入的input一一对应
+
+④误差反向传播，loss.backward()
+
+⑤更新参数，optimizer.step()
+
+参考
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+        <tag>machine learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git开发流程</title>
+    <url>/other/git/</url>
+    <content><![CDATA[Git 协作流程核心摘要
+1. 各分支核心职责 (Core Responsibilities of Each Branch)
+
+
+
+分支类型
+生命周期
+核心职责
+
+
+
+
+master
+永久
+只读。永远指向最新已发布版本的代码快照。是生产环境代码的最终来源。
+
+
+release/x.y.z
+长期，随版本存在
+开发、测试、修复的主战场。所有面向该版本的 feature 和 hotfix 都合并到这里。新版本从上一个 release 分支创建。
+
+
+feature/xxx
+短期，随任务生灭
+开发新功能。必须从其目标 release 分支创建，并最终合并回该 release 分支。
+
+
+hotfix/xxx
+短期，紧急修复用
+修复线上紧急 Bug。从出问题的 release 分支创建，修复后合并回该分支，并必须同步到所有后续的 release 分支中。
+
+
+
+2. 个人开发标准流程 (Standard Workflow for Individual Developers)
+这是一个开发者从接到任务到提交 PR 的完整步骤。
+第一步：同步并创建分支
+从你任务对应的 目标 release 分支 拉取最新代码，并创建你的功能分支。
+# 1. 切换到目标 release 分支（例如 1.11.0）git checkout release/1.11.0# 2. 拉取最新代码，确保本地是最新状态git pull origin release/1.11.0# 3. 创建你的功能分支git checkout -b feature/your-task-name
+第二步：本地开发与提交
+在你的 feature 分支上进行编码，并进行多次原子化的提交。
+git add .git commit -m &quot;feat: implement user login modal&quot;git add .git commit -m &quot;fix: resolve button style issue&quot;
+第三步：整理提交记录 (提交 PR 前的关键一步)
+在发起 PR 前，使用交互式 rebase (rebase -i) 来清理你的提交历史，将多个零碎的 commit 合并成一个或几个有意义的 commit。
+# 1. 拉取远程 release 分支的最新变动，以防冲突git fetch origin# 2. 以远程 release 分支为基准，进行交互式 rebasegit rebase -i origin/release/1.11.0
+第四步：推送并创建 PR
+由于 rebase 修改了 git 历史，你需要强制推送到你的远程分支。
+# -f 是 --force 的缩写，强制推送git push -f origin feature/your-task-name
+最后，在 GitHub / GitLab 等平台上，从你的 feature/your-task-name 分支向目标 release/1.11.0 分支发起 Pull Request。
+3. PR 审查与合并流程 (PR Review and Merge Process)
+这是项目维护者 (Maintainer) 或团队负责人收到 PR 后的操作流程。
+第一步：代码审查 (Code Review)
+
+逻辑审查：检查代码的业务逻辑、健壮性和潜在风险。
+规范审查：检查代码风格、命名是否符合团队规范。
+目标分支确认：确保 PR 提交的目标分支是正确的 release 分支。
+至少需要一名或多名成员 Approve。
+
+第二步：合并前检查
+
+CI/CD 状态：确保所有自动化检查（如测试、构建）都已通过。
+提交历史：检查 PR 的 commit 记录是否已按要求整理干净。如果未整理，要求提交者返回上一步（个人流程的第三步）进行 rebase。
+合并冲突：确保 PR 没有合并冲突。如有冲突，要求提交者在本地解决冲突后再提交。
+
+第三步：执行合并 (推荐在 Git 平台 UI 上操作)
+强烈推荐使用以下两种合并策略，严禁使用 Merge Commit。
+
+
+
+合并方式
+操作方式
+优点
+
+
+
+
+Squash and Merge (推荐)
+在平台点击 “Squash and Merge” 按钮。
+将 PR 内所有 commit 合并成一个，生成一个非常干净的 release 分支历史。
+
+
+Rebase and Merge (可选)
+在平台点击 “Rebase and Merge” 按钮。
+将 PR 内已整理好的 commit 按顺序追加到 release 分支，保持线性历史。
+
+
+
+第四步：清理分支
+PR 合并后，应立即删除已被合并的 feature 分支，保持仓库整洁。
+
+在 Git 平台上，通常在合并后会有**“Delete branch”**的按钮，直接点击即可。
+如果需要手动删除远程分支，可执行：# 删除远程的 feature 分支git push origin --delete feature/your-task-name
+
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>tool</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一些数学公式</title>
+    <url>/other/%E4%B8%80%E4%BA%9B%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</url>
+    <content><![CDATA[n阶带拉格朗日余项的泰勒展开式
+f(x)=∑k=0∞f(k)(x0)k!(x−x0)k+f(n+1)(ξ)(n+1)!(x−x0)n+1f(x)=\sum_{k=0}^{\infin}{f^{(k)}(x_0)\over k!}(x-x_0)^k+{f^{(n+1)}(\xi)\over (n+1)!}(x-x_0)^{n+1}
+f(x)=k=0∑∞​k!f(k)(x0​)​(x−x0​)k+(n+1)!f(n+1)(ξ)​(x−x0​)n+1
+欧拉公式
+eix=cosx+isinxe^{ix}=cosx+isinx
+eix=cosx+isinx
+向量运算基础
+⟨x,y⟩=x1⋅y1+x2⋅y2+⋯+xn⋅yn\langle x,y \rangle = x_1 \cdot y_1 + x_2 \cdot y_2 + \cdots + x_n \cdot y_n
+⟨x,y⟩=x1​⋅y1​+x2​⋅y2​+⋯+xn​⋅yn​
+∥x∥=⟨x,x⟩\|x\| = \sqrt{\langle x,x \rangle}
+∥x∥=⟨x,x⟩​
+d(x,y)=∥x−y∥d(x,y) = \|x-y\|
+d(x,y)=∥x−y∥
+最小二乘法
+12∑i=1n(hθ(x(i))−y(i))2=δ\frac{1}{2} \sum_{i=1}^n \left(h_\theta(x^{(i)}) - y^{(i)}\right)^2 = \delta
+21​i=1∑n​(hθ​(x(i))−y(i))2=δ
+∑i=1n[hθ(x(i))−y(i)]2=[hθ(x)−y]T[hθ(x)−y]\sum_{i=1}^n \left[h_\theta(x^{(i)}) - y^{(i)}\right]^2 = \left[h_\theta(x) - y\right]^T \left[h_\theta(x) - y\right]
+i=1∑n​[hθ​(x(i))−y(i)]2=[hθ​(x)−y]T[hθ​(x)−y]
+hθ(x)=Xθ,y=yh_\theta(x) = X\theta, \quad y = y
+hθ​(x)=Xθ,y=y
+(Xθ−y)T(Xθ−y)=δ(X\theta - y)^T (X\theta - y) = \delta
+(Xθ−y)T(Xθ−y)=δ
+2XT(Xθ−y)=02X^T (X\theta - y) = 0
+2XT(Xθ−y)=0
+XTXθ=XTyX^T X \theta = X^T y
+XTXθ=XTy
+θ=(XTX)−1XTy\theta = (X^T X)^{-1} X^T y
+θ=(XTX)−1XTy
+https://zhuanlan.zhihu.com/p/38128785
+https://blog.csdn.net/MoreAction_/article/details/106443383
+矩阵求导公式
+
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ow架构</title>
+    <url>/other/ow%E6%9E%B6%E6%9E%84/</url>
+    <content><![CDATA[核心架构与 ECS（实体-组件-系统）
+
+
+Overwatch 用 ECS 架构 管理复杂度
+
+
+Entity 是一个 ID + 一组组件（Component，仅存储状态，无行为）
+
+
+System 执行行为（Behavior），关注某些组件的组合（tuple / component-slice），在这些组件上做处理
+
+
+
+
+优点：将状态与行为分离，System 更纯洁可组合；组件只做数据存储，行为集中在 System 中
+
+
+多数 System 是纯函数式（只读组件），只有少数 System 修改状态
+
+
+单例组件（Singleton Component）用于存储那种全局共享但需要被多个 System 用的数据／状态，例如输入状态（键盘等），以减少 System 间耦合
+
+
+Utility 函数用于封装共享行为（被多个 System 调用的小逻辑），要求依赖少数组件、低副作用，避免 System 之间互相调用
+
+
+
+ECS 中的设计规范与权衡
+
+
+组件（Component）没有行为，System 尽量无状态
+
+
+如果 System 需要状态，改为放在 Singleton Component 中
+
+
+副作用严格控制：
+
+
+“推迟执行”（deferred execution）机制：把某些副作用（例如创建实体、特效等）暂存到帧尾或某个统一阶段统一处理
+
+
+防止多个 System 在帧中间互相依赖造成脏状态或竞态行为
+
+
+
+
+实体创建与销毁处理谨慎：通常 “销毁推迟到帧末端” 安全；但 “创建推迟” 有可能造成某些 System 在同一帧中无法获取新实体的问题
+
+
+
+网络同步 / Netcode 机制
+
+
+预测 &amp; 回滚（Prediction &amp; Reconciliation）
+
+
+客户端响应用户输入时立即做预测（比如移动、技能释放），不等服务器确认。
+
+
+用固定帧率／命令帧（command frames）制度，客户端和服务器都按这些帧同步模拟。
+
+
+客户端保存输入历史 + 移动状态历史，以便在收到服务器确认后回滚到最后一个确认帧，然后重放客户端输入直至当前帧。
+
+
+
+
+输入滑动窗口 + 丢包补偿
+
+
+客户端在每个发送包里包含从最后确认以来的所有输入帧，保证丢包时输入不遗失。
+
+
+服务器有一个缓冲区用来接受这些输入／补充丢失的输入。
+
+
+
+
+延迟 / 缓冲 /时间膨胀（Buffering / Time Dilation）
+
+如果网络不稳定（高延迟 + 丢包 + 抖动），客户端会加速（time dilation）或扩大缓冲区，以减少预测错误造成卡顿体验。恢复稳定后再缩小这些。
+
+
+
+命中判定（Hit Registration）
+
+
+客户端可能预测子弹命中，但服务器是最终权威。
+
+
+对于远端实体（non-local），使用插值；服务端回滚远端实体状态以做准确命中判断。
+
+
+在某些高延迟情况下，如果 Ping 太大，会放弃客户端预测，直接等待服务器确认。
+
+
+
+
+
+总结的关键教训／设计原则
+
+
+架构要为可维护性、可扩展性服务，ECS + 严格准则（组件无行为，System少状态）帮助控制复杂度
+
+
+网络同步设计里，预测 + 回滚是必须的，以保证响应性，同时要设计好丢包、延迟、预测错误的补偿机制
+
+
+Utility、Singleton、Deferred 操作这些技术是用来缓解 System 之间耦合和帧内副作用带来的问题
+
+
+
+如果你愿意，我可以给你做个简图＋对比表，展示 Overwatch 的 netcode 与一般游戏／模块在这些机制上的差别（预测误差、延迟容忍、权威位置 etc.），会比较清晰。你要吗？
+《守望先锋》架构设计和网络同步
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>game development</tag>
+        <tag>architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>图算法</title>
+    <url>/other/%E5%9B%BE%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[#include &lt;algorithm&gt;#include &lt;functional&gt;#include &lt;iostream&gt;#include &lt;map&gt;#include &lt;queue&gt;#include &lt;random&gt;#include &lt;regex&gt;#include &lt;sstream&gt;#include &lt;string&gt;#include &lt;vector&gt;using namespace std;int Floyd(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int m) &#123;  vector&lt;vector&lt;int&gt;&gt; adjacent_matrix(n, vector&lt;int&gt;(n, INT_MAX / 2));  for (const auto &amp;time : times) &#123;    adjacent_matrix[time[0]][time[1]] = time[2];  &#125;  // 计算j，k之间最小距离，i代表j、k可能的中间点，遍历中间点即可求出最小距离  for (int i = 0; i &lt; n; i++) &#123;    for (int j = 0; j &lt; n; j++) &#123;      for (int k = 0; k &lt; n; k++) &#123;        if (adjacent_matrix[j][i] == INT_MAX / 2 ||            adjacent_matrix[i][k] == INT_MAX / 2)          continue;        if (adjacent_matrix[j][i] + adjacent_matrix[i][k] &lt;            adjacent_matrix[j][k]) &#123;          adjacent_matrix[j][k] = adjacent_matrix[j][i] + adjacent_matrix[i][k];        &#125;      &#125;    &#125;  &#125;  int max_res =      *max_element(adjacent_matrix[m].begin(), adjacent_matrix[m].end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Dijkstra_priority(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; he(n, -1), e(times.size()), ne(times.size()), w(times.size());  for (int i = 0; i &lt; times.size(); i++) &#123;    e[i] = times[i][1];    w[i] = times[i][2];    ne[i] = he[times[i][0]];    he[times[i][0]] = i;  &#125;  vector&lt;int&gt; dis(n, INT_MAX / 2);  priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;,                 greater&lt;pair&lt;int, int&gt;&gt;&gt;      pq;  // 通过局部贪心，获取当前距离最小的点  dis[k] = 0;  pq.push(&#123;0, k&#125;);  vector&lt;bool&gt; visited(n, false);  while (!pq.empty()) &#123;    auto i = pq.top();    pq.pop();    int step = i.first, id = i.second;    if (visited[id])      continue;    visited[id] = true;    for (auto j = he[id]; j != -1; j = ne[j]) &#123;      int dst = e[j];      if (dis[dst] &gt; dis[id] + w[j]) &#123;        dis[dst] = dis[id] + w[j];        pq.push(&#123;dis[dst], dst&#125;);      &#125;    &#125;  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Bellman_Ford(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; dis(n, INT_MAX / 2);  dis[k] = 0;  // 相较于dij的贪心算法，bellman利用松弛就可避免局部最优解的情况，0--&gt;1(70),0--&gt;2(80)--&gt;1(-20)，松弛操作时会把2和1一起记录，实际上达到了松弛至少一次的目的；  bool updated = false;  for (int i = 0; i &lt; n; i++) &#123;    updated = false;    for (auto time : times) &#123;      int u = time[0], v = time[1], w = time[2];      if (dis[u] != INT_MAX / 2 &amp;&amp; dis[u] + w &lt; dis[v]) &#123;        dis[v] = dis[u] + w;        updated = true;      &#125;    &#125;    if (!updated)      break;  &#125;  if (updated) &#123;    cerr &lt;&lt; &quot;Negative cycle detected!&quot; &lt;&lt; endl;    return -1; // 存在负环  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int Spfa(vector&lt;vector&lt;int&gt;&gt; &amp;times, int n, int k) &#123;  vector&lt;int&gt; he(n, -1), e(times.size()), ne(times.size()), w(times.size());  for (int i = 0; i &lt; times.size(); i++) &#123;    e[i] = times[i][1];    w[i] = times[i][2];    ne[i] = he[times[i][0]];    he[times[i][0]] = i;  &#125;  vector&lt;int&gt; cnt(n, 0); // 记录每个点被放入队列的次数  vector&lt;int&gt; dis(n, INT_MAX / 2);  dis[k] = 0;  vector&lt;bool&gt; visited(n, false);  queue&lt;int&gt; q;  q.push(k);  visited[k] = true;  // bellman优化  while (!q.empty()) &#123;    auto i = q.front();    q.pop();    visited[i] = false;    for (int j = he[i]; j != -1; j = ne[j]) &#123;      int dst = e[j];      if (dis[i] != INT_MAX / 2 &amp;&amp; dis[dst] &gt; dis[i] + w[j]) &#123;        dis[dst] = dis[i] + w[j];        if (!visited[dst]) &#123;          q.push(dst);          visited[dst] = true;          cnt[dst]++;          if (cnt[dst] &gt; n) &#123;            cerr &lt;&lt; &quot;Negative cycle detected!&quot; &lt;&lt; endl;            return -1;          &#125;        &#125;      &#125;    &#125;  &#125;  int max_res = *max_element(dis.begin(), dis.end());  return max_res == INT_MAX / 2 ? -1 : max_res;&#125;int main() &#123;  vector&lt;vector&lt;int&gt;&gt; times;  int n, k;  default_random_engine eng;  const int method_nums = 4;  uniform_int_distribution&lt;int&gt; u(0, method_nums - 1);  eng.seed(time(0));  using Algorithm = function&lt;int(vector&lt;vector&lt;int&gt;&gt; &amp;, int, int)&gt;;  vector&lt;Algorithm&gt; algos = &#123;Floyd, Dijkstra_priority, Bellman_Ford, Spfa&#125;;  int res = algos[u(eng)](times, n, k);  return res;&#125;]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>双重抽象</title>
+    <url>/other/%E5%8F%8C%E9%87%8D%E6%8A%BD%E8%B1%A1/</url>
+    <content><![CDATA[双重抽象
+这个设计模式的核心思想是 “双重抽象”，通过抽象类与泛型接口的配合，实现了对象池系统的 类型通用性与类型安全性分离。以下是关键点概括：
+
+设计意图总结
+分工明确的双抽象层
+
+ObjectPoolBase（非泛型抽象类）
+
+提供类型无关的通用操作（如池名称、对象计数、容量管理等）
+允许以统一方式（如ObjectPoolBase[]）处理不同类型对象池的集合操作
+
+
+IObjectPool&lt;T&gt;（泛型接口）
+
+提供类型安全的对象操作（如Spawn&lt;T&gt;、Register&lt;T&gt;）
+确保编译时类型检查，避免运行时类型错误
+
+
+
+
+
+应用场景分离
+
+需要处理多类型池集合时
+（如全局管理、编辑器界面）→ 使用 ObjectPoolBase
+例：统计所有池的基础信息、批量释放资源
+需要操作具体类型对象时
+（如业务逻辑调用）→ 使用 IObjectPool&lt;T&gt;
+例：从特定池中获取UI实例或游戏实体
+
+
+
+实现类ObjectPool的作用
+作为二者具体实现，同时满足：
+
+通过基类支持跨类型统一管理
+通过接口提供类型安全操作
+
+
+
+
+类比说明
+
+
+
+维度
+ObjectPoolBase（抽象类）
+IObjectPool&lt;T&gt;（泛型接口）
+
+
+
+
+类型处理
+忽略具体类型，通用操作
+强类型约束，安全操作
+
+
+典型使用场景
+管理器、编辑器工具等跨类型场景
+业务逻辑如UIManager、EntityGroup
+
+
+设计目的
+提供&quot;集合视角&quot;的统一入口
+提供&quot;具体类型视角&quot;的安全操作
+
+
+
+
+为何不合并？
+
+若仅用泛型接口：无法以统一类型（如数组）管理不同T的池实例。
+若仅用非泛型基类：失去类型安全，需频繁类型转换，增加运行时风险。
+
+此设计通过双重抽象，在类型擦除（集合操作）和类型保留（具体操作）间取得平衡，是框架设计中典型的&quot;分离关注点&quot;实践。
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>c#</tag>
+        <tag>design pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>视觉</title>
+    <url>/other/%E8%A7%86%E8%A7%89/</url>
+    <content><![CDATA[1.相机
+1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。
+1.2 传感器尺寸：影响视野大小
+
+1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好
+
+像元尺寸=传感器尺寸/分辨率（像元个数）
+
+1.4 图像精度：精度指一个像素表示实际物体的大小，用（um*um）/pixel表示。精度值越小，精度越高。
+
+
+精度值=视野/分辨率
+
+
+使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素
+
+
+1.5 ISO
+
+传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度
+ISO过大会出现很大噪点
+
+2.镜头
+2.1 焦距（focal length）
+
+当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。
+当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。
+当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。
+定焦镜头的对焦环调整的是像距
+
+
+2.2 视场角（Field of view, 即FOV）
+视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。
+
+2.3 光圈（Iris）
+光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。
+2.4 景深（Depth of view，即DOF）
+
+
+理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。
+
+
+景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。
+景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；
+景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。
+
+2.5 工作距离（Working Distance）
+工作距离指的是镜头的最下端到景物之间的距离。
+
+参考：
+
+工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客
+镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客
+什么是视场角？它的大小是由镜头还是传感器决定的？
+工业相机各种参数计算方法
+
+]]></content>
+      <categories>
+        <category>other</category>
+      </categories>
+      <tags>
+        <tag>vision</tag>
       </tags>
   </entry>
 </search>

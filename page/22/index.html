@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E8%A7%86%E8%A7%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">整体架构</a>
+            <a href="/other/%E8%A7%86%E8%A7%89/" class="post-title-link" itemprop="url">视觉</a>
         </h2>
 
         <div class="post-meta">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-20 00:00:00" itemprop="dateModified" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
+                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/%E8%A7%86%E8%A7%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/%E8%A7%86%E8%A7%89/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -269,150 +269,62 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="Leveldb-整体架构">Leveldb 整体架构</h3>
-<p>Leveldb 是一个高性能的键值存储库，由 Google 开发。它的设计目标是提供快速的读写操作，同时支持高效的压缩和持久化。以下是 Leveldb的核心组件及其工作原理的详细说明：</p>
-<hr>
-<h3 id="1-MemTable"><strong>1. MemTable</strong></h3>
-<h4 id="概述"><strong>概述</strong></h4>
+          <h2 id="1-相机">1.相机</h2>
+<h3 id="1-1-分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。">1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。</h3>
+<h3 id="1-2-传感器尺寸：影响视野大小">1.2 传感器尺寸：影响视野大小</h3>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image.png" alt></p>
+<h3 id="1-3-像元尺寸：尺寸越大，感光面积越大，图片质量也会越好">1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好</h3>
 <ul>
-<li><strong>MemTable</strong> 是 Leveldb 在内存中用于组织和维护数据的结构。</li>
-<li>写入操作不会直接刷新到磁盘文件，而是先写入 MemTable，因此写入性能非常高。</li>
+<li><font style="color:rgb(243, 59, 69);">像元尺寸=传感器尺寸/分辨率（像元个数）</font></li>
 </ul>
-<h4 id="特点"><strong>特点</strong></h4>
+<h3 id="1-4-图像精度：精度-font-style-color-rgb-0-0-0-指一个像素表示实际物体的大小，用（um-um）-pixel表示。-font-精度值越小，精度越高。">1.4 图像精度：精度<font style="color:rgb(0, 0, 0);">指一个像素表示实际物体的大小，用（um*um）/pixel表示。</font>精度值越小，精度越高。</h3>
 <ul>
 <li>
-<p>基于 <strong>SkipList</strong> 实现，支持高效的插入、删除和查找操作。</p>
+<p><font style="color:#DF2A3F;">精度值=视野/分辨率</font></p>
 </li>
 <li>
-<p>数据按键排序存储，便于后续的持久化操作。</p>
+<p><font style="color:#DF2A3F;">使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素</font></p>
 </li>
 </ul>
-<h4 id="详情"><strong>详情</strong></h4>
+<h3 id="1-5-ISO">1.5 ISO</h3>
+<blockquote>
+<p><font style="color:rgb(25, 27, 31);">传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度</font></p>
+<p><font style="color:rgb(25, 27, 31);">ISO过大会出现很大噪点</font></p>
+</blockquote>
+<h2 id="2-镜头">2.镜头</h2>
+<h3 id="2-1-焦距（focal-length）">2.1 焦距（focal length）</h3>
 <ul>
-<li>详情见 <a href="/leveldb/memtable/" title="内存数据库">内存数据库</a>。</li>
+<li><font style="color:rgb(51, 51, 51);">当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">定焦镜头的对焦环调整的是像距</font></li>
+<li><img src="/other/%E8%A7%86%E8%A7%89/image(1).png" alt></li>
 </ul>
-<hr>
-<h3 id="2-Immutable-MemTable"><strong>2. Immutable MemTable</strong></h3>
-<h4 id="概述-2"><strong>概述</strong></h4>
+<h3 id="2-2-font-style-color-rgb-77-77-77-视场角（Field-of-view-即FOV）-font">2.2 <strong><font style="color:rgb(77, 77, 77);">视场角（Field of view, 即FOV）</font></strong></h3>
+<p><font style="color:rgb(77, 77, 77);">视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。</font></p>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(2).png" alt></p>
+<h3 id="2-3-光圈（Iris）">2.3 光圈（Iris）</h3>
+<p><font style="color:rgb(77, 77, 77);">光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。</font></p>
+<h3 id="font-style-color-rgb-77-77-77-2-4-景深（Depth-of-view，即DOF）-font"><font style="color:rgb(77, 77, 77);">2.4 景深（Depth of view，即DOF）</font></h3>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(3).png" alt></p>
+<blockquote>
+<p><font style="color:rgb(25, 27, 31);">理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。</font></p>
+</blockquote>
 <ul>
-<li>当 MemTable 的大小达到预设阈值时，它会转换为 <strong>Immutable MemTable</strong>。</li>
-<li>Immutable MemTable 是不可修改的，只允许读取操作。</li>
+<li><font style="color:rgb(77, 77, 77);">景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。</font><img src="/other/%E8%A7%86%E8%A7%89/image(4).png" alt></li>
+<li><font style="color:rgb(77, 77, 77);">景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；</font><img src="/other/%E8%A7%86%E8%A7%89/image(5).png" alt></li>
+<li><font style="color:rgb(77, 77, 77);">景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。</font></li>
 </ul>
-<h4 id="作用"><strong>作用</strong></h4>
-<ul>
-<li>后台压缩进程会将 Immutable MemTable 中的数据转换为 <strong>SSTable</strong>，并持久化到磁盘中。</li>
-<li>这种设计避免了写入阻塞，同时保证了数据的持久化。</li>
-</ul>
-<hr>
-<h3 id="3-Log-Write-Ahead-Log-WAL"><strong>3. Log (Write-Ahead Log, WAL)</strong></h3>
-<h4 id="概述-3"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb 的写入操作首先会顺序写入日志文件（Log），然后再写入 MemTable。</li>
-<li>日志文件用于在系统崩溃时恢复未持久化的数据。</li>
-</ul>
-<h4 id="特点-2"><strong>特点</strong></h4>
-<ul>
-<li>日志文件是追加写入的，因此写入性能非常高。</li>
-<li>日志文件与 MemTable 的数据保持一致，确保数据的可靠性。</li>
-</ul>
-<h4 id="详情-2"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/log/" title="日志">日志</a>。</li>
-</ul>
-<hr>
-<h3 id="4-SSTable-Sorted-String-Table"><strong>4. SSTable (Sorted String Table)</strong></h3>
-<h4 id="概述-4"><strong>概述</strong></h4>
-<ul>
-<li>当内存中的数据超过一定阈值时，Leveldb会将数据持久化到磁盘，形成 <strong>SSTable</strong> 文件。</li>
-<li>SSTable 是 Leveldb在磁盘上存储数据的主要形式。</li>
-</ul>
-<h4 id="层级结构"><strong>层级结构</strong></h4>
-<ul>
-<li>SSTable 文件在逻辑上分为多个层级（Level），最底层为 <strong>Level 0</strong>，由内存直接持久化生成。</li>
-<li>更高层级的 SSTable 文件通过 <strong>Compaction</strong> 操作整合生成，以减少文件之间的交集。</li>
-</ul>
-<h4 id="详情-3"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/sstable/" title="排序字符串表">排序字符串表</a>。</li>
-</ul>
-<hr>
-<h3 id="5-Manifest"><strong>5. Manifest</strong></h3>
-<h4 id="概述-5"><strong>概述</strong></h4>
-<ul>
-<li><strong>Manifest</strong> 文件记录了 Leveldb的元数据信息，包括 SSTable 文件的元信息、版本变更等。</li>
-</ul>
-<h4 id="核心组件"><strong>核心组件</strong></h4>
-<ul>
-<li><strong>FileMetaData</strong>：记录 SSTable 文件的元信息，包括文件编号、文件大小、最小键、最大键等。</li>
-<li><strong>VersionEdit</strong>：记录数据库版本的变更，可能包含新增的文件元信息、删除的文件等。</li>
-</ul>
-<h4 id="工作原理"><strong>工作原理</strong></h4>
-<ul>
-<li>Manifest 文件与 Write-Ahead Log (WAL) 使用相同的存储方式。</li>
-<li>每次数据库启动时，都会通过 Manifest 文件恢复最新的版本信息。</li>
-</ul>
-<h4 id="详情-4"><strong>详情</strong></h4>
-<ul>
-<li>详情见。</li>
-</ul>
-<hr>
-<h3 id="6-读写操作"><strong>6. 读写操作</strong></h3>
-<h4 id="概述-6"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb的读写操作是其核心功能，设计目标是高效、可靠。</li>
-</ul>
-<h4 id="写操作"><strong>写操作</strong></h4>
-<ul>
-<li>数据首先写入日志文件（Log），然后写入 MemTable。</li>
-<li>当 MemTable 达到阈值时，转换为 Immutable MemTable，并触发后台压缩。</li>
-</ul>
-<h4 id="读操作"><strong>读操作</strong></h4>
-<ul>
-<li>数据首先从 MemTable 和 Immutable MemTable 中查找。</li>
-<li>如果未找到，则从磁盘中的 SSTable 文件中查找。</li>
-</ul>
-<h4 id="详情-5"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/read-write/" title="读写过程">读写过程</a>。</li>
-</ul>
-<hr>
-<h3 id="7-缓存系统"><strong>7. 缓存系统</strong></h3>
-<h4 id="概述-7"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb使用缓存系统来加速读取操作，减少磁盘 I/O。</li>
-</ul>
-<h4 id="核心组件-2"><strong>核心组件</strong></h4>
-<ul>
-<li><strong>Block Cache</strong>：缓存 SSTable 文件中的数据块，加速读取操作。</li>
-<li><strong>Table Cache</strong>：缓存 SSTable 文件的元信息，减少文件打开和关闭的开销。</li>
-</ul>
-<h4 id="详情-6"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/cache/" title="缓存系统">缓存系统</a>。</li>
-</ul>
-<hr>
-<h3 id="8-Compaction"><strong>8. Compaction</strong></h3>
-<h4 id="概述-8"><strong>概述</strong></h4>
-<ul>
-<li><strong>Compaction</strong> 是 Leveldb 的核心机制之一，用于整合和优化 SSTable 文件。</li>
-</ul>
-<h4 id="作用-2"><strong>作用</strong></h4>
-<ul>
-<li>减少 SSTable 文件之间的交集，提高读取效率。</li>
-<li>清理过期或删除的数据，释放磁盘空间。</li>
-</ul>
-<h4 id="类型"><strong>类型</strong></h4>
-<ul>
-<li><strong>Minor Compaction</strong>：将 Immutable MemTable 转换为 SSTable 文件。</li>
-<li><strong>Major Compaction</strong>：整合多个 SSTable 文件，生成更高层级的文件。</li>
-</ul>
-<h4 id="详情-7"><strong>详情</strong></h4>
-<ul>
-<li>详情见 。</li>
-</ul>
-<hr>
-<h3 id="总结"><strong>总结</strong></h3>
-<p>Leveldb的整体架构通过 <strong>MemTable</strong>、<strong>Immutable MemTable</strong>、<strong>Log</strong>、<strong>SSTable</strong>、<strong>Manifest</strong> 等组件的协同工作，实现了高效的读写操作和持久化存储。其设计充分考虑了性能、可靠性和可扩展性，适用于多种应用场景。</p>
+<h3 id="2-5-font-style-color-rgb-77-77-77-工作距离（Working-Distance）-font">2.5 <strong><font style="color:rgb(77, 77, 77);">工作距离（Working Distance）</font></strong></h3>
+<p><font style="color:rgb(77, 77, 77);">工作距离指的是镜头的最下端到景物之间的距离。</font></p>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(6).png" alt></p>
+<p><strong>参考</strong>：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40770527/article/details/104827855">工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hangl_ciom/article/details/89397506">镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/486600045">什么是视场角？它的大小是由镜头还是传感器决定的？</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149329775">工业相机各种参数计算方法</a></li>
+</ol>
 
       
     </div>

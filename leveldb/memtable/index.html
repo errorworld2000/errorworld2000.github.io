@@ -312,7 +312,7 @@
 <li>为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph MemTable_System [&quot;MemTable 系统&quot;]</span><br><span class="line">        MemTable --&gt; SkipList</span><br><span class="line">        MemTable --&gt; Arena</span><br><span class="line">        SkipList --&gt; Entry</span><br><span class="line">        Entry --&gt; Arena</span><br><span class="line">        SkipList --&gt; KeyComparator</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<style>.xkmtcycxyooa{zoom:50%;}</style><img src="/leveldb/memtable/memtable/memtable-entry.png" class="xkmtcycxyooa" alt="en">
+<style>.ppadmhfnjqtn{zoom:50%;}</style><img src="/leveldb/memtable/memtable/memtable-entry.png" class="ppadmhfnjqtn" alt="en">
     </div>
 
     
@@ -348,12 +348,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/leveldb/cache/" rel="prev" title="缓存系统">
-      <i class="fa fa-chevron-left"></i> 缓存系统
+    <a href="/other/async/" rel="prev" title="aysnc">
+      <i class="fa fa-chevron-left"></i> aysnc
     </a></div>
       <div class="post-nav-item">
-    <a href="/leveldb/log/" rel="next" title="日志">
-      日志 <i class="fa fa-chevron-right"></i>
+    <a href="/leveldb/sstable/" rel="next" title="排序字符串表">
+      排序字符串表 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

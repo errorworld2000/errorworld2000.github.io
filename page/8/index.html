@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Spring/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/cache/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/Spring/" class="post-title-link" itemprop="url">Spring</a>
+            <a href="/leveldb/cache/" class="post-title-link" itemprop="url">缓存系统</a>
         </h2>
 
         <div class="post-meta">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
+                <time title="修改时间：2025-02-20 00:00:00" itemprop="dateModified" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/Spring/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/Spring/" itemprop="commentCount"></span>
+    <a title="valine" href="/leveldb/cache/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/cache/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
+              <span>604</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,130 +269,61 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="一、Spring-XML-配置与注解">一、Spring XML 配置与注解</h2>
-<h3 id="1-1-beans-xml-中的自动扫描配置">1.1 <code>beans.xml</code> 中的自动扫描配置</h3>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+          <h3 id="缓存系统">缓存系统</h3>
+<p>基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。</p>
+<h4 id="LRUHandle">LRUHandle</h4>
+<ul>
+<li><strong>哈希表相关</strong>: <code>next_hash</code> 用于链接哈希表中的条目。</li>
+<li><strong>链表相关</strong>: <code>next</code> 和 <code>prev</code> 用于在 LRU 链表和使用中的链表（<code>in_use</code>）中形成双向链表。</li>
+</ul>
+<h4 id="哈希表">哈希表</h4>
 <ul>
 <li>
-<p><strong>作用</strong>：Spring 会扫描指定包及其子包下的类，如果类上标有如下注解：</p>
+<p><strong>结构</strong>: 哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。</p>
+</li>
+<li>
+<p>插入逻辑：</p>
 <ul>
-<li><code>@Component</code></li>
-<li><code>@Service</code></li>
-<li><code>@Repository</code></li>
-<li><code>@Controller</code></li>
+<li>先找到对应的存储桶。</li>
+<li>比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。</li>
+<li>当条目数量超过容量时，重新调整哈希表的大小。</li>
 </ul>
-<p>则会将其注册为 Spring 管理的 Bean。</p>
 </li>
 </ul>
-<hr>
-<h3 id="1-2-常见注解解释">1.2 常见注解解释</h3>
-<table>
-<thead>
-<tr>
-<th>注解</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>@Component</code></td>
-<td>标注普通组件，交给 Spring 容器管理</td>
-</tr>
-<tr>
-<td><code>@Service</code></td>
-<td>业务逻辑层组件，语义化更清晰</td>
-</tr>
-<tr>
-<td><code>@Repository</code></td>
-<td>DAO 层组件，支持异常转换</td>
-</tr>
-<tr>
-<td><code>@Controller</code></td>
-<td>控制层组件，处理 Web 请求</td>
-</tr>
-<tr>
-<td><code>@Autowired</code></td>
-<td>按类型自动注入依赖</td>
-</tr>
-<tr>
-<td><code>@Qualifier(&quot;beanName&quot;)</code></td>
-<td>与 <code>@Autowired</code> 配合，按名称注入</td>
-</tr>
-<tr>
-<td><code>@PostConstruct</code></td>
-<td>初始化方法（容器加载后执行）</td>
-</tr>
-<tr>
-<td><code>@PreDestroy</code></td>
-<td>销毁方法（容器关闭前执行）</td>
-</tr>
-<tr>
-<td><code>@Scope(&quot;singleton&quot;)</code></td>
-<td>单例（默认）</td>
-</tr>
-<tr>
-<td><code>@Scope(&quot;prototype&quot;)</code></td>
-<td>多例，每次获取新对象</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="二、Spring-AOP-与-AspectJ-区别">二、Spring AOP 与 AspectJ 区别</h2>
-<h3 id="2-1-Spring-AOP">2.1 Spring AOP</h3>
+<h4 id="LRUCache">LRUCache</h4>
+<p>由哈希表、LRU 链表头和 <code>in_use</code> 链表头构成。</p>
+<ol>
+<li><strong>插入过程</strong>:
 <ul>
-<li><strong>方式</strong>：基于 JDK 或 CGLIB 动态代理</li>
-<li><strong>原理</strong>：在运行时为目标对象生成代理类，拦截方法调用，插入增强逻辑</li>
-<li><strong>优点</strong>：非侵入式，简单易用</li>
-<li><strong>缺点</strong>：运行时生成代理，存在性能开销</li>
-</ul>
-<h3 id="2-2-AspectJ">2.2 AspectJ</h3>
-<ul>
-<li><strong>方式</strong>：
-<ul>
-<li><strong>编译时织入</strong>（Compile-Time Weaving）</li>
-<li><strong>类加载时织入</strong>（Load-Time Weaving）</li>
+<li>加锁。</li>
+<li>根据键创建 <code>handle</code>，引用计数加 1，并插入到 <code>in_use_</code> 链表。</li>
+<li>将 <code>handle</code> 添加到哈希表中。</li>
+<li>如果键已存在，则返回旧的 <code>handle</code>，并从缓存和链表中删除旧条目，引用计数减 1。</li>
+<li>当缓存容量超出限制且 LRU 链表不为空时，从 LRU 链表中移除第一个条目，并从缓存和链表中删除。</li>
 </ul>
 </li>
-<li><strong>原理</strong>：修改字节码，将切面代码插入目标类</li>
-<li><strong>优点</strong>：性能更高，控制更精细</li>
-<li><strong>缺点</strong>：配置复杂，侵入性强</li>
-</ul>
-<hr>
-<h2 id="三、项目结构分层（经典三层架构）">三、项目结构分层（经典三层架构）</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">controller --&gt; service --&gt; dao</span><br><span class="line">     |            |          |</span><br><span class="line"> Web层     业务逻辑层   数据访问层</span><br></pre></td></tr></table></figure>
+<li><strong>查找过程</strong>:
 <ul>
-<li><strong>POJO（Plain Old Java Object）</strong>：表示数据结构的简单 Java 类，常用于 <code>entity</code> 或 <code>pojo</code> 包中。</li>
-<li>控制器 (<code>Controller</code>)：接收请求、返回响应；</li>
-<li>服务层 (<code>Service</code>)：封装具体业务逻辑；</li>
-<li>DAO 层 (<code>Dao</code>)：对数据库进行 CRUD 操作。</li>
+<li>加锁。</li>
+<li>在哈希表中查找 <code>handle</code> 并返回，引用计数加 1。</li>
 </ul>
-<hr>
-<h2 id="四、MySQL-数据库设计范式（Normalization）">四、MySQL 数据库设计范式（Normalization）</h2>
-<h3 id="✅-第一范式（1NF）——字段原子性">✅ 第一范式（1NF）——字段原子性</h3>
+</li>
+<li><strong>释放过程</strong>:
 <ul>
-<li>每列必须是不可再拆分的最小数据单位。</li>
-<li>✅ 示例：<code>姓名</code> 字段不能为 <code>&quot;张三,李四&quot;</code>，应拆成多条记录。</li>
+<li>使用完 <code>handle</code> 后需要手动释放。</li>
+<li>加锁，引用计数减 1。</li>
 </ul>
-<hr>
-<h3 id="✅-第二范式（2NF）——消除部分依赖">✅ 第二范式（2NF）——消除部分依赖</h3>
+</li>
+<li><strong>擦除过程</strong>:
 <ul>
-<li>非主键字段必须完全依赖于主键，不能依赖于主键的一部分（适用于复合主键）。</li>
-<li>✅ 示例：主键是 <code>学生ID+课程ID</code>，若 <code>学生姓名</code> 只依赖 <code>学生ID</code>，应将其拆分成新表。</li>
+<li>加锁，从缓存中移除条目，引用计数减 1。</li>
 </ul>
-<hr>
-<h3 id="✅-第三范式（3NF）——消除传递依赖">✅ 第三范式（3NF）——消除传递依赖</h3>
+</li>
+</ol>
+<h4 id="SharedLRUCache">SharedLRUCache</h4>
+<p>对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。</p>
 <ul>
-<li>非主键字段不能依赖于另一个非主键字段。</li>
-<li>✅ 示例：<code>班级编号 → 班主任 → 电话号</code>，此时电话号依赖于班主任，应拆表。</li>
-</ul>
-<hr>
-<h2 id="🔚-总结">🔚 总结</h2>
-<ul>
-<li>Spring 支持注解与 XML 配置并用，提高了开发灵活性。</li>
-<li>Spring AOP 简单易用适合常规开发；AspectJ 适合对性能有更高要求的场景。</li>
-<li>三层架构利于职责分离、项目维护。</li>
-<li>数据库设计中应遵循范式，避免冗余和异常依赖关系。</li>
+<li><strong>分片优势</strong>: 通过分片将缓存操作分散到多个 LRUCache 实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。</li>
 </ul>
 
       

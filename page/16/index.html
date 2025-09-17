@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/dbiter/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/memtable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/leveldb/dbiter/" class="post-title-link" itemprop="url">迭代器</a>
+            <a href="/leveldb/memtable/" class="post-title-link" itemprop="url">内存数据库</a>
         </h2>
 
         <div class="post-meta">
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/leveldb/dbiter/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/dbiter/" itemprop="commentCount"></span>
+    <a title="valine" href="/leveldb/memtable/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/memtable/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.1k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -269,84 +269,37 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator* <span class="title">DBImpl::NewIterator</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options)</span> </span>&#123;</span><br><span class="line">  SequenceNumber latest_snapshot;</span><br><span class="line">  <span class="type">uint32_t</span> seed;</span><br><span class="line">  Iterator* iter = <span class="built_in">NewInternalIterator</span>(options, &amp;latest_snapshot, &amp;seed);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">NewDBIterator</span>(<span class="keyword">this</span>, <span class="built_in">user_comparator</span>(), iter,</span><br><span class="line">                       (options.snapshot != <span class="literal">nullptr</span></span><br><span class="line">                            ? <span class="built_in">static_cast</span>&lt;<span class="type">const</span> SnapshotImpl*&gt;(options.snapshot)</span><br><span class="line">                                  -&gt;<span class="built_in">sequence_number</span>()</span><br><span class="line">                            : latest_snapshot),</span><br><span class="line">                       seed);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Iterator* <span class="title">DBImpl::NewInternalIterator</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options,</span></span></span><br><span class="line"><span class="params"><span class="function">                                      SequenceNumber* latest_snapshot,</span></span></span><br><span class="line"><span class="params"><span class="function">                                      <span class="type">uint32_t</span>* seed)</span> </span>&#123;</span><br><span class="line">  mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">  *latest_snapshot = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Collect together all needed child iterators</span></span><br><span class="line">  std::vector&lt;Iterator*&gt; list;</span><br><span class="line">  list.<span class="built_in">push_back</span>(mem_-&gt;<span class="built_in">NewIterator</span>());</span><br><span class="line">  mem_-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm_ != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    list.<span class="built_in">push_back</span>(imm_-&gt;<span class="built_in">NewIterator</span>());</span><br><span class="line">    imm_-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  versions_-&gt;<span class="built_in">current</span>()-&gt;<span class="built_in">AddIterators</span>(options, &amp;list);</span><br><span class="line">  Iterator* internal_iter = <span class="built_in">NewMergingIterator</span>(&amp;internal_comparator_, &amp;list[<span class="number">0</span>],</span><br><span class="line">                                               <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(list.<span class="built_in">size</span>()));</span><br><span class="line">  versions_-&gt;<span class="built_in">current</span>()-&gt;<span class="built_in">Ref</span>();</span><br><span class="line"></span><br><span class="line">  IterState* cleanup = <span class="keyword">new</span> <span class="built_in">IterState</span>(&amp;mutex_, mem_, imm_, versions_-&gt;<span class="built_in">current</span>());</span><br><span class="line">  internal_iter-&gt;<span class="built_in">RegisterCleanup</span>(CleanupIteratorState, cleanup, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">  *seed = ++seed_;</span><br><span class="line">  mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">  <span class="keyword">return</span> internal_iter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>具体代码解释如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">DBIter::Next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">assert</span>(valid_);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (direction_ == kReverse) &#123;  <span class="comment">// Switch directions?</span></span><br><span class="line">    direction_ = kForward;</span><br><span class="line">    <span class="comment">// iter_ is pointing just before the entries for this-&gt;key(),</span></span><br><span class="line">    <span class="comment">// so advance into the range of entries for this-&gt;key() and then</span></span><br><span class="line">    <span class="comment">// use the normal skipping code below.</span></span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      iter_-&gt;<span class="built_in">SeekToFirst</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      iter_-&gt;<span class="built_in">Next</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      valid_ = <span class="literal">false</span>;</span><br><span class="line">      saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// saved_key_ already contains the key to skip past.</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Store in saved_key_ the current key so we skip it below.</span></span><br><span class="line">    <span class="built_in">SaveKey</span>(<span class="built_in">ExtractUserKey</span>(iter_-&gt;<span class="built_in">key</span>()), &amp;saved_key_);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// iter_ is pointing to current key. We can now safely move to the next to</span></span><br><span class="line">    <span class="comment">// avoid checking current key.</span></span><br><span class="line">    iter_-&gt;<span class="built_in">Next</span>();</span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      valid_ = <span class="literal">false</span>;</span><br><span class="line">      saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">FindNextUserEntry</span>(<span class="literal">true</span>, &amp;saved_key_);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">DBIter::FindNextUserEntry</span><span class="params">(<span class="type">bool</span> skipping, std::string* skip)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Loop until we hit an acceptable entry to yield</span></span><br><span class="line">  <span class="built_in">assert</span>(iter_-&gt;<span class="built_in">Valid</span>());</span><br><span class="line">  <span class="built_in">assert</span>(direction_ == kForward);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    ParsedInternalKey ikey;	</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">ParseKey</span>(&amp;ikey) &amp;&amp; ikey.sequence &lt;= sequence_) &#123;	<span class="comment">// 根据当前iter_的key封装成一个新ikey，同时要求ikey的序列号小于创建DBIter时传入的序列号</span></span><br><span class="line">      <span class="keyword">switch</span> (ikey.type) &#123;</span><br><span class="line">        <span class="keyword">case</span> kTypeDeletion:</span><br><span class="line">          <span class="comment">// Arrange to skip all upcoming entries for this key since</span></span><br><span class="line">          <span class="comment">// they are hidden by this deletion.</span></span><br><span class="line">          <span class="built_in">SaveKey</span>(ikey.user_key, skip);		</span><br><span class="line">          skipping = <span class="literal">true</span>;		<span class="comment">// 如果当前ikey的类型是删除，将跳过整个 user_key = ikey.user_key()的nodes</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> kTypeValue:</span><br><span class="line">          <span class="keyword">if</span> (skipping &amp;&amp;	<span class="comment">// 跳过</span></span><br><span class="line">              user_comparator_-&gt;<span class="built_in">Compare</span>(ikey.user_key, *skip) &lt;= <span class="number">0</span>) &#123;	<span class="comment">// 旧条目不再需要</span></span><br><span class="line">            <span class="comment">// Entry hidden</span></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 否则就是本 user_key 所在nodes中的最新节点</span></span><br><span class="line">            valid_ = <span class="literal">true</span>;</span><br><span class="line">            saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    iter_-&gt;<span class="built_in">Next</span>();	<span class="comment">// 定位到下一个</span></span><br><span class="line">  &#125; <span class="keyword">while</span> (iter_-&gt;<span class="built_in">Valid</span>());</span><br><span class="line">  saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">  valid_ = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="1-DBIter-Next">1. <code>DBIter::Next()</code></h4>
+          <hr>
+<h3 id="内存数据库">内存数据库</h3>
+<p>leveldb内存数据库基于跳表结构。</p>
+<h4 id="跳表">跳表</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SkipList</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Node</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SkipList</span>&lt;Key, Comparator&gt;::Node &#123;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Node</span><span class="params">(<span class="type">const</span> Key&amp; k)</span> : key(k) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">const</span> Key key;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_acquire);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_release);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">NoBarrier_Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">NoBarrier_SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::atomic&lt;Node*&gt; next_[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="memory-order-说明">memory_order 说明</h4>
 <ul>
-<li>
-<p><strong>作用：</strong><br>
-实现迭代器前进到下一个用户可见的条目。</p>
-</li>
-<li>
-<p><strong>核心逻辑：</strong></p>
-<ol>
-<li>
-<p><strong>断言当前状态有效：</strong><br>
-<code>assert(valid_);</code> 确保调用 <code>Next()</code> 时，迭代器处于有效状态。</p>
-</li>
-<li>
-<p><strong>处理不同方向：</strong></p>
+<li><strong>memory_order_relaxed</strong>: 只确保操作是原子性的，不对内存顺序做任何保证。</li>
+<li><strong>memory_order_release</strong>: 用于写操作，例如 <code>std::atomic::store(T, memory_order_release)</code>，会在写操作之前插入一个 StoreStore屏障，确保屏障之前的所有操作不会重排到屏障之后。</li>
+<li><strong>memory_order_acquire</strong>: 用于读操作，例如 <code>std::atomic::load(memory_order_acquire)</code>，会在读操作之后插入一个 LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前。</li>
+<li><strong>memory_order_acq_rel</strong>: 等效于 <code>memory_order_acquire</code> 和 <code>memory_order_release</code> 的结合，同时插入一个 StoreStore 屏障与 LoadLoad 屏障，用于读写操作，例如 <code>std::atomic::fetch_add(T, memory_order_acq_rel)</code>。</li>
+</ul>
+<h4 id="示例">示例</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程 A (产生者)</span></span><br><span class="line">node-&gt;data = <span class="number">42</span>;  <span class="comment">// 初始化数据</span></span><br><span class="line">list.<span class="built_in">SetNext</span>(<span class="number">0</span>, node);  <span class="comment">// 通过 memory_order_release 让数据对其他线程可见</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 B (消费者)</span></span><br><span class="line">Node* node = list.<span class="built_in">Next</span>(<span class="number">0</span>);  <span class="comment">// 使用 memory_order_acquire 获取节点</span></span><br><span class="line"><span class="type">int</span> value = node-&gt;data;  <span class="comment">// 确保读取的是线程 A 完全初始化后的数据</span></span><br></pre></td></tr></table></figure>
+<p>编译器优化：编译器可能会认为，<code>node-&gt;data = 42</code> 和 <code>list.SetNext(0, node)</code> 没有直接依赖关系。因此，它可能将 <code>list.SetNext(0, node)</code> 提前。编译器这种优化是合法的，因为在单线程语境下，它认为不会改变行为。</p>
+<h4 id="模板例子">模板例子</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Example</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">NestedType</span> &#123;&#125;;     <span class="comment">// 嵌套类型</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> value;         <span class="comment">// 静态非类型成员</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typename</span> Example&lt;T&gt;::NestedType* ptr;  <span class="comment">// 嵌套类型</span></span><br><span class="line">    Example&lt;T&gt;::value = <span class="number">42</span>;       <span class="comment">// 静态成员</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于 Example&lt;T&gt;::NestedType，编译器可能无法区分它是一个类型还是非类型成员（如变量、函数等）。</span></span><br><span class="line"><span class="comment">// 在模板类或函数中，如果某个嵌套成员依赖于模板参数，编译器无法在模板实体化之前确定它的具体含义。</span></span><br><span class="line"></span><br><span class="line">~~~c++</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">typename</span> SkipList&lt;Key, Comparator&gt;::Node* SkipList&lt;Key, Comparator&gt;::<span class="built_in">NewNode</span>(</span><br><span class="line">    <span class="type">const</span> Key&amp; key, <span class="type">int</span> height) &#123;</span><br><span class="line">  <span class="type">char</span>* <span class="type">const</span> node_memory = arena_-&gt;<span class="built_in">AllocateAligned</span>(</span><br><span class="line">      <span class="built_in">sizeof</span>(Node) +</span><br><span class="line">      <span class="built_in">sizeof</span>(std::atomic&lt;Node*&gt;) * (height - <span class="number">1</span>));  <span class="comment">// 动态内存分配Node*</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">new</span> (node_memory) <span class="built_in">Node</span>(key);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//t柔性数组和定制内存分配，优化了跳表的内存效率、访问速度</span></span><br></pre></td></tr></table></figure>
+<h4 id="跳表的查找">跳表的查找</h4>
 <ul>
-<li>
-<p>如果当前迭代方向为 <code>kReverse</code>，说明之前的操作是反向遍历：</p>
-<p>切换方向为 <code>kForward</code>。因为反向遍历时迭代器指向当前 key 之前的位置，所以需要先移动一步使其进入当前 key 的区间：若当前迭代器无效，则调用 <code>SeekToFirst()</code> 重置到首元素。否则调用 <code>iter_-&gt;Next()</code>。若移动后迭代器变为无效，则标记迭代器为无效并清空 <code>saved_key_</code>，返回。此时，<code>saved_key_</code> 内保存了需要跳过的 key。</p>
-</li>
-<li>
-<p>当方向已经是<code>kForward</code>时：</p>
-<p>首先将当前 key 提取后保存到 <code>saved_key_</code>，用于后续跳过同一用户键的所有条目（防止重复返回）。调用 <code>iter_-&gt;Next()</code> 移动到下一个内部条目。同样，若移动后无效，则更新状态并返回。</p>
-</li>
+<li>根据跳表高度选取最高层的头节点；</li>
+<li>若小于，取该层的下一个节点；</li>
+<li>若等于，则直接返回；</li>
+<li>若大于且层高不为0，降低层高继续查找。</li>
 </ul>
-</li>
-<li>
-<p><strong>寻找下一个用户条目：</strong><br>
-最后调用 <code>FindNextUserEntry(true, &amp;saved_key_)</code>，从当前位置继续寻找一个用户可见的有效条目。</p>
-</li>
-</ol>
-</li>
-</ul>
-<hr>
-<h4 id="2-DBIter-FindNextUserEntry-bool-skipping-std-string-skip">2. <code>DBIter::FindNextUserEntry(bool skipping, std::string* skip)</code></h4>
+<h4 id="跳表的插入">跳表的插入</h4>
 <ul>
-<li>
-<p><strong>作用：</strong><br>
-在内部迭代器当前位置开始，寻找下一个用户层面上“有效”（即未被删除、未被隐藏）的条目。</p>
-</li>
-<li>
-<p><strong>核心逻辑：</strong></p>
-<ol>
-<li>
-<p><strong>循环遍历：</strong><br>
-循环直到找到一个符合条件的用户条目，或者迭代器到达末尾。</p>
-</li>
-<li>
-<p><strong>解析内部键：</strong><br>
-每次循环调用 <code>ParseKey(&amp;ikey)</code> 解析当前内部键 <code>iter_-&gt;key()</code>，同时检查 <code>ikey.sequence</code> 是否在允许的序列号范围内（<code>&lt;= sequence_</code>）。</p>
-</li>
-<li>
-<p><strong>根据操作类型处理：</strong></p>
-<ul>
-<li>
-<p>删除类型（<code>kTypeDeletion</code>）：</p>
-<p>将当前 <code>ikey.user_key</code> 保存到 <code>skip</code>（即 <code>saved_key_</code>），并设置 <code>skipping</code> 为 <code>true</code>，表示后续相同用户键的条目应当被跳过（删除操作“屏蔽”了旧值）。</p>
-</li>
-<li>
-<p>值类型（<code>kTypeValue</code>）：</p>
-<p>如果处于跳过状态（<code>skipping</code> 为 true），并且当前 <code>ikey.user_key</code> 与 <code>*skip</code> 比较小于等于（即还处于需要跳过的范围内），则认为该条目被删除或隐藏，不予返回。否则，找到了一个有效的用户条目，将 <code>valid_</code> 标记为 <code>true</code>，清空 <code>saved_key_</code>（因为找到有效数据后，不需要再跳过）。返回，结束循环。</p>
-</li>
+<li>查找过程中，不断记录每层的前任节点；</li>
+<li>为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；</li>
 </ul>
-</li>
-<li>
-<p><strong>结束条件：</strong></p>
-<ul>
-<li>如果循环结束时 <code>iter_-&gt;Valid()</code> 为 false，则表示已经遍历完所有条目，</li>
-<li>清空 <code>saved_key_</code>，并将 <code>valid_</code> 标记为 false。</li>
-</ul>
-</li>
-</ol>
-</li>
-</ul>
-
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph MemTable_System [&quot;MemTable 系统&quot;]</span><br><span class="line">        MemTable --&gt; SkipList</span><br><span class="line">        MemTable --&gt; Arena</span><br><span class="line">        SkipList --&gt; Entry</span><br><span class="line">        Entry --&gt; Arena</span><br><span class="line">        SkipList --&gt; KeyComparator</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<style>.ppadmhfnjqtn{zoom:50%;}</style><img src="/leveldb/memtable/memtable/memtable-entry.png" class="ppadmhfnjqtn" alt="en">
       
     </div>
 

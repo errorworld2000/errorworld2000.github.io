@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E8%A7%86%E8%A7%89/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/sstable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/%E8%A7%86%E8%A7%89/" class="post-title-link" itemprop="url">视觉</a>
+            <a href="/leveldb/sstable/" class="post-title-link" itemprop="url">排序字符串表</a>
         </h2>
 
         <div class="post-meta">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
+                <time title="修改时间：2025-02-20 00:00:00" itemprop="dateModified" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/%E8%A7%86%E8%A7%89/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/%E8%A7%86%E8%A7%89/" itemprop="commentCount"></span>
+    <a title="valine" href="/leveldb/sstable/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/sstable/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.1k</span>
+              <span>787</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,62 +269,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="1-相机">1.相机</h2>
-<h3 id="1-1-分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。">1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。</h3>
-<h3 id="1-2-传感器尺寸：影响视野大小">1.2 传感器尺寸：影响视野大小</h3>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image.png" alt></p>
-<h3 id="1-3-像元尺寸：尺寸越大，感光面积越大，图片质量也会越好">1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好</h3>
-<ul>
-<li><font style="color:rgb(243, 59, 69);">像元尺寸=传感器尺寸/分辨率（像元个数）</font></li>
-</ul>
-<h3 id="1-4-图像精度：精度-font-style-color-rgb-0-0-0-指一个像素表示实际物体的大小，用（um-um）-pixel表示。-font-精度值越小，精度越高。">1.4 图像精度：精度<font style="color:rgb(0, 0, 0);">指一个像素表示实际物体的大小，用（um*um）/pixel表示。</font>精度值越小，精度越高。</h3>
-<ul>
-<li>
-<p><font style="color:#DF2A3F;">精度值=视野/分辨率</font></p>
-</li>
-<li>
-<p><font style="color:#DF2A3F;">使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素</font></p>
-</li>
-</ul>
-<h3 id="1-5-ISO">1.5 ISO</h3>
-<blockquote>
-<p><font style="color:rgb(25, 27, 31);">传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度</font></p>
-<p><font style="color:rgb(25, 27, 31);">ISO过大会出现很大噪点</font></p>
-</blockquote>
-<h2 id="2-镜头">2.镜头</h2>
-<h3 id="2-1-焦距（focal-length）">2.1 焦距（focal length）</h3>
-<ul>
-<li><font style="color:rgb(51, 51, 51);">当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">定焦镜头的对焦环调整的是像距</font></li>
-<li><img src="/other/%E8%A7%86%E8%A7%89/image(1).png" alt></li>
-</ul>
-<h3 id="2-2-font-style-color-rgb-77-77-77-视场角（Field-of-view-即FOV）-font">2.2 <strong><font style="color:rgb(77, 77, 77);">视场角（Field of view, 即FOV）</font></strong></h3>
-<p><font style="color:rgb(77, 77, 77);">视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。</font></p>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(2).png" alt></p>
-<h3 id="2-3-光圈（Iris）">2.3 光圈（Iris）</h3>
-<p><font style="color:rgb(77, 77, 77);">光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。</font></p>
-<h3 id="font-style-color-rgb-77-77-77-2-4-景深（Depth-of-view，即DOF）-font"><font style="color:rgb(77, 77, 77);">2.4 景深（Depth of view，即DOF）</font></h3>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(3).png" alt></p>
-<blockquote>
-<p><font style="color:rgb(25, 27, 31);">理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。</font></p>
-</blockquote>
-<ul>
-<li><font style="color:rgb(77, 77, 77);">景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。</font><img src="/other/%E8%A7%86%E8%A7%89/image(4).png" alt></li>
-<li><font style="color:rgb(77, 77, 77);">景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；</font><img src="/other/%E8%A7%86%E8%A7%89/image(5).png" alt></li>
-<li><font style="color:rgb(77, 77, 77);">景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。</font></li>
-</ul>
-<h3 id="2-5-font-style-color-rgb-77-77-77-工作距离（Working-Distance）-font">2.5 <strong><font style="color:rgb(77, 77, 77);">工作距离（Working Distance）</font></strong></h3>
-<p><font style="color:rgb(77, 77, 77);">工作距离指的是镜头的最下端到景物之间的距离。</font></p>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(6).png" alt></p>
-<p><strong>参考</strong>：</p>
+          <hr>
+<h2 id="SSTable">SSTable</h2>
+<h3 id="物理结构">物理结构</h3>
+<p>SSTable 按块划分，默认数据块大小为 4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC 校验码。</p>
+<h3 id="逻辑结构">逻辑结构</h3>
+<p><img src="/leveldb/sstable/sst-format.png" alt="SSTable 逻辑结构"></p>
 <ol>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40770527/article/details/104827855">工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hangl_ciom/article/details/89397506">镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/486600045">什么是视场角？它的大小是由镜头还是传感器决定的？</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149329775">工业相机各种参数计算方法</a></li>
+<li><strong>Data Block</strong>：存储键值对。</li>
+<li><strong>Filter Block</strong>：存储过滤器相关数据，采用专门的 FilterBlock。</li>
+<li><strong>Meta Index Block</strong>：存储 Filter Block 在 SSTable 文件中的位置和长度。</li>
+<li><strong>Index Block</strong>：存储每个 Data Block 的索引信息。</li>
+<li><strong>Footer</strong>：存储 Meta Index Block 和 Index Block 的索引信息。</li>
 </ol>
+<h3 id="读写过程">读写过程</h3>
+<h4 id="写过程">写过程</h4>
+<p><img src="/leveldb/sstable/table-builder.png" alt="写过程"></p>
+<h4 id="读过程">读过程</h4>
+<p><img src="/leveldb/sstable/sst-read.png" alt="读过程"></p>
+<p>SSTable 使用两种缓存机制：</p>
+<ol>
+<li><strong>Table Cache</strong>：存储已打开的 SSTable 文件。</li>
+<li><strong>Block Cache</strong>：存储已读取的数据块。</li>
+</ol>
+<p>Table Cache 的结构如下：</p>
+<p><img src="/leveldb/sstable/table-cache.png" alt="Table Cache 结构"></p>
+<h3 id="Table-的迭代器">Table 的迭代器</h3>
+<h4 id="TwoLevelIterator">TwoLevelIterator</h4>
+<p><code>TwoLevelIterator</code> 用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> BlockFunction = Iterator* (*)(<span class="type">void</span>*, <span class="type">const</span> ReadOptions&amp;, <span class="type">const</span> Slice&amp;);</span><br><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="title">TwoLevelIterator</span><span class="params">(Iterator* index_iter, BlockFunction block_function,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="type">void</span>* arg, <span class="type">const</span> ReadOptions&amp; options)</span></span>;</span><br><span class="line"><span class="comment">//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。</span></span><br></pre></td></tr></table></figure>
+<h4 id="实现思路">实现思路</h4>
+<ol>
+<li><strong>索引块迭代器</strong>：遍历索引块的迭代器，用来获取每个数据块的元信息。</li>
+<li><strong>数据块读取函数</strong>：提供读取数据块的函数，该函数由 <code>TwoLevelIterator</code> 调用以加载具体的数据块。</li>
+<li><strong>封装 <code>TwoLevelIterator</code></strong>：结合索引块迭代器和数据块读取函数，创建 <code>TwoLevelIterator</code>。</li>
+</ol>
+<hr>
 
       
     </div>

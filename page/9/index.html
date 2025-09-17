@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/async/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/async/" class="post-title-link" itemprop="url">aysnc</a>
+            <a href="/gameframework/%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">细节实现</a>
         </h2>
 
         <div class="post-meta">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                  <a href="/categories/gameframework/" itemprop="url" rel="index"><span itemprop="name">gameframework</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/async/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/async/" itemprop="commentCount"></span>
+    <a title="valine" href="/gameframework/%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/gameframework/%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -269,48 +269,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 同步倒咖啡</span></span><br><span class="line">            Coffee cup = PourCoffee();</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;coffee is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 并发开始煎蛋、炸薯饼、烤吐司</span></span><br><span class="line">            <span class="keyword">var</span> eggsTask = FryEggsAsync(<span class="number">2</span>);</span><br><span class="line">            <span class="keyword">var</span> hashBrownTask = FryHashBrownsAsync(<span class="number">3</span>);</span><br><span class="line">            <span class="keyword">var</span> toastTask = MakeToastWithButterAndJamAsync(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> breakfastTasks = <span class="keyword">new</span> List&lt;Task&gt; &#123; eggsTask, hashBrownTask, toastTask &#125;;</span><br><span class="line">            <span class="keyword">while</span> (breakfastTasks.Count &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 等待任意一个任务完成</span></span><br><span class="line">                Task finishedTask = <span class="keyword">await</span> Task.WhenAny(breakfastTasks);</span><br><span class="line">                <span class="keyword">if</span> (finishedTask == eggsTask)</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;eggs are ready&quot;</span>);</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == hashBrownTask)</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;hash browns are ready&quot;</span>);</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == toastTask)</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;toast is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 可选：处理异常</span></span><br><span class="line">                <span class="keyword">await</span> finishedTask;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 从任务列表移除</span></span><br><span class="line">                breakfastTasks.Remove(finishedTask);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 同步倒橙汁</span></span><br><span class="line">            Juice oj = PourOJ();</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;oj is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(<span class="string">&quot;Breakfast is ready!&quot;</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="🔹-I-O-Bound（CPU-用于等待）">🔹 I/O Bound（CPU 用于等待）</h3>
+          <h4 id="ReferencePool">ReferencePool</h4>
+<h5 id="IReference">IReference</h5>
+<p>被引用的对象需实现IReference接口（包括一个Clear函数），当对象被回收时调用，恢复初始状态，以便下次使用。</p>
+<h5 id="ReferenceCollection">ReferenceCollection</h5>
+<p>代表一种类型的引用池，位于<code>ReferencePool</code>内部</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> readonly Queue&lt;IReference&gt; m_References;</span><br><span class="line"><span class="keyword">private</span> readonly Type m_ReferenceType;</span><br><span class="line">...<span class="comment">//状态计数</span></span><br></pre></td></tr></table></figure>
+<h5 id="ReferenceInfo">ReferenceInfo</h5>
+<p>获取引用池的状态计数，相较<code>ReferenceCollection</code>少了<code>m_References</code></p>
+<h5 id="ReferencePool-2">ReferencePool</h5>
+<p>静态类，管理所有类型的引用池</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">static</span> readonly Dictionary&lt;Type, ReferenceCollection&gt; s_ReferenceCollections = <span class="keyword">new</span> <span class="built_in">Dictionary</span>&lt;Type, ReferenceCollection&gt;();</span><br><span class="line"><span class="keyword">public</span> <span class="type">static</span> T <span class="built_in">Acquire</span>&lt;T&gt;() where T : <span class="keyword">class</span>, IReference, <span class="keyword">new</span>() =&gt; <span class="built_in">GetReferenceCollection</span>(<span class="built_in">typeof</span>(T)).<span class="built_in">Acquire</span>&lt;T&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="type">static</span> IReference <span class="title">Acquire</span><span class="params">(Type referenceType)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">InternalCheckReferenceType</span>(referenceType);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">GetReferenceCollection</span>(referenceType).<span class="built_in">Acquire</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体操作时先根据类型（为Type时先要对类型进行检查）获取对应的ReferenceCollection，再进行其他操作。</p>
+<h3 id="Fsm">Fsm</h3>
+<h4 id="FsmState-T">FsmState&lt; T &gt;</h4>
+<p>状态机状态的抽象类，包括状态初始化，状态更新等等</p>
+<h4 id="IFsm-T">IFsm&lt; T &gt;</h4>
+<p>状态机的接口</p>
+<h4 id="FsmBase">FsmBase</h4>
+<p>状态机的抽象类</p>
+<h4 id="Fsm-T">Fsm&lt; T &gt;</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">internal sealed <span class="keyword">class</span> <span class="title class_">Fsm</span>&lt;T&gt; : FsmBase, IReference, IFsm&lt;T&gt; where T : <span class="keyword">class</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> T m_Owner;</span><br><span class="line">    <span class="keyword">private</span> readonly Dictionary&lt;Type, FsmState&lt;T&gt;&gt; m_States;</span><br><span class="line">    <span class="keyword">private</span> Dictionary&lt;string, Variable&gt; m_Datas;</span><br><span class="line">    <span class="keyword">private</span> FsmState&lt;T&gt; m_CurrentState;</span><br></pre></td></tr></table></figure>
+<p>一个状态机，包括所有状态类以及当前数据</p>
+<h4 id="IFsmManager">IFsmManager</h4>
+<p>接口，管理所有状态机</p>
+<h3 id="Procedure">Procedure</h3>
+<h4 id="ProcedureManager">ProcedureManager</h4>
+<p>特殊的Fsm，也交给FsmManager管理</p>
+<h3 id="Setting">Setting</h3>
+<p>只需根据ISettingHelper创建设置辅助器即可完成，ISettingManager用于使用</p>
+<h3 id="module">module</h3>
+<p>只暴露接口，具体实现在只在程序集可见，使用getmodule<Interfacce>进行实例化</Interfacce></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="type">static</span> <span class="type">bool</span> <span class="title">InScene</span><span class="params">(<span class="keyword">this</span> GameObject gameObject)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>this GameObject gameObject</code>：</p>
 <ul>
-<li>
-<p><strong>解释</strong>：程序主要瓶颈在等待外部资源返回结果，CPU 实际上大部分时间都在空等。</p>
-</li>
-<li>
-<p><strong>做法</strong>：<br>
-✅ 使用 <code>await</code> 等待异步操作结果，<strong>释放线程资源</strong>，避免阻塞主线程或线程池。</p>
-</li>
-<li>
-<p><code>await</code> 会：</p>
-<ul>
-<li><strong>挂起当前 UI 线程方法（比如 Button 点击回调）</strong>。</li>
-<li>把控制权交还给 UI 消息循环，不会阻塞界面。</li>
-<li><strong>等到请求返回结果后，再切回 UI 线程继续执行</strong>。</li>
+<li><code>this</code>：表示这是一个扩展方法，并且该方法是对 <code>GameObject</code> 类型的扩展。</li>
+<li><code>GameObject</code>：表示要扩展的类型（这里是 Unity 的 <code>GameObject</code> 类）。</li>
+<li><code>gameObject</code>：是方法的参数，表示调用该方法时传入的目标对象。</li>
 </ul>
-<p>示例：</p>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> HttpClient.GetAsync(<span class="string">&quot;https://api.example.com&quot;</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p><strong>官方文档参考</strong>：<br>
-<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/">Async in depth | Microsoft Docs</a></p>
-</li>
-</ul>
-<hr>
-<h3 id="🔸-CPU-Bound（CPU-用于计算）">🔸 CPU Bound（CPU 用于计算）</h3>
-<ul>
-<li>
-<p><strong>解释</strong>：程序瓶颈在本地 CPU 运算，I/O 操作极少，计算密集。</p>
-</li>
-<li>
-<p><strong>做法</strong>：<br>
-✅ 使用 <code>Task.Run(() =&gt; {...})</code> 将任务放到线程池，<strong>并行执行</strong>，减轻主线程负担。</p>
-<p>示例：</p>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> Task.Run(() =&gt; CalculateSomethingHeavy());</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p><strong>官方文档参考</strong>：<br>
-同样是 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/">Async in depth | Microsoft Docs</a></p>
-</li>
-</ul>
+<h3 id="DataProvider">DataProvider</h3>
+<h4 id="ReadData">ReadData</h4>
+<p>m_ResourceManager.LoadAsset加载资产，并把一个回调函数传进去，回调函数激发provider的事件</p>
+<h4 id></h4>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnCloseUIFormComplete</span>(<span class="params"><span class="built_in">object</span> sender, CloseUIFormCompleteEventArgs e</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    m_EventComponent.Fire(<span class="keyword">this</span>, CloseUIFormCompleteEventArgs.Create(e));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​                m_UIManager.CloseUIFormComplete += OnCloseUIFormComplete;</p>
+<p>在gameframework提供接口，在runtime里面将不同模块结合起来</p>
 
       
     </div>
