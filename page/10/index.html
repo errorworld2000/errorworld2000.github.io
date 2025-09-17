@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
+<meta name="generator" content="Hexo 8.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E8%A7%86%E8%A7%89/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/%E8%A7%86%E8%A7%89/" class="post-title-link" itemprop="url">视觉</a>
+            <a href="/other/git/" class="post-title-link" itemprop="url">git开发流程</a>
         </h2>
 
         <div class="post-meta">
@@ -211,14 +211,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2025-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-23T00:00:00+08:00">2025-04-23</time>
+              <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-19 22:50:28" itemprop="dateModified" datetime="2025-07-19T22:50:28+08:00">2025-07-19</time>
+                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/%E8%A7%86%E8%A7%89/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/%E8%A7%86%E8%A7%89/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/git/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/git/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.1k</span>
+              <span>1.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -269,62 +269,98 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="1-相机">1.相机</h2>
-<h3 id="1-1-分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。">1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。</h3>
-<h3 id="1-2-传感器尺寸：影响视野大小">1.2 传感器尺寸：影响视野大小</h3>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image.png" alt></p>
-<h3 id="1-3-像元尺寸：尺寸越大，感光面积越大，图片质量也会越好">1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好</h3>
+          <h2 id="Git-协作流程核心摘要">Git 协作流程核心摘要</h2>
+<h3 id="1-各分支核心职责-Core-Responsibilities-of-Each-Branch">1. 各分支核心职责 (Core Responsibilities of Each Branch)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分支类型</th>
+<th style="text-align:left">生命周期</th>
+<th style="text-align:left">核心职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>master</code></strong></td>
+<td style="text-align:left">永久</td>
+<td style="text-align:left"><strong>只读</strong>。永远指向最新<strong>已发布</strong>版本的代码快照。是生产环境代码的最终来源。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>release/x.y.z</code></strong></td>
+<td style="text-align:left">长期，随版本存在</td>
+<td style="text-align:left"><strong>开发、测试、修复的主战场</strong>。所有面向该版本的 <code>feature</code> 和 <code>hotfix</code> 都合并到这里。新版本从上一个 <code>release</code> 分支创建。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>feature/xxx</code></strong></td>
+<td style="text-align:left">短期，随任务生灭</td>
+<td style="text-align:left"><strong>开发新功能</strong>。必须从其<strong>目标 <code>release</code> 分支</strong>创建，并最终合并回该 <code>release</code> 分支。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hotfix/xxx</code></strong></td>
+<td style="text-align:left">短期，紧急修复用</td>
+<td style="text-align:left"><strong>修复线上紧急 Bug</strong>。从出问题的 <code>release</code> 分支创建，修复后合并回该分支，并<strong>必须</strong>同步到所有后续的 <code>release</code> 分支中。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-个人开发标准流程-Standard-Workflow-for-Individual-Developers">2. 个人开发标准流程 (Standard Workflow for Individual Developers)</h3>
+<p>这是一个开发者从接到任务到提交 PR 的完整步骤。</p>
+<p><strong>第一步：同步并创建分支</strong></p>
+<p>从你任务对应的 <strong>目标 <code>release</code> 分支</strong> 拉取最新代码，并创建你的功能分支。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 切换到目标 release 分支（例如 1.11.0）</span></span><br><span class="line">git checkout release/1.11.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 拉取最新代码，确保本地是最新状态</span></span><br><span class="line">git pull origin release/1.11.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 创建你的功能分支</span></span><br><span class="line">git checkout -b feature/your-task-name</span><br></pre></td></tr></table></figure>
+<p><strong>第二步：本地开发与提交</strong></p>
+<p>在你的 <code>feature</code> 分支上进行编码，并进行多次<strong>原子化</strong>的提交。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;feat: implement user login modal&quot;</span></span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;fix: resolve button style issue&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>第三步：整理提交记录 (提交 PR 前的关键一步)</strong></p>
+<p>在发起 PR 前，使用交互式 rebase (<code>rebase -i</code>) 来清理你的提交历史，将多个零碎的 commit 合并成一个或几个有意义的 commit。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 拉取远程 release 分支的最新变动，以防冲突</span></span><br><span class="line">git fetch origin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 以远程 release 分支为基准，进行交互式 rebase</span></span><br><span class="line">git rebase -i origin/release/1.11.0</span><br></pre></td></tr></table></figure>
+<p><strong>第四步：推送并创建 PR</strong></p>
+<p>由于 rebase 修改了 git 历史，你需要<strong>强制推送</strong>到你的远程分支。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -f 是 --force 的缩写，强制推送</span></span><br><span class="line">git push -f origin feature/your-task-name</span><br></pre></td></tr></table></figure>
+<p>最后，在 GitHub / GitLab 等平台上，从你的 <code>feature/your-task-name</code> 分支向目标 <code>release/1.11.0</code> 分支发起 Pull Request。</p>
+<h3 id="3-PR-审查与合并流程-PR-Review-and-Merge-Process">3. PR 审查与合并流程 (PR Review and Merge Process)</h3>
+<p>这是项目维护者 (Maintainer) 或团队负责人收到 PR 后的操作流程。</p>
+<p><strong>第一步：代码审查 (Code Review)</strong></p>
 <ul>
-<li><font style="color:rgb(243, 59, 69);">像元尺寸=传感器尺寸/分辨率（像元个数）</font></li>
+<li><strong>逻辑审查</strong>：检查代码的业务逻辑、健壮性和潜在风险。</li>
+<li><strong>规范审查</strong>：检查代码风格、命名是否符合团队规范。</li>
+<li><strong>目标分支确认</strong>：确保 PR 提交的目标分支是正确的 <code>release</code> 分支。</li>
+<li>至少需要一名或多名成员 <code>Approve</code>。</li>
 </ul>
-<h3 id="1-4-图像精度：精度-font-style-color-rgb-0-0-0-指一个像素表示实际物体的大小，用（um-um）-pixel表示。-font-精度值越小，精度越高。">1.4 图像精度：精度<font style="color:rgb(0, 0, 0);">指一个像素表示实际物体的大小，用（um*um）/pixel表示。</font>精度值越小，精度越高。</h3>
+<p><strong>第二步：合并前检查</strong></p>
 <ul>
-<li>
-<p><font style="color:#DF2A3F;">精度值=视野/分辨率</font></p>
-</li>
-<li>
-<p><font style="color:#DF2A3F;">使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素</font></p>
-</li>
+<li><strong>CI/CD 状态</strong>：确保所有自动化检查（如测试、构建）都已通过。</li>
+<li><strong>提交历史</strong>：检查 PR 的 commit 记录是否已按要求整理干净。如果未整理，要求提交者返回上一步（个人流程的第三步）进行 <code>rebase</code>。</li>
+<li><strong>合并冲突</strong>：确保 PR 没有合并冲突。如有冲突，要求提交者在本地解决冲突后再提交。</li>
 </ul>
-<h3 id="1-5-ISO">1.5 ISO</h3>
-<blockquote>
-<p><font style="color:rgb(25, 27, 31);">传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度</font></p>
-<p><font style="color:rgb(25, 27, 31);">ISO过大会出现很大噪点</font></p>
-</blockquote>
-<h2 id="2-镜头">2.镜头</h2>
-<h3 id="2-1-焦距（focal-length）">2.1 焦距（focal length）</h3>
+<p><strong>第三步：执行合并 (推荐在 Git 平台 UI 上操作)</strong></p>
+<p><strong>强烈推荐</strong>使用以下两种合并策略，<strong>严禁使用 <code>Merge Commit</code></strong>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">合并方式</th>
+<th style="text-align:left">操作方式</th>
+<th style="text-align:left">优点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Squash and Merge</strong> (推荐)</td>
+<td style="text-align:left">在平台点击 <strong>“Squash and Merge”</strong> 按钮。</td>
+<td style="text-align:left">将 PR 内所有 commit 合并成一个，生成一个非常干净的 <code>release</code> 分支历史。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Rebase and Merge</strong> (可选)</td>
+<td style="text-align:left">在平台点击 <strong>“Rebase and Merge”</strong> 按钮。</td>
+<td style="text-align:left">将 PR 内已整理好的 commit 按顺序追加到 <code>release</code> 分支，保持线性历史。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第四步：清理分支</strong></p>
+<p>PR 合并后，应立即删除已被合并的 <code>feature</code> 分支，保持仓库整洁。</p>
 <ul>
-<li><font style="color:rgb(51, 51, 51);">当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。</font></li>
-<li><font style="color:rgb(51, 51, 51);">定焦镜头的对焦环调整的是像距</font></li>
-<li><img src="/other/%E8%A7%86%E8%A7%89/image(1).png" alt></li>
+<li>在 Git 平台上，通常在合并后会有**“Delete branch”**的按钮，直接点击即可。</li>
+<li>如果需要手动删除远程分支，可执行：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除远程的 feature 分支</span></span><br><span class="line">git push origin --delete feature/your-task-name</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h3 id="2-2-font-style-color-rgb-77-77-77-视场角（Field-of-view-即FOV）-font">2.2 <strong><font style="color:rgb(77, 77, 77);">视场角（Field of view, 即FOV）</font></strong></h3>
-<p><font style="color:rgb(77, 77, 77);">视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。</font></p>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(2).png" alt></p>
-<h3 id="2-3-光圈（Iris）">2.3 光圈（Iris）</h3>
-<p><font style="color:rgb(77, 77, 77);">光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。</font></p>
-<h3 id="font-style-color-rgb-77-77-77-2-4-景深（Depth-of-view，即DOF）-font"><font style="color:rgb(77, 77, 77);">2.4 景深（Depth of view，即DOF）</font></h3>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(3).png" alt></p>
-<blockquote>
-<p><font style="color:rgb(25, 27, 31);">理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。</font></p>
-</blockquote>
-<ul>
-<li><font style="color:rgb(77, 77, 77);">景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。</font><img src="/other/%E8%A7%86%E8%A7%89/image(4).png" alt></li>
-<li><font style="color:rgb(77, 77, 77);">景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；</font><img src="/other/%E8%A7%86%E8%A7%89/image(5).png" alt></li>
-<li><font style="color:rgb(77, 77, 77);">景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。</font></li>
-</ul>
-<h3 id="2-5-font-style-color-rgb-77-77-77-工作距离（Working-Distance）-font">2.5 <strong><font style="color:rgb(77, 77, 77);">工作距离（Working Distance）</font></strong></h3>
-<p><font style="color:rgb(77, 77, 77);">工作距离指的是镜头的最下端到景物之间的距离。</font></p>
-<p><img src="/other/%E8%A7%86%E8%A7%89/image(6).png" alt></p>
-<p><strong>参考</strong>：</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40770527/article/details/104827855">工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hangl_ciom/article/details/89397506">镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/486600045">什么是视场角？它的大小是由镜头还是传感器决定的？</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149329775">工业相机各种参数计算方法</a></li>
-</ol>
 
       
     </div>
@@ -343,7 +379,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -411,7 +447,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -424,7 +460,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -469,13 +505,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">26k</span>
+    <span title="站点总字数">37k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
+<meta name="generator" content="Hexo 8.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/memtable/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E8%A7%86%E8%A7%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/leveldb/memtable/" class="post-title-link" itemprop="url">内存数据库</a>
+            <a href="/other/%E8%A7%86%E8%A7%89/" class="post-title-link" itemprop="url">视觉</a>
         </h2>
 
         <div class="post-meta">
@@ -211,15 +211,22 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2025-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
+              <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
                 </span>
             </span>
 
@@ -232,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/leveldb/memtable/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/memtable/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/%E8%A7%86%E8%A7%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/%E8%A7%86%E8%A7%89/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -243,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -262,37 +269,63 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h3 id="内存数据库">内存数据库</h3>
-<p>leveldb内存数据库基于跳表结构。</p>
-<h4 id="跳表">跳表</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SkipList</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Node</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SkipList</span>&lt;Key, Comparator&gt;::Node &#123;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Node</span><span class="params">(<span class="type">const</span> Key&amp; k)</span> : key(k) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">const</span> Key key;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_acquire);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_release);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">NoBarrier_Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">NoBarrier_SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::atomic&lt;Node*&gt; next_[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="memory-order-说明">memory_order 说明</h4>
+          <h2 id="1-相机">1.相机</h2>
+<h3 id="1-1-分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。">1.1 分辨率：相机每次采集图像的像素点数，也就是相机有多少个感光晶片。</h3>
+<h3 id="1-2-传感器尺寸：影响视野大小">1.2 传感器尺寸：影响视野大小</h3>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image.png" alt></p>
+<h3 id="1-3-像元尺寸：尺寸越大，感光面积越大，图片质量也会越好">1.3 像元尺寸：尺寸越大，感光面积越大，图片质量也会越好</h3>
 <ul>
-<li><strong>memory_order_relaxed</strong>: 只确保操作是原子性的，不对内存顺序做任何保证。</li>
-<li><strong>memory_order_release</strong>: 用于写操作，例如 <code>std::atomic::store(T, memory_order_release)</code>，会在写操作之前插入一个 StoreStore屏障，确保屏障之前的所有操作不会重排到屏障之后。</li>
-<li><strong>memory_order_acquire</strong>: 用于读操作，例如 <code>std::atomic::load(memory_order_acquire)</code>，会在读操作之后插入一个 LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前。</li>
-<li><strong>memory_order_acq_rel</strong>: 等效于 <code>memory_order_acquire</code> 和 <code>memory_order_release</code> 的结合，同时插入一个 StoreStore 屏障与 LoadLoad 屏障，用于读写操作，例如 <code>std::atomic::fetch_add(T, memory_order_acq_rel)</code>。</li>
+<li><font style="color:rgb(243, 59, 69);">像元尺寸=传感器尺寸/分辨率（像元个数）</font></li>
 </ul>
-<h4 id="示例">示例</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程 A (产生者)</span></span><br><span class="line">node-&gt;data = <span class="number">42</span>;  <span class="comment">// 初始化数据</span></span><br><span class="line">list.<span class="built_in">SetNext</span>(<span class="number">0</span>, node);  <span class="comment">// 通过 memory_order_release 让数据对其他线程可见</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 B (消费者)</span></span><br><span class="line">Node* node = list.<span class="built_in">Next</span>(<span class="number">0</span>);  <span class="comment">// 使用 memory_order_acquire 获取节点</span></span><br><span class="line"><span class="type">int</span> value = node-&gt;data;  <span class="comment">// 确保读取的是线程 A 完全初始化后的数据</span></span><br></pre></td></tr></table></figure>
-<p>编译器优化：编译器可能会认为，<code>node-&gt;data = 42</code> 和 <code>list.SetNext(0, node)</code> 没有直接依赖关系。因此，它可能将 <code>list.SetNext(0, node)</code> 提前。编译器这种优化是合法的，因为在单线程语境下，它认为不会改变行为。</p>
-<h4 id="模板例子">模板例子</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Example</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">NestedType</span> &#123;&#125;;     <span class="comment">// 嵌套类型</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> value;         <span class="comment">// 静态非类型成员</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typename</span> Example&lt;T&gt;::NestedType* ptr;  <span class="comment">// 嵌套类型</span></span><br><span class="line">    Example&lt;T&gt;::value = <span class="number">42</span>;       <span class="comment">// 静态成员</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于 Example&lt;T&gt;::NestedType，编译器可能无法区分它是一个类型还是非类型成员（如变量、函数等）。</span></span><br><span class="line"><span class="comment">// 在模板类或函数中，如果某个嵌套成员依赖于模板参数，编译器无法在模板实体化之前确定它的具体含义。</span></span><br><span class="line"></span><br><span class="line">~~~c++</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">typename</span> SkipList&lt;Key, Comparator&gt;::Node* SkipList&lt;Key, Comparator&gt;::<span class="built_in">NewNode</span>(</span><br><span class="line">    <span class="type">const</span> Key&amp; key, <span class="type">int</span> height) &#123;</span><br><span class="line">  <span class="type">char</span>* <span class="type">const</span> node_memory = arena_-&gt;<span class="built_in">AllocateAligned</span>(</span><br><span class="line">      <span class="built_in">sizeof</span>(Node) +</span><br><span class="line">      <span class="built_in">sizeof</span>(std::atomic&lt;Node*&gt;) * (height - <span class="number">1</span>));  <span class="comment">// 动态内存分配Node*</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">new</span> (node_memory) <span class="built_in">Node</span>(key);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//t柔性数组和定制内存分配，优化了跳表的内存效率、访问速度</span></span><br></pre></td></tr></table></figure>
-<h4 id="跳表的查找">跳表的查找</h4>
+<h3 id="1-4-图像精度：精度-font-style-color-rgb-0-0-0-指一个像素表示实际物体的大小，用（um-um）-pixel表示。-font-精度值越小，精度越高。">1.4 图像精度：精度<font style="color:rgb(0, 0, 0);">指一个像素表示实际物体的大小，用（um*um）/pixel表示。</font>精度值越小，精度越高。</h3>
 <ul>
-<li>根据跳表高度选取最高层的头节点；</li>
-<li>若小于，取该层的下一个节点；</li>
-<li>若等于，则直接返回；</li>
-<li>若大于且层高不为0，降低层高继续查找。</li>
+<li>
+<p><font style="color:#DF2A3F;">精度值=视野/分辨率</font></p>
+</li>
+<li>
+<p><font style="color:#DF2A3F;">使用背光源的精度为1~3个像素，使用正光源的精度为3~5个像素</font></p>
+</li>
 </ul>
-<h4 id="跳表的插入">跳表的插入</h4>
+<h3 id="1-5-ISO">1.5 ISO</h3>
+<blockquote>
+<p><font style="color:rgb(25, 27, 31);">传感器并不会随着ISO的提升而变得敏感，真正改变的是光电信号的放大程度</font></p>
+<p><font style="color:rgb(25, 27, 31);">ISO过大会出现很大噪点</font></p>
+</blockquote>
+<h2 id="2-镜头">2.镜头</h2>
+<h3 id="2-1-焦距（focal-length）">2.1 焦距（focal length）</h3>
 <ul>
-<li>查找过程中，不断记录每层的前任节点；</li>
-<li>为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；</li>
+<li><font style="color:rgb(51, 51, 51);">当物距在无穷远和两倍焦距之间时，像距在焦距和两倍焦距之间，成倒立缩小的实像（照相机）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">当物距小于两倍焦距大于焦距时，像距大于两倍焦距，成倒立放大的实像（幻灯机和部分支持微距拍摄的照相机）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">当物距小于焦距时，像距为负，在物体的同侧成正立放大的虚像（放大镜）。</font></li>
+<li><font style="color:rgb(51, 51, 51);">定焦镜头的对焦环调整的是像距</font></li>
+<li><img src="/other/%E8%A7%86%E8%A7%89/image(1).png" alt></li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph MemTable_System [&quot;MemTable 系统&quot;]</span><br><span class="line">        MemTable --&gt; SkipList</span><br><span class="line">        MemTable --&gt; Arena</span><br><span class="line">        SkipList --&gt; Entry</span><br><span class="line">        Entry --&gt; Arena</span><br><span class="line">        SkipList --&gt; KeyComparator</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<style>.miepshkesgxu{zoom:50%;}</style><img src="/leveldb/memtable/memtable/memtable-entry.png" class="miepshkesgxu" alt="en">
+<h3 id="2-2-font-style-color-rgb-77-77-77-视场角（Field-of-view-即FOV）-font">2.2 <strong><font style="color:rgb(77, 77, 77);">视场角（Field of view, 即FOV）</font></strong></h3>
+<p><font style="color:rgb(77, 77, 77);">视野指的是镜头能看到的最大范围，也就是镜头所能覆盖的有效工作区域。只受镜头的焦距和图像传感器的尺寸影响。</font></p>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(2).png" alt></p>
+<h3 id="2-3-光圈（Iris）">2.3 光圈（Iris）</h3>
+<p><font style="color:rgb(77, 77, 77);">光圈大小一般用F表示，以镜头焦距f和通光孔径直径D的比值来衡量，当光圈物理孔径不变时，镜头中心与感光器件距离越远，F值越大，光圈越小；反之，F值越小，光圈越大。</font></p>
+<h3 id="font-style-color-rgb-77-77-77-2-4-景深（Depth-of-view，即DOF）-font"><font style="color:rgb(77, 77, 77);">2.4 景深（Depth of view，即DOF）</font></h3>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(3).png" alt></p>
+<blockquote>
+<p><font style="color:rgb(25, 27, 31);">理解景深原理前，我们必须明白一件事：当我们对焦时，其实只有一个平面是真正合焦的。这个平面与像平面（可以简单理解为胶片或者传感器平面）平行。凡是在这个平面之前或者之后的都不是合焦状态。合焦平面上物体某点发出不同角度的光在像平面成像都汇聚于一点，而非合焦物体的某点发出不同角度的光会落在像平面不同点上，形成一个模糊圆，这个圆术语叫做弥散圆（circle of confusion）。</font></p>
+</blockquote>
+<ul>
+<li><font style="color:rgb(77, 77, 77);">景深与光圈近似成反比关系，即光圈越大，景深越小（光圈越大，F值越小，进光量越多，有效孔径越大，景深越小）。</font><img src="/other/%E8%A7%86%E8%A7%89/image(4).png" alt></li>
+<li><font style="color:rgb(77, 77, 77);">景深与焦距f的平方近似成反比关系。即焦距越长，景深越小。而且由于平方关系，所以焦距f对景深的影响比光圈N更大；</font><img src="/other/%E8%A7%86%E8%A7%89/image(5).png" alt></li>
+<li><font style="color:rgb(77, 77, 77);">景深与被摄物距离U的平方近似成正比关系。即物距越大，景深越大。同样，由于平方关系，景物距离U对景深的影响也比光圈更大。</font></li>
+</ul>
+<h3 id="2-5-font-style-color-rgb-77-77-77-工作距离（Working-Distance）-font">2.5 <strong><font style="color:rgb(77, 77, 77);">工作距离（Working Distance）</font></strong></h3>
+<p><font style="color:rgb(77, 77, 77);">工作距离指的是镜头的最下端到景物之间的距离。</font></p>
+<p><img src="/other/%E8%A7%86%E8%A7%89/image(6).png" alt></p>
+<p><strong>参考</strong>：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40770527/article/details/104827855">工业相机与镜头选型方法（含实例）_工业相机选型-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hangl_ciom/article/details/89397506">镜头焦距、光圈、物距与景深之间的关系_透镜焦距与景深的关系公式-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/486600045">什么是视场角？它的大小是由镜头还是传感器决定的？</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149329775">工业相机各种参数计算方法</a></li>
+</ol>
+
       
     </div>
 
@@ -310,7 +343,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -378,7 +411,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -391,7 +424,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -436,13 +469,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">26k</span>
+    <span title="站点总字数">37k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

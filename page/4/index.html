@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
+<meta name="generator" content="Hexo 8.0.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Spring/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/neuronNet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/Spring/" class="post-title-link" itemprop="url">Spring</a>
+            <a href="/other/neuronNet/" class="post-title-link" itemprop="url">neuronNet</a>
         </h2>
 
         <div class="post-meta">
@@ -211,14 +211,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2025-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-23T00:00:00+08:00">2025-04-23</time>
+              <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-19 22:48:46" itemprop="dateModified" datetime="2025-07-19T22:48:46+08:00">2025-07-19</time>
+                <time title="修改时间：2025-09-17 11:59:02" itemprop="dateModified" datetime="2025-09-17T11:59:02+08:00">2025-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/Spring/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/Spring/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/neuronNet/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/neuronNet/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -269,131 +269,115 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h2 id="一、Spring-XML-配置与注解">一、Spring XML 配置与注解</h2>
-<h3 id="1-1-beans-xml-中的自动扫描配置">1.1 <code>beans.xml</code> 中的自动扫描配置</h3>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+          <h3 id="Python神经网络代码总结-Python-Neural-Network-Code-Summary"><strong>Python神经网络代码总结 (Python Neural Network Code Summary)</strong></h3>
+<p>这份代码是一个从零开始实现的、基础的前馈神经网络（Feedforward Neural Network）。它不依赖任何外部机器学习库，清晰地展示了神经网络的核心工作原理。</p>
+<hr>
+<h3 id="1-核心概述-Core-Overview-🧠"><strong>1. 核心概述 (Core Overview)</strong> 🧠</h3>
+<p>该代码通过三个核心类构建了一个简单的神经网络：</p>
 <ul>
-<li>
-<p><strong>作用</strong>：Spring 会扫描指定包及其子包下的类，如果类上标有如下注解：</p>
-<ul>
-<li><code>@Component</code></li>
-<li><code>@Service</code></li>
-<li><code>@Repository</code></li>
-<li><code>@Controller</code></li>
+<li><strong><code>Neuron</code></strong>: 网络的基本计算单元。</li>
+<li><strong><code>NeuronLayer</code></strong>: 由多个神经元组成的层。</li>
+<li><strong><code>NeuronNet</code></strong>: 整合输入层、隐藏层和输出层，并负责网络的训练和预测。</li>
 </ul>
-<p>则会将其注册为 Spring 管理的 Bean。</p>
+<p>其关键功能包括：</p>
+<ul>
+<li><strong>前向传播 (Feed Forward)</strong>: 将输入数据从输入层传到输出层，得到预测结果。</li>
+<li><strong>反向传播 (Backpropagation)</strong>: 计算预测误差，并将误差从输出层反向传播，用于更新神经元的权重（weights）和偏置（bias）。</li>
+</ul>
+<hr>
+<h3 id="2-类结构与功能-Class-Structure-Functionality"><strong>2. 类结构与功能 (Class Structure &amp; Functionality)</strong></h3>
+<h4 id="Neuron-类"><strong><code>Neuron</code> 类</strong></h4>
+<p>这是最基础的构建模块。</p>
+<ul>
+<li><strong>功能 (Functionality)</strong>: 模拟单个神经元，负责接收输入、计算加权和、通过激活函数输出结果，并计算用于反向传播的梯度。</li>
+<li><strong>关键属性 (Key Attributes)</strong>:
+<ul>
+<li><code>weights</code>: 权重列表，决定了每个输入信号的重要性。</li>
+<li><code>bias</code>: 偏置项，用于调整神经元的激活阈值。</li>
+</ul>
+</li>
+<li><strong>关键方法 (Key Methods)</strong>:
+<ul>
+<li><code>calculate_output(inputs)</code>: 接收输入，计算加权和 (<code>calculate_total_net_input</code>)，并通过 <strong>Sigmoid</strong> 激活函数 (<code>squash</code>) 得到输出。</li>
+<li><code>squash(total_net_input)</code>: 激活函数，公式为 f(x)=frac11+e−x。它将任意输入值压缩到 (0, 1) 区间。</li>
+<li><code>pd_...</code> <strong>方法</strong>: “pd” 代表 “Partial Derivative” (偏导数)。这些方法是<strong>反向传播算法的核心</strong>，用于计算误差对网络中各个参数（权重、偏置）的梯度。例如 <code>pd_error_wrt_total_net_output</code> 计算的是误差对神经元输出值的偏导数。</li>
+</ul>
+</li>
+</ul>
+<h4 id="NeuronLayer-类"><strong><code>NeuronLayer</code> 类</strong></h4>
+<p>神经元的集合。</p>
+<ul>
+<li><strong>功能 (Functionality)</strong>: 管理一层中的所有神经元，并将输入数据传递给该层的所有神经元进行处理。</li>
+<li><strong>关键属性 (Key Attributes)</strong>:
+<ul>
+<li><code>neurons</code>: 一个包含多个 <code>Neuron</code> 对象的列表。</li>
+</ul>
+</li>
+<li><strong>关键方法 (Key Methods)</strong>:
+<ul>
+<li><code>feed_forward(inputs)</code>: 遍历层内所有神经元，收集它们的输出，并将输出列表作为该层的最终输出。</li>
+</ul>
+</li>
+</ul>
+<h4 id="NeuronNet-类"><strong><code>NeuronNet</code> 类</strong></h4>
+<p>完整的神经网络。</p>
+<ul>
+<li><strong>功能 (Functionality)</strong>: 构建并管理整个网络（包含一个隐藏层和一个输出层）。它负责初始化权重、执行完整的前向传播，并通过训练数据来更新整个网络的参数。</li>
+<li><strong>关键属性 (Key Attributes)</strong>:
+<ul>
+<li><code>hidden_layer</code>: 隐藏层 (<code>NeuronLayer</code> 对象)。</li>
+<li><code>output_layer</code>: 输出层 (<code>NeuronLayer</code> 对象)。</li>
+<li><code>learning_rate</code>: 学习率，控制每次训练时权重和偏置的更新幅度。</li>
+</ul>
+</li>
+<li><strong>关键方法 (Key Methods)</strong>:
+<ul>
+<li><code>feed_forward(inputs)</code>: 驱动数据流过整个网络，从隐藏层到输出层。</li>
+<li><code>train(training_inputs, training_outputs)</code>: <strong>最核心的方法</strong>。它实现了完整的<strong>反向传播和梯度下降</strong>算法来学习。</li>
+</ul>
 </li>
 </ul>
 <hr>
-<h3 id="1-2-常见注解解释">1.2 常见注解解释</h3>
-<table>
-<thead>
-<tr>
-<th>注解</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>@Component</code></td>
-<td>标注普通组件，交给 Spring 容器管理</td>
-</tr>
-<tr>
-<td><code>@Service</code></td>
-<td>业务逻辑层组件，语义化更清晰</td>
-</tr>
-<tr>
-<td><code>@Repository</code></td>
-<td>DAO 层组件，支持异常转换</td>
-</tr>
-<tr>
-<td><code>@Controller</code></td>
-<td>控制层组件，处理 Web 请求</td>
-</tr>
-<tr>
-<td><code>@Autowired</code></td>
-<td>按类型自动注入依赖</td>
-</tr>
-<tr>
-<td><code>@Qualifier(&quot;beanName&quot;)</code></td>
-<td>与 <code>@Autowired</code> 配合，按名称注入</td>
-</tr>
-<tr>
-<td><code>@PostConstruct</code></td>
-<td>初始化方法（容器加载后执行）</td>
-</tr>
-<tr>
-<td><code>@PreDestroy</code></td>
-<td>销毁方法（容器关闭前执行）</td>
-</tr>
-<tr>
-<td><code>@Scope(&quot;singleton&quot;)</code></td>
-<td>单例（默认）</td>
-</tr>
-<tr>
-<td><code>@Scope(&quot;prototype&quot;)</code></td>
-<td>多例，每次获取新对象</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="二、Spring-AOP-与-AspectJ-区别">二、Spring AOP 与 AspectJ 区别</h2>
-<h3 id="2-1-Spring-AOP">2.1 Spring AOP</h3>
+<h3 id="3-关键算法：train-方法解析-Key-Algorithm-train-Method-Explained"><strong>3. 关键算法：<code>train</code> 方法解析 (Key Algorithm: <code>train</code> Method Explained)</strong></h3>
+<p><code>train</code> 方法是网络学习的关键，它严格遵循反向传播的步骤：</p>
+<ol>
+<li><strong>前向传播 (Forward Pass)</strong>: 首先调用 <code>feed_forward</code> 计算当前网络对输入数据的预测输出。</li>
+<li><strong>计算输出层误差 (Calculate Output Layer Error)</strong>:
 <ul>
-<li><strong>方式</strong>：基于 JDK 或 CGLIB 动态代理</li>
-<li><strong>原理</strong>：在运行时为目标对象生成代理类，拦截方法调用，插入增强逻辑</li>
-<li><strong>优点</strong>：非侵入式，简单易用</li>
-<li><strong>缺点</strong>：运行时生成代理，存在性能开销</li>
-</ul>
-<h3 id="2-2-AspectJ">2.2 AspectJ</h3>
-<ul>
-<li><strong>方式</strong>：
-<ul>
-<li><strong>编译时织入</strong>（Compile-Time Weaving）</li>
-<li><strong>类加载时织入</strong>（Load-Time Weaving）</li>
+<li>计算每个输出层神经元的误差对“加权输入总和”的偏导数 (<code>pd_error_wrt_output_neurons_total_net_input</code>)。这是链式法则的第一步。</li>
 </ul>
 </li>
-<li><strong>原理</strong>：修改字节码，将切面代码插入目标类</li>
-<li><strong>优点</strong>：性能更高，控制更精细</li>
-<li><strong>缺点</strong>：配置复杂，侵入性强</li>
-</ul>
-<hr>
-<h2 id="三、项目结构分层（经典三层架构）">三、项目结构分层（经典三层架构）</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">controller --&gt; service --&gt; dao</span><br><span class="line">     |            |          |</span><br><span class="line"> Web层     业务逻辑层   数据访问层</span><br></pre></td></tr></table></figure>
+<li><strong>计算隐藏层误差 (Calculate Hidden Layer Error)</strong>:
 <ul>
-<li><strong>POJO（Plain Old Java Object）</strong>：表示数据结构的简单 Java 类，常用于 <code>entity</code> 或 <code>pojo</code> 包中。</li>
-<li>控制器 (<code>Controller</code>)：接收请求、返回响应；</li>
-<li>服务层 (<code>Service</code>)：封装具体业务逻辑；</li>
-<li>DAO 层 (<code>Dao</code>)：对数据库进行 CRUD 操作。</li>
+<li>将输出层的误差<strong>反向传播</strong>回隐藏层。</li>
+<li>对于每个隐藏层神经元，其误差是所有与之相连的输出层神经元误差的<strong>加权和</strong>。</li>
 </ul>
-<hr>
-<h2 id="四、MySQL-数据库设计范式（Normalization）">四、MySQL 数据库设计范式（Normalization）</h2>
-<h3 id="✅-第一范式（1NF）——字段原子性">✅ 第一范式（1NF）——字段原子性</h3>
+</li>
+<li><strong>更新权重和偏置 (Update Weights and Biases)</strong>:
 <ul>
-<li>每列必须是不可再拆分的最小数据单位。</li>
-<li>✅ 示例：<code>姓名</code> 字段不能为 <code>&quot;张三,李四&quot;</code>，应拆成多条记录。</li>
+<li><strong>输出层更新</strong>: 利用步骤2计算的梯度，结合学习率，更新输出层中每个神经元的权重和偏置。</li>
+<li><strong>隐藏层更新</strong>: 利用步骤3计算的梯度，结合学习率，更新隐藏层中每个神经元的权重和偏置。</li>
+<li>更新公式为：<code>新权重 = 旧权重 - 学习率 * 误差梯度</code>。</li>
 </ul>
-<hr>
-<h3 id="✅-第二范式（2NF）——消除部分依赖">✅ 第二范式（2NF）——消除部分依赖</h3>
-<ul>
-<li>非主键字段必须完全依赖于主键，不能依赖于主键的一部分（适用于复合主键）。</li>
-<li>✅ 示例：主键是 <code>学生ID+课程ID</code>，若 <code>学生姓名</code> 只依赖 <code>学生ID</code>，应将其拆分成新表。</li>
-</ul>
-<hr>
-<h3 id="✅-第三范式（3NF）——消除传递依赖">✅ 第三范式（3NF）——消除传递依赖</h3>
-<ul>
-<li>非主键字段不能依赖于另一个非主键字段。</li>
-<li>✅ 示例：<code>班级编号 → 班主任 → 电话号</code>，此时电话号依赖于班主任，应拆表。</li>
-</ul>
-<hr>
-<h2 id="🔚-总结">🔚 总结</h2>
-<ul>
-<li>Spring 支持注解与 XML 配置并用，提高了开发灵活性。</li>
-<li>Spring AOP 简单易用适合常规开发；AspectJ 适合对性能有更高要求的场景。</li>
-<li>三层架构利于职责分离、项目维护。</li>
-<li>数据库设计中应遵循范式，避免冗余和异常依赖关系。</li>
-</ul>
+</li>
+</ol>
+<p>Python</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码：train方法的核心逻辑</span><br><span class="line"># Pseudocode: Core logic of the train method</span><br><span class="line"></span><br><span class="line"># 1. 计算输出层误差梯度</span><br><span class="line">output_layer_gradients = []</span><br><span class="line">for each neuron in output_layer:</span><br><span class="line">    gradient = calculate_error_gradient(target_output, neuron_output)</span><br><span class="line">    output_layer_gradients.append(gradient)</span><br><span class="line"></span><br><span class="line"># 2. 计算隐藏层误差梯度（反向传播）</span><br><span class="line">hidden_layer_gradients = []</span><br><span class="line">for each neuron in hidden_layer:</span><br><span class="line">    error = sum(output_layer_gradients * weights_connecting_to_it)</span><br><span class="line">    gradient = error * neuron_output * (1 - neuron_output) # Sigmoid导数</span><br><span class="line">    hidden_layer_gradients.append(gradient)</span><br><span class="line"></span><br><span class="line"># 3. 更新所有权重和偏置</span><br><span class="line">for each neuron in output_layer:</span><br><span class="line">    neuron.weights -= learning_rate * output_layer_gradient * hidden_layer_output</span><br><span class="line">    neuron.bias -= learning_rate * output_layer_gradient</span><br><span class="line"></span><br><span class="line">for each neuron in hidden_layer:</span><br><span class="line">    neuron.weights -= learning_rate * hidden_layer_gradient * network_input</span><br><span class="line">    neuron.bias -= learning_rate * hidden_layer_gradient</span><br></pre></td></tr></table></figure>
+<p>1.先定义网络:写网络Net的Class，声明网络的实例net=Net()，</p>
+<p><a target="_blank" rel="noopener" href="http://2.%E5%AE%9A%E4%B9%89%E4%BC%98%E5%8C%96%E5%99%A8optimizer=optim.xxx">2.定义优化器optimizer=optim.xxx</a>(net.parameters()，lr=xxx)，</p>
+<p>3.再定义损失函数（自己写class或者直接用官方的，compute_loss=nn.MSELoss()或者其他。</p>
+<p>4.在定义完之后，开始一次一次的循环：</p>
+<pre><code>①先清空优化器里的梯度信息，optimizer.zero_grad();
+
+②再将input传入，output=net(input) ，正向传播
+
+③算损失，loss=compute_loss(target,output)   ##这里target就是参考标准值GT，需要自己准备，和之前传入的input一一对应
+
+④误差反向传播，loss.backward()
+
+⑤更新参数，optimizer.step()
+</code></pre>
+<p><a target="_blank" rel="noopener" href="https://wanghao15536870732.github.io/2019/08/07/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">参考</a></p>
 
       
     </div>
@@ -412,7 +396,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -480,7 +464,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -493,7 +477,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -538,13 +522,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">26k</span>
+    <span title="站点总字数">37k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">24 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
