@@ -230,7 +230,7 @@ SharedLRUCache
     <url>/leveldb/dbiter/</url>
     <content><![CDATA[Iterator* DBImpl::NewIterator(const ReadOptions&amp; options) &#123;  SequenceNumber latest_snapshot;  uint32_t seed;  Iterator* iter = NewInternalIterator(options, &amp;latest_snapshot, &amp;seed);  return NewDBIterator(this, user_comparator(), iter,                       (options.snapshot != nullptr                            ? static_cast&lt;const SnapshotImpl*&gt;(options.snapshot)                                  -&gt;sequence_number()                            : latest_snapshot),                       seed);&#125;Iterator* DBImpl::NewInternalIterator(const ReadOptions&amp; options,                                      SequenceNumber* latest_snapshot,                                      uint32_t* seed) &#123;  mutex_.Lock();  *latest_snapshot = versions_-&gt;LastSequence();  // Collect together all needed child iterators  std::vector&lt;Iterator*&gt; list;  list.push_back(mem_-&gt;NewIterator());  mem_-&gt;Ref();  if (imm_ != nullptr) &#123;    list.push_back(imm_-&gt;NewIterator());    imm_-&gt;Ref();  &#125;  versions_-&gt;current()-&gt;AddIterators(options, &amp;list);  Iterator* internal_iter = NewMergingIterator(&amp;internal_comparator_, &amp;list[0],                                               static_cast&lt;int&gt;(list.size()));  versions_-&gt;current()-&gt;Ref();  IterState* cleanup = new IterState(&amp;mutex_, mem_, imm_, versions_-&gt;current());  internal_iter-&gt;RegisterCleanup(CleanupIteratorState, cleanup, nullptr);  *seed = ++seed_;  mutex_.Unlock();  return internal_iter;&#125;
 具体代码解释如下
-void DBIter::Next() &#123;  assert(valid_);  if (direction_ == kReverse) &#123;  // Switch directions?    direction_ = kForward;    // iter_ is pointing just before the entries for this-&gt;key(),    // so advance into the range of entries for this-&gt;key() and then    // use the normal skipping code below.    if (!iter_-&gt;Valid()) &#123;      iter_-&gt;SeekToFirst();    &#125; else &#123;      iter_-&gt;Next();    &#125;    if (!iter_-&gt;Valid()) &#123;      valid_ = false;      saved_key_.clear();      return;    &#125;    // saved_key_ already contains the key to skip past.  &#125; else &#123;    // Store in saved_key_ the current key so we skip it below.    SaveKey(ExtractUserKey(iter_-&gt;key()), &amp;saved_key_);    // iter_ is pointing to current key. We can now safely move to the next to    // avoid checking current key.    iter_-&gt;Next();    if (!iter_-&gt;Valid()) &#123;      valid_ = false;      saved_key_.clear();      return;    &#125;  &#125;  FindNextUserEntry(true, &amp;saved_key_);&#125;void DBIter::FindNextUserEntry(bool skipping, std::string* skip) &#123;  // Loop until we hit an acceptable entry to yield  assert(iter_-&gt;Valid());  assert(direction_ == kForward);  do &#123;    ParsedInternalKey ikey;	    if (ParseKey(&amp;ikey) &amp;&amp; ikey.sequence &lt;= sequence_) &#123;	// 根据当前iter_的key封装成一个新ikey，同时要求ikey的序列号小于创建DBIter时传入的序列号      switch (ikey.type) &#123;        case kTypeDeletion:          // Arrange to skip all upcoming entries for this key since          // they are hidden by this deletion.          SaveKey(ikey.user_key, skip);		          skipping = true;		// 如果当前ikey的类型是删除，将跳过整个 user_key = ikey.user_key()的nodes          break;        case kTypeValue:          if (skipping &amp;&amp;	// 跳过              user_comparator_-&gt;Compare(ikey.user_key, *skip) &lt;= 0) &#123;	// 旧条目不再需要            // Entry hidden          &#125; else &#123;	// 否则就是本 user_key 所在nodes中的最新节点            valid_ = true;            saved_key_.clear();            return;          &#125;          break;      &#125;    &#125;    iter_-&gt;Next();	// 定位到下一个  &#125; while (iter_-&gt;Valid());  saved_key_.clear();  valid_ = false;&#125;
+void DBIter::Next() &#123;  assert(valid_);  if (direction_ == kReverse) &#123;  // Switch directions?    direction_ = kForward;    // iter_ is pointing just before the entries for this-&gt;key(),    // so advance into the range of entries for this-&gt;key() and then    // use the normal skipping code below.    if (!iter_-&gt;Valid()) &#123;      iter_-&gt;SeekToFirst();    &#125; else &#123;      iter_-&gt;Next();    &#125;    if (!iter_-&gt;Valid()) &#123;      valid_ = false;      saved_key_.clear();      return;    &#125;    // saved_key_ already contains the key to skip past.  &#125; else &#123;    // Store in saved_key_ the current key so we skip it below.    SaveKey(ExtractUserKey(iter_-&gt;key()), &amp;saved_key_);    // iter_ is pointing to current key. We can now safely move to the next to    // avoid checking current key.    iter_-&gt;Next();    if (!iter_-&gt;Valid()) &#123;      valid_ = false;      saved_key_.clear();      return;    &#125;  &#125;  FindNextUserEntry(true, &amp;saved_key_);&#125;void DBIter::FindNextUserEntry(bool skipping, std::string* skip) &#123;  // Loop until we hit an acceptable entry to yield  assert(iter_-&gt;Valid());  assert(direction_ == kForward);  do &#123;    ParsedInternalKey ikey;    if (ParseKey(&amp;ikey) &amp;&amp; ikey.sequence &lt;= sequence_) &#123;	// 根据当前iter_的key封装成一个新ikey，同时要求ikey的序列号小于创建DBIter时传入的序列号      switch (ikey.type) &#123;        case kTypeDeletion:          // Arrange to skip all upcoming entries for this key since          // they are hidden by this deletion.          SaveKey(ikey.user_key, skip);	          skipping = true;		// 如果当前ikey的类型是删除，将跳过整个 user_key = ikey.user_key()的nodes          break;        case kTypeValue:          if (skipping &amp;&amp;	// 跳过              user_comparator_-&gt;Compare(ikey.user_key, *skip) &lt;= 0) &#123;	// 旧条目不再需要            // Entry hidden          &#125; else &#123;	// 否则就是本 user_key 所在nodes中的最新节点            valid_ = true;            saved_key_.clear();            return;          &#125;          break;      &#125;    &#125;    iter_-&gt;Next();	// 定位到下一个  &#125; while (iter_-&gt;Valid());  saved_key_.clear();  valid_ = false;&#125;
 1. DBIter::Next()
 
 
@@ -252,7 +252,7 @@ assert(valid_); 确保调用 Next() 时，迭代器处于有效状态。
 切换方向为 kForward。因为反向遍历时迭代器指向当前 key 之前的位置，所以需要先移动一步使其进入当前 key 的区间：若当前迭代器无效，则调用 SeekToFirst() 重置到首元素。否则调用 iter_-&gt;Next()。若移动后迭代器变为无效，则标记迭代器为无效并清空 saved_key_，返回。此时，saved_key_ 内保存了需要跳过的 key。
 
 
-当方向已经是kForward时：
+当方向已经是 kForward时：
 首先将当前 key 提取后保存到 saved_key_，用于后续跳过同一用户键的所有条目（防止重复返回）。调用 iter_-&gt;Next() 移动到下一个内部条目。同样，若移动后无效，则更新状态并返回。
 
 
@@ -318,7 +318,7 @@ assert(valid_); 确保调用 Next() 时，迭代器处于有效状态。
     <title>日志</title>
     <url>/leveldb/log/</url>
     <content><![CDATA[日志结构
-.pskdljedkydu{zoom:67%;}
+.srxovnzcbfpi{zoom:67%;}
 
 static const int kBlockSize = 32768;
 // Header is checksum (4 bytes), length (2 bytes), type (1 byte).
@@ -396,7 +396,7 @@ static const int kHeaderSize = 4 + 2 + 1
 内存数据库
 leveldb内存数据库基于跳表结构。
 跳表
-template &lt;typename Key, class Comparator&gt;class SkipList &#123;    private:    struct Node;&#125;template &lt;typename Key, class Comparator&gt;struct SkipList&lt;Key, Comparator&gt;::Node &#123;    explicit Node(const Key&amp; k) : key(k) &#123;&#125;        const Key key;        Node* Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_acquire);    &#125;        void SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_release);    &#125;        Node* NoBarrier_Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_relaxed);    &#125;        void NoBarrier_SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_relaxed);    &#125;private:    std::atomic&lt;Node*&gt; next_[1];&#125;;
+template &lt;typename Key, class Comparator&gt;class SkipList &#123;    private:    struct Node;&#125;template &lt;typename Key, class Comparator&gt;struct SkipList&lt;Key, Comparator&gt;::Node &#123;    explicit Node(const Key&amp; k) : key(k) &#123;&#125;      const Key key;      Node* Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_acquire);    &#125;      void SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_release);    &#125;      Node* NoBarrier_Next(int n) &#123;        assert(n &gt;= 0);        return next_[n].load(std::memory_order_relaxed);    &#125;      void NoBarrier_SetNext(int n, Node* x) &#123;        assert(n &gt;= 0);        next_[n].store(x, std::memory_order_relaxed);    &#125;private:    std::atomic&lt;Node*&gt; next_[1];&#125;;
 memory_order 说明
 
 memory_order_relaxed: 只确保操作是原子性的，不对内存顺序做任何保证。
@@ -422,7 +422,8 @@ template &lt;typename T&gt;class Example &#123;public:    struct NestedType &#12
 为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；
 
 graph TD    subgraph MemTable_System [&quot;MemTable 系统&quot;]        MemTable --&gt; SkipList        MemTable --&gt; Arena        SkipList --&gt; Entry        Entry --&gt; Arena        SkipList --&gt; KeyComparator    end
-.ggnjgybajdqe{zoom:50%;}]]></content>
+.hhorgtupdlof{zoom:50%;}
+]]></content>
       <categories>
         <category>leveldb</category>
       </categories>
@@ -552,12 +553,8 @@ MemTable 是 Leveldb 在内存中用于组织和维护数据的结构。
 
 特点
 
-
 基于 SkipList 实现，支持高效的插入、删除和查找操作。
-
-
 数据按键排序存储，便于后续的持久化操作。
-
 
 详情
 
@@ -1676,11 +1673,11 @@ f &lt; 物距 &lt; 2f：像距 &gt; 2f，成 倒立放大实像（幻灯机、�
 物距 &lt; f：像距为负，在物体同侧成 正立放大虚像（放大镜）。
 
 定焦镜头的对焦环实质上调整的是像距。
-.fxufyvjehivv{}
+.moyjbevqziyr{}
 
 2.2 视场角（Field of View, FOV）
 镜头可覆盖的最大成像范围，取决于 镜头焦距 与 传感器尺寸。
-.uebwlrcgftua{}
+.otjowwgbhekm{}
 
 2.3 光圈（Aperture, f-number, F）
 光圈大小用 F 值 表示：
@@ -1704,13 +1701,13 @@ F 值越大 → 光圈越小 → 进光量越少。
 
 
 
-.xjtnxplsprle{}
-.koiqhxmttork{}
-.uxjfnswyuieh{}
+.avcvvxghlcbe{}
+.octtjvfjuhks{}
+.krfrltrduxuq{}
 
 2.5 工作距离（Working Distance, WD）
 指镜头最前端到被摄物体的距离。工作距离过小可能导致安装受限。
-.iqoqsvhiczrn{}
+.poehugomzvqb{}
 
 3. 参考资料
 

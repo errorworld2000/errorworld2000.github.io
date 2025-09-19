@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/memtable/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/leveldb/memtable/" class="post-title-link" itemprop="url">内存数据库</a>
+            <a href="/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">git开发流程</a>
         </h2>
 
         <div class="post-meta">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-20 00:00:00" itemprop="dateModified" datetime="2025-02-20T00:00:00+00:00">2025-02-20</time>
+                <time title="修改时间：2025-09-19 14:57:55" itemprop="dateModified" datetime="2025-09-19T14:57:55+00:00">2025-09-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/leveldb/memtable/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/memtable/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
+              <span>989</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -269,37 +269,98 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <hr>
-<h3 id="内存数据库">内存数据库</h3>
-<p>leveldb内存数据库基于跳表结构。</p>
-<h4 id="跳表">跳表</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SkipList</span> &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Node</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SkipList</span>&lt;Key, Comparator&gt;::Node &#123;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Node</span><span class="params">(<span class="type">const</span> Key&amp; k)</span> : key(k) &#123;</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">const</span> Key key;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_acquire);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_release);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">Node* <span class="title">NoBarrier_Next</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> next_[n].<span class="built_in">load</span>(std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">NoBarrier_SetNext</span><span class="params">(<span class="type">int</span> n, Node* x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">assert</span>(n &gt;= <span class="number">0</span>);</span><br><span class="line">        next_[n].<span class="built_in">store</span>(x, std::memory_order_relaxed);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::atomic&lt;Node*&gt; next_[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="memory-order-说明">memory_order 说明</h4>
+          <h2 id="1-分支核心职责">1. 分支核心职责</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分支类型</th>
+<th style="text-align:left">生命周期</th>
+<th style="text-align:left">核心职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>master</code></strong></td>
+<td style="text-align:left">永久</td>
+<td style="text-align:left"><strong>只读</strong>。指向最新<strong>已发布</strong>版本，生产环境代码最终来源。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>release/x.y.z</code></strong></td>
+<td style="text-align:left">长期</td>
+<td style="text-align:left"><strong>开发、测试、修复主战场</strong>。合并 <code>feature</code> 和 <code>hotfix</code>。新版本从上一个 <code>release</code> 创建。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>feature/xxx</code></strong></td>
+<td style="text-align:left">短期</td>
+<td style="text-align:left"><strong>开发新功能</strong>。从目标 <code>release</code> 创建，完成后合并回 <code>release</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hotfix/xxx</code></strong></td>
+<td style="text-align:left">短期、紧急修复</td>
+<td style="text-align:left"><strong>修复线上 Bug</strong>。从出问题的 <code>release</code> 创建，修复后合并回该分支并同步到后续 <code>release</code> 分支。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-个人开发标准流程">2. 个人开发标准流程</h2>
+<h3 id="步骤-1：同步并创建分支">步骤 1：同步并创建分支</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout release/1.11.0         <span class="comment"># 切换到目标 release 分支</span></span><br><span class="line">git pull origin release/1.11.0      <span class="comment"># 拉取最新代码</span></span><br><span class="line">git checkout -b feature/your-task   <span class="comment"># 创建功能分支</span></span><br></pre></td></tr></table></figure>
+<h3 id="步骤-2：本地开发与提交">步骤 2：本地开发与提交</h3>
+<p>在 <code>feature</code> 分支上编码，并进行<strong>原子化提交</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;feat: implement user login modal&quot;</span></span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;fix: resolve button style issue&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="步骤-3：整理提交记录（PR-前）">步骤 3：整理提交记录（PR 前）</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br><span class="line">git rebase -i origin/release/1.11.0</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>memory_order_relaxed</strong>: 只确保操作是原子性的，不对内存顺序做任何保证。</li>
-<li><strong>memory_order_release</strong>: 用于写操作，例如 <code>std::atomic::store(T, memory_order_release)</code>，会在写操作之前插入一个 StoreStore屏障，确保屏障之前的所有操作不会重排到屏障之后。</li>
-<li><strong>memory_order_acquire</strong>: 用于读操作，例如 <code>std::atomic::load(memory_order_acquire)</code>，会在读操作之后插入一个 LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前。</li>
-<li><strong>memory_order_acq_rel</strong>: 等效于 <code>memory_order_acquire</code> 和 <code>memory_order_release</code> 的结合，同时插入一个 StoreStore 屏障与 LoadLoad 屏障，用于读写操作，例如 <code>std::atomic::fetch_add(T, memory_order_acq_rel)</code>。</li>
+<li>合并零碎 commit，保持提交历史清晰。</li>
 </ul>
-<h4 id="示例">示例</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程 A (产生者)</span></span><br><span class="line">node-&gt;data = <span class="number">42</span>;  <span class="comment">// 初始化数据</span></span><br><span class="line">list.<span class="built_in">SetNext</span>(<span class="number">0</span>, node);  <span class="comment">// 通过 memory_order_release 让数据对其他线程可见</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 B (消费者)</span></span><br><span class="line">Node* node = list.<span class="built_in">Next</span>(<span class="number">0</span>);  <span class="comment">// 使用 memory_order_acquire 获取节点</span></span><br><span class="line"><span class="type">int</span> value = node-&gt;data;  <span class="comment">// 确保读取的是线程 A 完全初始化后的数据</span></span><br></pre></td></tr></table></figure>
-<p>编译器优化：编译器可能会认为，<code>node-&gt;data = 42</code> 和 <code>list.SetNext(0, node)</code> 没有直接依赖关系。因此，它可能将 <code>list.SetNext(0, node)</code> 提前。编译器这种优化是合法的，因为在单线程语境下，它认为不会改变行为。</p>
-<h4 id="模板例子">模板例子</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Example</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">NestedType</span> &#123;&#125;;     <span class="comment">// 嵌套类型</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> value;         <span class="comment">// 静态非类型成员</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">typename</span> Example&lt;T&gt;::NestedType* ptr;  <span class="comment">// 嵌套类型</span></span><br><span class="line">    Example&lt;T&gt;::value = <span class="number">42</span>;       <span class="comment">// 静态成员</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于 Example&lt;T&gt;::NestedType，编译器可能无法区分它是一个类型还是非类型成员（如变量、函数等）。</span></span><br><span class="line"><span class="comment">// 在模板类或函数中，如果某个嵌套成员依赖于模板参数，编译器无法在模板实体化之前确定它的具体含义。</span></span><br><span class="line"></span><br><span class="line">~~~c++</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Key, <span class="keyword">class</span> <span class="title class_">Comparator</span>&gt;</span><br><span class="line"><span class="keyword">typename</span> SkipList&lt;Key, Comparator&gt;::Node* SkipList&lt;Key, Comparator&gt;::<span class="built_in">NewNode</span>(</span><br><span class="line">    <span class="type">const</span> Key&amp; key, <span class="type">int</span> height) &#123;</span><br><span class="line">  <span class="type">char</span>* <span class="type">const</span> node_memory = arena_-&gt;<span class="built_in">AllocateAligned</span>(</span><br><span class="line">      <span class="built_in">sizeof</span>(Node) +</span><br><span class="line">      <span class="built_in">sizeof</span>(std::atomic&lt;Node*&gt;) * (height - <span class="number">1</span>));  <span class="comment">// 动态内存分配Node*</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">new</span> (node_memory) <span class="built_in">Node</span>(key);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//t柔性数组和定制内存分配，优化了跳表的内存效率、访问速度</span></span><br></pre></td></tr></table></figure>
-<h4 id="跳表的查找">跳表的查找</h4>
+<h3 id="步骤-4：推送并创建-PR">步骤 4：推送并创建 PR</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f origin feature/your-task-name  <span class="comment"># 强制推送</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>根据跳表高度选取最高层的头节点；</li>
-<li>若小于，取该层的下一个节点；</li>
-<li>若等于，则直接返回；</li>
-<li>若大于且层高不为0，降低层高继续查找。</li>
+<li>在 GitHub / GitLab 上，从功能分支向目标 <code>release</code> 发起 PR。</li>
 </ul>
-<h4 id="跳表的插入">跳表的插入</h4>
+<hr>
+<h2 id="3-PR-审查与合并流程">3. PR 审查与合并流程</h2>
+<h3 id="第一步：代码审查">第一步：代码审查</h3>
 <ul>
-<li>查找过程中，不断记录每层的前任节点；</li>
-<li>为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；</li>
+<li>检查逻辑、规范、目标分支。</li>
+<li>至少一名成员 <code>Approve</code>。</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph MemTable_System [&quot;MemTable 系统&quot;]</span><br><span class="line">        MemTable --&gt; SkipList</span><br><span class="line">        MemTable --&gt; Arena</span><br><span class="line">        SkipList --&gt; Entry</span><br><span class="line">        Entry --&gt; Arena</span><br><span class="line">        SkipList --&gt; KeyComparator</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<style>.ggnjgybajdqe{zoom:50%;}</style><img src="/leveldb/memtable/memtable/memtable-entry.png" class="ggnjgybajdqe" alt="en">
+<h3 id="第二步：合并前检查">第二步：合并前检查</h3>
+<ul>
+<li>确认 CI/CD 全通过。</li>
+<li>提交历史整理干净。</li>
+<li>无合并冲突。</li>
+</ul>
+<h3 id="第三步：执行合并">第三步：执行合并</h3>
+<p><strong>推荐策略</strong>（严禁使用 Merge Commit）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">合并方式</th>
+<th style="text-align:left">操作方式</th>
+<th style="text-align:left">优点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Squash and Merge</strong> (推荐)</td>
+<td style="text-align:left">点击 <strong>Squash and Merge</strong> 按钮</td>
+<td style="text-align:left">将所有 commit 合并为一个，生成干净历史。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Rebase and Merge</strong> (可选)</td>
+<td style="text-align:left">点击 <strong>Rebase and Merge</strong> 按钮</td>
+<td style="text-align:left">保持线性历史，按顺序追加 commit。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="第四步：清理分支">第四步：清理分支</h3>
+<ul>
+<li>PR 合并后删除 <code>feature</code> 分支：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete feature/your-task-name</span><br></pre></td></tr></table></figure>
+<hr>
+
       
     </div>
 

@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/cache/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Pimpl%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/leveldb/cache/" class="post-title-link" itemprop="url">缓存系统</a>
+            <a href="/other/Pimpl%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">Pimpl模式</a>
         </h2>
 
         <div class="post-meta">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-02-20 00:00:00" itemprop="dateModified" datetime="2025-02-20T00:00:00+00:00">2025-02-20</time>
+                <time title="修改时间：2025-09-19 14:57:55" itemprop="dateModified" datetime="2025-09-19T14:57:55+00:00">2025-09-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,7 +226,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
                 </span>
             </span>
 
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/leveldb/cache/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/leveldb/cache/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/Pimpl%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/Pimpl%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>604</span>
+              <span>653</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,62 +269,75 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="缓存系统">缓存系统</h3>
-<p>基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。</p>
-<h4 id="LRUHandle">LRUHandle</h4>
-<ul>
-<li><strong>哈希表相关</strong>: <code>next_hash</code> 用于链接哈希表中的条目。</li>
-<li><strong>链表相关</strong>: <code>next</code> 和 <code>prev</code> 用于在 LRU 链表和使用中的链表（<code>in_use</code>）中形成双向链表。</li>
-</ul>
-<h4 id="哈希表">哈希表</h4>
-<ul>
-<li>
-<p><strong>结构</strong>: 哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。</p>
-</li>
-<li>
-<p>插入逻辑：</p>
-<ul>
-<li>先找到对应的存储桶。</li>
-<li>比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。</li>
-<li>当条目数量超过容量时，重新调整哈希表的大小。</li>
-</ul>
-</li>
-</ul>
-<h4 id="LRUCache">LRUCache</h4>
-<p>由哈希表、LRU 链表头和 <code>in_use</code> 链表头构成。</p>
+          <h2 id="核心思想">核心思想</h2>
+<p>Pimpl 模式的主要目标是<strong>分离接口与实现</strong>，通过将类的实现细节封装在私有的实现类中，减少编译依赖并提高二进制兼容性。</p>
+<hr>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// my_class.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span> &#123;</span><br><span class="line">   <span class="comment">// 公共接口与保护成员</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   <span class="keyword">class</span> <span class="title class_">impl</span>;                 <span class="comment">// 不完整类型声明</span></span><br><span class="line">   std::unique_ptr&lt;impl&gt; pimpl; <span class="comment">// 指向私有实现类</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// my_class.cpp</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span>::impl &#123;  </span><br><span class="line">   <span class="comment">// 私有数据和方法</span></span><br><span class="line">   <span class="comment">// 可以随意修改而无需重新编译客户端</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">my_class::<span class="built_in">my_class</span>() : <span class="built_in">pimpl</span>(<span class="keyword">new</span> impl) &#123;</span><br><span class="line">   <span class="comment">// 初始化 impl 的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="优点">优点</h3>
 <ol>
-<li><strong>插入过程</strong>:
+<li>
+<p><strong>减少编译依赖</strong></p>
 <ul>
-<li>加锁。</li>
-<li>根据键创建 <code>handle</code>，引用计数加 1，并插入到 <code>in_use_</code> 链表。</li>
-<li>将 <code>handle</code> 添加到哈希表中。</li>
-<li>如果键已存在，则返回旧的 <code>handle</code>，并从缓存和链表中删除旧条目，引用计数减 1。</li>
-<li>当缓存容量超出限制且 LRU 链表不为空时，从 LRU 链表中移除第一个条目，并从缓存和链表中删除。</li>
+<li>客户端只依赖类的接口（头文件），实现细节变化无需重新编译。</li>
 </ul>
 </li>
-<li><strong>查找过程</strong>:
+<li>
+<p><strong>分离接口和实现</strong></p>
 <ul>
-<li>加锁。</li>
-<li>在哈希表中查找 <code>handle</code> 并返回，引用计数加 1。</li>
+<li>将类的私有数据和方法封装在 <code>impl</code> 中，接口保持不变。</li>
 </ul>
 </li>
-<li><strong>释放过程</strong>:
+<li>
+<p><strong>提高可移植性和二进制兼容性</strong></p>
 <ul>
-<li>使用完 <code>handle</code> 后需要手动释放。</li>
-<li>加锁，引用计数减 1。</li>
+<li>修改实现类不会破坏已经编译好的客户端代码。</li>
 </ul>
 </li>
-<li><strong>擦除过程</strong>:
+<li>
+<p><strong>隐藏实现细节</strong></p>
 <ul>
-<li>加锁，从缓存中移除条目，引用计数减 1。</li>
+<li>客户端无法直接访问实现类，保证封装性。</li>
 </ul>
 </li>
 </ol>
-<h4 id="SharedLRUCache">SharedLRUCache</h4>
-<p>对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。</p>
+<hr>
+<h3 id="Pimpl-vs-虚函数接口">Pimpl vs 虚函数接口</h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>虚函数接口</th>
+<th>Pimpl</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>二进制兼容性</strong></td>
+<td>修改虚函数表会破坏兼容性</td>
+<td>修改 impl 不影响接口和客户端</td>
+</tr>
+<tr>
+<td><strong>封装性</strong></td>
+<td>公开继承，接口暴露实现</td>
+<td>完全隐藏实现细节</td>
+</tr>
+<tr>
+<td><strong>编译依赖</strong></td>
+<td>接口和实现耦合，修改需要重新编译</td>
+<td>客户端仅依赖头文件，不依赖实现</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="总结">总结</h3>
 <ul>
-<li><strong>分片优势</strong>: 通过分片将缓存操作分散到多个 LRUCache 实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。</li>
+<li>Pimpl 模式是一种经典的 <strong>信息隐藏与接口分离</strong> 技术</li>
+<li>适合库开发或需要保持二进制兼容性的场景</li>
+<li>结合智能指针（如 <code>unique_ptr</code>）可安全管理资源</li>
 </ul>
+<hr>
 
       
     </div>
