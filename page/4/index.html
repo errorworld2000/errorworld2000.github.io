@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/dpdk/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">ow架构</a>
+            <a href="/os/dpdk/" class="post-title-link" itemprop="url">未命名</a>
         </h2>
 
         <div class="post-meta">
@@ -211,23 +211,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+00:00">2025-09-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-09-19 14:57:55" itemprop="dateModified" datetime="2025-09-19T14:57:55+00:00">2025-09-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
-                </span>
+              <time title="创建时间：2026-02-09 03:00:04" itemprop="dateCreated datePublished" datetime="2026-02-09T03:00:04+00:00">2026-02-09</time>
             </span>
 
           
@@ -239,8 +223,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/ow%E6%9E%B6%E6%9E%84/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/ow%E6%9E%B6%E6%9E%84/" itemprop="commentCount"></span>
+    <a title="valine" href="/os/dpdk/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/os/dpdk/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +234,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>978</span>
+              <span>14</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,106 +253,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="核心架构">核心架构</h3>
-<ul>
-<li>
-<p>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度</p>
-<ul>
-<li><strong>Entity</strong>：ID + 一组组件（Component，仅存储状态，无行为）</li>
-<li><strong>System</strong>：执行行为，关注特定组件组合（tuple / component-slice），在这些组件上处理逻辑</li>
-</ul>
-</li>
-<li>
-<p><strong>优点</strong>：</p>
-<ul>
-<li>状态与行为分离，System 更纯洁、可组合</li>
-<li>组件只存储数据，行为集中在 System</li>
-<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
-</ul>
-</li>
-<li>
-<p><strong>单例组件（Singleton Component）</strong></p>
-<ul>
-<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
-<li>减少 System 间耦合</li>
-</ul>
-</li>
-<li>
-<p><strong>Utility 函数</strong></p>
-<ul>
-<li>封装共享行为（被多个 System 调用的小逻辑）</li>
-<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="ECS-设计规范与权衡">ECS 设计规范与权衡</h3>
-<ul>
-<li>
-<p><strong>组件无行为，System 尽量无状态</strong></p>
-</li>
-<li>
-<p>如果 System 需要状态 → 放在 Singleton Component</p>
-</li>
-<li>
-<p><strong>副作用控制</strong>：</p>
-<ul>
-<li><strong>Deferred Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
-<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
-</ul>
-</li>
-<li>
-<p><strong>实体创建与销毁</strong></p>
-<ul>
-<li>销毁推迟到帧末端安全</li>
-<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="网络同步-Netcode">网络同步 / Netcode</h3>
-<h4 id="1-预测与回滚（Prediction-Reconciliation）">1. 预测与回滚（Prediction &amp; Reconciliation）</h4>
-<ul>
-<li>客户端响应用户输入立即做预测，不等服务器确认</li>
-<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
-<li>客户端保存输入历史和移动状态历史</li>
-<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
-</ul>
-<h4 id="2-输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
-<ul>
-<li>每个发送包包含自上次确认以来的所有输入帧</li>
-<li>服务器缓冲区接收输入并补偿丢失帧</li>
-</ul>
-<h4 id="3-延迟-缓冲-时间膨胀（Buffering-Time-Dilation）">3. 延迟 / 缓冲 / 时间膨胀（Buffering / Time Dilation）</h4>
-<ul>
-<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
-<li>网络恢复稳定后，缩小缓冲区</li>
-</ul>
-<h4 id="4-命中判定（Hit-Registration）">4. 命中判定（Hit Registration）</h4>
-<ul>
-<li>客户端可能预测子弹命中，但服务器是最终权威</li>
-<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
-<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
-</ul>
-<hr>
-<h3 id="设计原则总结">设计原则总结</h3>
-<ol>
-<li>
-<p>架构为 <strong>可维护性与可扩展性服务</strong></p>
-<ul>
-<li>ECS + 严格准则（组件无行为，System 少状态）</li>
-</ul>
-</li>
-<li>
-<p>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</p>
-</li>
-<li>
-<p>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</p>
-</li>
-</ol>
-<hr>
-<p>参考资料：<br>
-<a target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
+          <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xueqiuqiu/articles/12242844.html">DPDK 完全内核旁路技术实现 </a></p>
 
       
     </div>
@@ -387,7 +272,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -455,7 +340,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -503,7 +388,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -513,13 +398,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">38k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">32 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

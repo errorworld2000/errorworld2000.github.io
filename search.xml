@@ -318,7 +318,7 @@ assert(valid_); 确保调用 Next() 时，迭代器处于有效状态。
     <title>日志</title>
     <url>/leveldb/log/</url>
     <content><![CDATA[日志结构
-.srxovnzcbfpi{zoom:67%;}
+.tnpbrgqbtobw{zoom:67%;}
 
 static const int kBlockSize = 32768;
 // Header is checksum (4 bytes), length (2 bytes), type (1 byte).
@@ -422,7 +422,7 @@ template &lt;typename T&gt;class Example &#123;public:    struct NestedType &#12
 为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；
 
 graph TD    subgraph MemTable_System [&quot;MemTable 系统&quot;]        MemTable --&gt; SkipList        MemTable --&gt; Arena        SkipList --&gt; Entry        Entry --&gt; Arena        SkipList --&gt; KeyComparator    end
-.hhorgtupdlof{zoom:50%;}
+.qthffgeyuxxr{zoom:50%;}
 ]]></content>
       <categories>
         <category>leveldb</category>
@@ -690,6 +690,63 @@ Leveldb的整体架构通过 MemTable、Immutable MemTable、Log、SSTable、Man
         <tag>c++</tag>
         <tag>dataset</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/os/dpdk/</url>
+    <content><![CDATA[DPDK 完全内核旁路技术实现 
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/os/vlan/</url>
+    <content><![CDATA[
+text
+text
+text
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/os/vpn/</url>
+    <content><![CDATA[
+fake-ip: 用于内部存储域名和 IP 的映射，便于根据域名分流。
+nameserver-policy: 用于指定域名的 DNS 服务器，避免内网域名无法解析（需新增内网域名的分流规则）。
+
+关于 Clash 科学上网的最佳实践
+Clash-Verge-Rev最佳实践
+浅谈 DNS 泄露
+OpenClash 设置方案
+
+Link State Change Event
+
+本质上最终流量都会经过 7897 端口。
+主要区别：
+
+系统代理：应用程序自愿连接 7897 端口。
+TUN 模式：系统强制将流量交给 sing-box，再由 sing-box 转发给 7897 端口。
+
+
+如果存在内网服务器，需要配置 DNS 服务器，以便获取正确的内网地址并进行分流。
+局域网代理目前存在问题，无法通过 Git 访问，只能通过 HTTP。
+
+
+
+一些代理配置如下
+[wsl2]
+networkingMode=mirrored
+autoProxy=false
+dnsTunneling=false
+dnsProxy=false
+firewall=false
+Windows 防火墙放行
+curl -fsSL https://sing-box.app/install.sh | sh
+/etc/sing-box/config.json
+&#123;  &quot;log&quot;: &#123;    &quot;level&quot;: &quot;info&quot;,    &quot;timestamp&quot;: true  &#125;,  &quot;dns&quot;: &#123;    &quot;servers&quot;: [      &#123;        &quot;tag&quot;: &quot;google-doh&quot;,        &quot;type&quot;: &quot;https&quot;,        &quot;server&quot;: &quot;8.8.8.8&quot;,        &quot;detour&quot;: &quot;proxy&quot;      &#125;,      &#123;        &quot;tag&quot;: &quot;company-dns&quot;,        &quot;type&quot;: &quot;udp&quot;,        &quot;server&quot;: &quot;192.168.13.1&quot;      &#125;,      &#123;        &quot;tag&quot;: &quot;local-dns&quot;,        &quot;type&quot;: &quot;local&quot;      &#125;    ],    &quot;rules&quot;: [      &#123;        &quot;domain_suffix&quot;: [          &quot;gitlab.fzcsxl.com&quot;        ],        &quot;server&quot;: &quot;company-dns&quot;      &#125;    ],    &quot;final&quot;: &quot;google-doh&quot;,    &quot;strategy&quot;: &quot;ipv4_only&quot;  &#125;,  &quot;inbounds&quot;: [    &#123;      &quot;type&quot;: &quot;tun&quot;,      &quot;tag&quot;: &quot;tun-in&quot;,      &quot;interface_name&quot;: &quot;tun0&quot;,      &quot;address&quot;: [        &quot;172.19.0.1/30&quot;      ],      &quot;auto_route&quot;: true,      &quot;strict_route&quot;: true,      &quot;stack&quot;: &quot;gvisor&quot;,      &quot;mtu&quot;: 9000,      &quot;sniff&quot;: true    &#125;  ],  &quot;outbounds&quot;: [    &#123;      &quot;type&quot;: &quot;socks&quot;,      &quot;tag&quot;: &quot;proxy&quot;,      &quot;server&quot;: &quot;127.0.0.1&quot;,      &quot;server_port&quot;: 7897,      &quot;version&quot;: &quot;5&quot;    &#125;,    &#123;      &quot;type&quot;: &quot;direct&quot;,      &quot;tag&quot;: &quot;direct&quot;    &#125;  ],  &quot;route&quot;: &#123;    &quot;rules&quot;: [      &#123;        &quot;port&quot;: [123],             &quot;outbound&quot;: &quot;direct&quot;        &#125;,      &#123;        &quot;protocol&quot;: &quot;dns&quot;,        &quot;action&quot;: &quot;hijack-dns&quot;      &#125;,      &#123;        &quot;ip_is_private&quot;: true,        &quot;outbound&quot;: &quot;direct&quot;      &#125;,      &#123;        &quot;protocol&quot;: &quot;quic&quot;,        &quot;outbound&quot;: &quot;direct&quot;      &#125;    ],    &quot;auto_detect_interface&quot;: true,    &quot;default_domain_resolver&quot;: &quot;google-doh&quot;,    &quot;final&quot;: &quot;proxy&quot;  &#125;&#125;
+sudo systemctl enable --now sing-box
+sudo systemctl start sing-box
+sudo systemctl status sing-box
+]]></content>
   </entry>
   <entry>
     <title>Pimpl模式</title>
@@ -1673,11 +1730,11 @@ f &lt; 物距 &lt; 2f：像距 &gt; 2f，成 倒立放大实像（幻灯机、�
 物距 &lt; f：像距为负，在物体同侧成 正立放大虚像（放大镜）。
 
 定焦镜头的对焦环实质上调整的是像距。
-.moyjbevqziyr{}
+.rrxvazknbmsd{}
 
 2.2 视场角（Field of View, FOV）
 镜头可覆盖的最大成像范围，取决于 镜头焦距 与 传感器尺寸。
-.otjowwgbhekm{}
+.mxmdmywyahkk{}
 
 2.3 光圈（Aperture, f-number, F）
 光圈大小用 F 值 表示：
@@ -1701,13 +1758,13 @@ F 值越大 → 光圈越小 → 进光量越少。
 
 
 
-.avcvvxghlcbe{}
-.octtjvfjuhks{}
-.krfrltrduxuq{}
+.jlildtxrundb{}
+.otshcbthrimd{}
+.mlmnmismsezq{}
 
 2.5 工作距离（Working Distance, WD）
 指镜头最前端到被摄物体的距离。工作距离过小可能导致安装受限。
-.poehugomzvqb{}
+.ywpnbmvvvotv{}
 
 3. 参考资料
 
@@ -1723,5 +1780,12 @@ F 值越大 → 光圈越小 → 进光量越少。
       <tags>
         <tag>cv</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/other/%E9%A1%B9%E7%9B%AE%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[本地开发：LSP + 保存格式化 + 静态检查（可选） → 实时提示 + 自动排版
+CI / PR：静态检查 + 格式化 → 保证代码质量 + 风格一致
+]]></content>
   </entry>
 </search>

@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Pimpl%E6%A8%A1%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -201,7 +201,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/other/Pimpl%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">Pimpl模式</a>
+            <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">ow架构</a>
         </h2>
 
         <div class="post-meta">
@@ -211,14 +211,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+00:00">2025-07-19</time>
+              <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+00:00">2025-09-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-09-19 14:57:55" itemprop="dateModified" datetime="2025-09-19T14:57:55+00:00">2025-09-19</time>
+                <time title="修改时间：2026-02-09 03:00:04" itemprop="dateModified" datetime="2026-02-09T03:00:04+00:00">2026-02-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/other/Pimpl%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/other/Pimpl%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
+    <a title="valine" href="/other/ow%E6%9E%B6%E6%9E%84/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/other/ow%E6%9E%B6%E6%9E%84/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -250,7 +250,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>653</span>
+              <span>978</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,75 +269,106 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="核心思想">核心思想</h2>
-<p>Pimpl 模式的主要目标是<strong>分离接口与实现</strong>，通过将类的实现细节封装在私有的实现类中，减少编译依赖并提高二进制兼容性。</p>
+          <h3 id="核心架构">核心架构</h3>
+<ul>
+<li>
+<p>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度</p>
+<ul>
+<li><strong>Entity</strong>：ID + 一组组件（Component，仅存储状态，无行为）</li>
+<li><strong>System</strong>：执行行为，关注特定组件组合（tuple / component-slice），在这些组件上处理逻辑</li>
+</ul>
+</li>
+<li>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>状态与行为分离，System 更纯洁、可组合</li>
+<li>组件只存储数据，行为集中在 System</li>
+<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
+</ul>
+</li>
+<li>
+<p><strong>单例组件（Singleton Component）</strong></p>
+<ul>
+<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
+<li>减少 System 间耦合</li>
+</ul>
+</li>
+<li>
+<p><strong>Utility 函数</strong></p>
+<ul>
+<li>封装共享行为（被多个 System 调用的小逻辑）</li>
+<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
+</ul>
+</li>
+</ul>
 <hr>
-<h3 id="示例代码">示例代码</h3>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// my_class.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span> &#123;</span><br><span class="line">   <span class="comment">// 公共接口与保护成员</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   <span class="keyword">class</span> <span class="title class_">impl</span>;                 <span class="comment">// 不完整类型声明</span></span><br><span class="line">   std::unique_ptr&lt;impl&gt; pimpl; <span class="comment">// 指向私有实现类</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// my_class.cpp</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span>::impl &#123;  </span><br><span class="line">   <span class="comment">// 私有数据和方法</span></span><br><span class="line">   <span class="comment">// 可以随意修改而无需重新编译客户端</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">my_class::<span class="built_in">my_class</span>() : <span class="built_in">pimpl</span>(<span class="keyword">new</span> impl) &#123;</span><br><span class="line">   <span class="comment">// 初始化 impl 的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ECS-设计规范与权衡">ECS 设计规范与权衡</h3>
+<ul>
+<li>
+<p><strong>组件无行为，System 尽量无状态</strong></p>
+</li>
+<li>
+<p>如果 System 需要状态 → 放在 Singleton Component</p>
+</li>
+<li>
+<p><strong>副作用控制</strong>：</p>
+<ul>
+<li><strong>Deferred Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
+<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
+</ul>
+</li>
+<li>
+<p><strong>实体创建与销毁</strong></p>
+<ul>
+<li>销毁推迟到帧末端安全</li>
+<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
+</ul>
+</li>
+</ul>
 <hr>
-<h3 id="优点">优点</h3>
+<h3 id="网络同步-Netcode">网络同步 / Netcode</h3>
+<h4 id="1-预测与回滚（Prediction-Reconciliation）">1. 预测与回滚（Prediction &amp; Reconciliation）</h4>
+<ul>
+<li>客户端响应用户输入立即做预测，不等服务器确认</li>
+<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
+<li>客户端保存输入历史和移动状态历史</li>
+<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
+</ul>
+<h4 id="2-输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
+<ul>
+<li>每个发送包包含自上次确认以来的所有输入帧</li>
+<li>服务器缓冲区接收输入并补偿丢失帧</li>
+</ul>
+<h4 id="3-延迟-缓冲-时间膨胀（Buffering-Time-Dilation）">3. 延迟 / 缓冲 / 时间膨胀（Buffering / Time Dilation）</h4>
+<ul>
+<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
+<li>网络恢复稳定后，缩小缓冲区</li>
+</ul>
+<h4 id="4-命中判定（Hit-Registration）">4. 命中判定（Hit Registration）</h4>
+<ul>
+<li>客户端可能预测子弹命中，但服务器是最终权威</li>
+<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
+<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
+</ul>
+<hr>
+<h3 id="设计原则总结">设计原则总结</h3>
 <ol>
 <li>
-<p><strong>减少编译依赖</strong></p>
+<p>架构为 <strong>可维护性与可扩展性服务</strong></p>
 <ul>
-<li>客户端只依赖类的接口（头文件），实现细节变化无需重新编译。</li>
+<li>ECS + 严格准则（组件无行为，System 少状态）</li>
 </ul>
 </li>
 <li>
-<p><strong>分离接口和实现</strong></p>
-<ul>
-<li>将类的私有数据和方法封装在 <code>impl</code> 中，接口保持不变。</li>
-</ul>
+<p>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</p>
 </li>
 <li>
-<p><strong>提高可移植性和二进制兼容性</strong></p>
-<ul>
-<li>修改实现类不会破坏已经编译好的客户端代码。</li>
-</ul>
-</li>
-<li>
-<p><strong>隐藏实现细节</strong></p>
-<ul>
-<li>客户端无法直接访问实现类，保证封装性。</li>
-</ul>
+<p>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</p>
 </li>
 </ol>
 <hr>
-<h3 id="Pimpl-vs-虚函数接口">Pimpl vs 虚函数接口</h3>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>虚函数接口</th>
-<th>Pimpl</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>二进制兼容性</strong></td>
-<td>修改虚函数表会破坏兼容性</td>
-<td>修改 impl 不影响接口和客户端</td>
-</tr>
-<tr>
-<td><strong>封装性</strong></td>
-<td>公开继承，接口暴露实现</td>
-<td>完全隐藏实现细节</td>
-</tr>
-<tr>
-<td><strong>编译依赖</strong></td>
-<td>接口和实现耦合，修改需要重新编译</td>
-<td>客户端仅依赖头文件，不依赖实现</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h3 id="总结">总结</h3>
-<ul>
-<li>Pimpl 模式是一种经典的 <strong>信息隐藏与接口分离</strong> 技术</li>
-<li>适合库开发或需要保持二进制兼容性的场景</li>
-<li>结合智能指针（如 <code>unique_ptr</code>）可安全管理资源</li>
-</ul>
-<hr>
+<p>参考资料：<br>
+<a target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
 
       
     </div>
@@ -356,7 +387,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -424,7 +455,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -472,7 +503,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -482,13 +513,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">38k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">32 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
