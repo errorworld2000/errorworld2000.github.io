@@ -318,7 +318,7 @@ assert(valid_); 确保调用 Next() 时，迭代器处于有效状态。
     <title>日志</title>
     <url>/leveldb/log/</url>
     <content><![CDATA[日志结构
-.tnpbrgqbtobw{zoom:67%;}
+.euvccxntvovk{zoom:67%;}
 
 static const int kBlockSize = 32768;
 // Header is checksum (4 bytes), length (2 bytes), type (1 byte).
@@ -422,7 +422,7 @@ template &lt;typename T&gt;class Example &#123;public:    struct NestedType &#12
 为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；
 
 graph TD    subgraph MemTable_System [&quot;MemTable 系统&quot;]        MemTable --&gt; SkipList        MemTable --&gt; Arena        SkipList --&gt; Entry        Entry --&gt; Arena        SkipList --&gt; KeyComparator    end
-.qthffgeyuxxr{zoom:50%;}
+.crfrchkpukhq{zoom:50%;}
 ]]></content>
       <categories>
         <category>leveldb</category>
@@ -538,6 +538,12 @@ using BlockFunction = Iterator* (*)(void*, const ReadOptions&amp;, const Slice&a
         <tag>c++</tag>
         <tag>dataset</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/os/dpdk/</url>
+    <content><![CDATA[DPDK 完全内核旁路技术实现 
+]]></content>
   </entry>
   <entry>
     <title>整体架构</title>
@@ -690,12 +696,6 @@ Leveldb的整体架构通过 MemTable、Immutable MemTable、Log、SSTable、Man
         <tag>c++</tag>
         <tag>dataset</tag>
       </tags>
-  </entry>
-  <entry>
-    <title></title>
-    <url>/os/dpdk/</url>
-    <content><![CDATA[DPDK 完全内核旁路技术实现 
-]]></content>
   </entry>
   <entry>
     <title></title>
@@ -1730,11 +1730,11 @@ f &lt; 物距 &lt; 2f：像距 &gt; 2f，成 倒立放大实像（幻灯机、�
 物距 &lt; f：像距为负，在物体同侧成 正立放大虚像（放大镜）。
 
 定焦镜头的对焦环实质上调整的是像距。
-.rrxvazknbmsd{}
+.zkzirybqvtwq{}
 
 2.2 视场角（Field of View, FOV）
 镜头可覆盖的最大成像范围，取决于 镜头焦距 与 传感器尺寸。
-.mxmdmywyahkk{}
+.oaobmxquycqt{}
 
 2.3 光圈（Aperture, f-number, F）
 光圈大小用 F 值 表示：
@@ -1758,13 +1758,13 @@ F 值越大 → 光圈越小 → 进光量越少。
 
 
 
-.jlildtxrundb{}
-.otshcbthrimd{}
-.mlmnmismsezq{}
+.ogxyqepxsqom{}
+.njcmxrlfngdv{}
+.gqlsnhovqttq{}
 
 2.5 工作距离（Working Distance, WD）
 指镜头最前端到被摄物体的距离。工作距离过小可能导致安装受限。
-.ywpnbmvvvotv{}
+.iomnkvguayuu{}
 
 3. 参考资料
 
