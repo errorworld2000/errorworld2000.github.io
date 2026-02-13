@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="压力来自避而不赴">
 <meta property="og:type" content="website">
@@ -51,16 +51,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
 <script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
   
 
-
-
-
-
-
-  
-
-
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
 
 
 
@@ -77,6 +86,9 @@
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -91,15 +103,46 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </header>
         
@@ -124,6 +167,8 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">jungle</p>
   <div class="site-description" itemprop="description">压力来自避而不赴</div>
 </div>
@@ -131,22 +176,30 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
         </div>
       </div>
@@ -168,10 +221,10 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/async/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Spring%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="jungle">
     </span>
 
@@ -186,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/async/" class="post-title-link" itemprop="url">async</a>
+          <a href="/other/Spring%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Spring基础</a>
         </h2>
 
         <div class="post-meta-container">
@@ -197,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+00:00">2025-07-19</time>
+      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-02-09 05:49:18" itemprop="dateModified" datetime="2026-02-09T05:49:18+00:00">2026-02-09</time>
+      <time title="修改时间：2026-02-13 10:34:11" itemprop="dateModified" datetime="2026-02-13T10:34:11+08:00">2026-02-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -223,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -241,42 +294,163 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="异步示例：制作早餐">异步示例：制作早餐</h2>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 同步倒咖啡</span></span><br><span class="line">    Coffee cup = PourCoffee();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;coffee is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 并发煎蛋、炸薯饼、烤吐司</span></span><br><span class="line">    <span class="keyword">var</span> eggsTask = FryEggsAsync(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">var</span> hashBrownTask = FryHashBrownsAsync(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">var</span> toastTask = MakeToastWithButterAndJamAsync(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> breakfastTasks = <span class="keyword">new</span> List&lt;Task&gt; &#123; eggsTask, hashBrownTask, toastTask &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (breakfastTasks.Count &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 等待任意一个任务完成</span></span><br><span class="line">        Task finishedTask = <span class="keyword">await</span> Task.WhenAny(breakfastTasks);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (finishedTask == eggsTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;eggs are ready&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == hashBrownTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;hash browns are ready&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == toastTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;toast is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 可选：处理异常</span></span><br><span class="line">        <span class="keyword">await</span> finishedTask;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 从任务列表移除已完成任务</span></span><br><span class="line">        breakfastTasks.Remove(finishedTask);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 同步倒橙汁</span></span><br><span class="line">    Juice oj = PourOJ();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;oj is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Breakfast is ready!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="🔹-I-O-Bound（等待-I-O-的任务）">🔹 I/O Bound（等待 I/O 的任务）</h2>
+          <h2 id="一spring-xml-配置与注解">一、Spring XML 配置与注解</h2>
+<h3 id="自动扫描-bean-beans.xml">1. 自动扫描 Bean
+(<code>beans.xml</code>)</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>
-<p><strong>特点</strong>：程序瓶颈在等待外部资源（网络、磁盘等），CPU 大部分时间空闲。</p>
-</li>
-<li>
-<p><strong>解决方案</strong>：使用 <code>await</code> 异步等待，释放线程资源，避免阻塞主线程。</p>
-</li>
-<li>
-<p><strong><code>await</code> 会做什么</strong>：</p>
+<li><strong>作用</strong>：扫描指定包及子包，将标注了以下注解的类注册为
+Spring Bean：
 <ul>
-<li>挂起当前方法（如 UI 回调）。</li>
-<li>控制权交还给事件循环，不阻塞界面。</li>
-<li>等待完成后再恢复执行。</li>
+<li><code>@Component</code>（普通组件）</li>
+<li><code>@Service</code>（业务逻辑层）</li>
+<li><code>@Repository</code>（DAO 层，支持异常转换）</li>
+<li><code>@Controller</code>（Web 控制层）</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<p><strong>示例</strong>：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> HttpClient.GetAsync(<span class="string">&quot;https://api.example.com&quot;</span>);</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="🔸-CPU-Bound（计算密集型任务）">🔸 CPU Bound（计算密集型任务）</h2>
+<h3 id="常见注解说明">2. 常见注解说明</h3>
+<table>
+<thead>
+<tr class="header">
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>@Component</code></td>
+<td>普通组件，交给 Spring 管理</td>
+</tr>
+<tr class="even">
+<td><code>@Service</code></td>
+<td>业务逻辑组件，语义清晰</td>
+</tr>
+<tr class="odd">
+<td><code>@Repository</code></td>
+<td>DAO 层组件，支持异常转换</td>
+</tr>
+<tr class="even">
+<td><code>@Controller</code></td>
+<td>控制层组件，处理 Web 请求</td>
+</tr>
+<tr class="odd">
+<td><code>@Autowired</code></td>
+<td>按类型自动注入依赖</td>
+</tr>
+<tr class="even">
+<td><code>@Qualifier("beanName")</code></td>
+<td>与 <code>@Autowired</code> 配合，按名称注入</td>
+</tr>
+<tr class="odd">
+<td><code>@PostConstruct</code></td>
+<td>初始化方法（容器加载后执行）</td>
+</tr>
+<tr class="even">
+<td><code>@PreDestroy</code></td>
+<td>销毁方法（容器关闭前执行）</td>
+</tr>
+<tr class="odd">
+<td><code>@Scope("singleton")</code></td>
+<td>单例（默认）</td>
+</tr>
+<tr class="even">
+<td><code>@Scope("prototype")</code></td>
+<td>多例，每次获取新对象</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="二spring-aop-与-aspectj-区别">二、Spring AOP 与 AspectJ
+区别</h2>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 46%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>特性</th>
+<th>Spring AOP</th>
+<th>AspectJ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>实现方式</strong></td>
+<td>JDK 或 CGLIB 动态代理</td>
+<td>编译时织入 / 类加载时织入</td>
+</tr>
+<tr class="even">
+<td><strong>原理</strong></td>
+<td>运行时生成代理类，拦截方法调用插入增强</td>
+<td>修改字节码，将切面代码插入目标类</td>
+</tr>
+<tr class="odd">
+<td><strong>优点</strong></td>
+<td>简单易用，非侵入式</td>
+<td>性能高，控制精细</td>
+</tr>
+<tr class="even">
+<td><strong>缺点</strong></td>
+<td>存在性能开销</td>
+<td>配置复杂，侵入性强</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2
+id="三项目结构分层经典三层架构">三、项目结构分层（经典三层架构）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">controller --&gt; service --&gt; dao</span><br><span class="line">     |            |          |</span><br><span class="line">   Web层       业务逻辑层   数据访问层</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>特点</strong>：瓶颈在本地 CPU 运算，I/O 很少。</li>
-<li><strong>解决方案</strong>：使用 <code>Task.Run</code> 将计算任务放到线程池，<strong>并行执行</strong>，减轻主线程压力。</li>
+<li><strong>POJO</strong>：简单 Java 对象，表示数据结构</li>
+<li><strong>Controller</strong>：接收请求、返回响应</li>
+<li><strong>Service</strong>：封装业务逻辑</li>
+<li><strong>DAO</strong>：操作数据库 CRUD</li>
 </ul>
-<p><strong>示例</strong>：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> Task.Run(() =&gt; CalculateSomethingHeavy());</span><br></pre></td></tr></table></figure>
-<hr>
+<hr />
+<h2 id="四mysql-数据库设计范式">四、MySQL 数据库设计范式</h2>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 38%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>范式</th>
+<th>核心要求</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1NF（第一范式）</td>
+<td>字段原子性，每列不可拆分</td>
+<td><code>姓名</code> 不能为 <code>"张三,李四"</code></td>
+</tr>
+<tr class="even">
+<td>2NF（第二范式）</td>
+<td>消除部分依赖，非主键字段完全依赖主键</td>
+<td>复合主键 <code>学生ID+课程ID</code>，姓名只依赖 <code>学生ID</code>
+应拆表</td>
+</tr>
+<tr class="odd">
+<td>3NF（第三范式）</td>
+<td>消除传递依赖，非主键字段不依赖其他非主键字段</td>
+<td><code>班级编号 → 班主任 → 电话号</code>，电话号依赖班主任，应拆表</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="五总结">五、总结</h2>
 <ul>
-<li><strong>参考文档</strong>：<br>
-<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/">Async in depth | Microsoft Docs</a></li>
+<li>Spring 支持 XML + 注解混合配置，提高开发灵活性</li>
+<li>Spring AOP 简单易用；AspectJ 适合高性能场景</li>
+<li>三层架构利于职责分离与项目维护</li>
+<li>数据库设计应遵循范式，避免冗余和异常依赖</li>
 </ul>
-<hr>
+<hr />
 
       
     </div>
@@ -296,7 +470,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/14/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/12/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/14/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -318,14 +492,34 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
+      <span>站点总字数：</span>
     <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">34 分钟</span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">35 分钟</span>
   </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
@@ -344,6 +538,8 @@
     <i class="fa fa-arrow-up fa-lg"></i>
     <span>0%</span>
   </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>

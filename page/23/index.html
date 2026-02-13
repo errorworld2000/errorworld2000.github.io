@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="压力来自避而不赴">
 <meta property="og:type" content="website">
@@ -51,16 +51,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
 <script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
   
 
-
-
-
-
-
-  
-
-
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
 
 
 
@@ -77,6 +86,9 @@
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -91,15 +103,46 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </header>
         
@@ -124,6 +167,8 @@
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">jungle</p>
   <div class="site-description" itemprop="description">压力来自避而不赴</div>
 </div>
@@ -131,22 +176,30 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
         </div>
       </div>
@@ -168,10 +221,10 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/sstable/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/read-write/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="jungle">
     </span>
 
@@ -186,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/sstable/" class="post-title-link" itemprop="url">排序字符串表</a>
+          <a href="/leveldb/read-write/" class="post-title-link" itemprop="url">读写过程</a>
         </h2>
 
         <div class="post-meta-container">
@@ -197,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-20T00:00:00+00:00">2025-02-20</time>
+      <time title="创建时间：2025-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-02-09 05:49:18" itemprop="dateModified" datetime="2026-02-09T05:49:18+00:00">2026-02-09</time>
+      <time title="修改时间：2026-02-13 10:34:11" itemprop="dateModified" datetime="2026-02-13T10:34:11+08:00">2026-02-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -223,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>787</span>
+      <span>3.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -241,42 +294,56 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <hr>
-<h2 id="SSTable">SSTable</h2>
-<h3 id="物理结构">物理结构</h3>
-<p>SSTable 按块划分，默认数据块大小为 4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC 校验码。</p>
-<h3 id="逻辑结构">逻辑结构</h3>
-<p><img src="/leveldb/sstable/sst-format.png" alt="SSTable 逻辑结构"></p>
-<ol>
-<li><strong>Data Block</strong>：存储键值对。</li>
-<li><strong>Filter Block</strong>：存储过滤器相关数据，采用专门的 FilterBlock。</li>
-<li><strong>Meta Index Block</strong>：存储 Filter Block 在 SSTable 文件中的位置和长度。</li>
-<li><strong>Index Block</strong>：存储每个 Data Block 的索引信息。</li>
-<li><strong>Footer</strong>：存储 Meta Index Block 和 Index Block 的索引信息。</li>
+          <h4 id="写入过程">写入过程</h4>
+<p>Leveldb的put/delete操作实际都被转成batch然后write。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WriteBatch batch;</span><br><span class="line">batch.<span class="built_in">Put</span>(kvp.first, kvp.second);</span><br><span class="line"><span class="built_in">EXPECT_TRUE</span>(db_-&gt;<span class="built_in">Write</span>(<span class="built_in">WriteOptions</span>(), &amp;batch).<span class="built_in">ok</span>());</span><br></pre></td></tr></table></figure>
+<p>在leveldb中，使用Write操作进行写入，流程如下：</p>
+<ol type="1">
+<li>创建writer对象并加入队列（同时只允许一个写入操作运行）</li>
 </ol>
-<h3 id="读写过程">读写过程</h3>
-<h4 id="写过程">写过程</h4>
-<p><img src="/leveldb/sstable/table-builder.png" alt="写过程"></p>
-<h4 id="读过程">读过程</h4>
-<p><img src="/leveldb/sstable/sst-read.png" alt="读过程"></p>
-<p>SSTable 使用两种缓存机制：</p>
-<ol>
-<li><strong>Table Cache</strong>：存储已打开的 SSTable 文件。</li>
-<li><strong>Block Cache</strong>：存储已读取的数据块。</li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">DBImpl::Write</span><span class="params">(<span class="type">const</span> WriteOptions&amp; options, WriteBatch* updates)</span> </span>&#123;</span><br><span class="line">  <span class="function">Writer <span class="title">w</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  w.batch = updates;</span><br><span class="line">  w.sync = options.sync;</span><br><span class="line">  w.done = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">MutexLock <span class="title">l</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  writers_.<span class="built_in">push_back</span>(&amp;w);</span><br><span class="line">  <span class="comment">// 若当前 Writer 不是队列头部，则等待（锁被释放，进入阻塞）</span></span><br><span class="line">  <span class="keyword">while</span> (!w.done &amp;&amp; &amp;w != writers_.<span class="built_in">front</span>()) &#123;</span><br><span class="line">    w.cv.<span class="built_in">Wait</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (w.done) &#123;</span><br><span class="line">    <span class="keyword">return</span> w.status;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>为写操作分配空间</li>
 </ol>
-<p>Table Cache 的结构如下：</p>
-<p><img src="/leveldb/sstable/table-cache.png" alt="Table Cache 结构"></p>
-<h3 id="Table-的迭代器">Table 的迭代器</h3>
-<h4 id="TwoLevelIterator">TwoLevelIterator</h4>
-<p><code>TwoLevelIterator</code> 用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> BlockFunction = Iterator* (*)(<span class="type">void</span>*, <span class="type">const</span> ReadOptions&amp;, <span class="type">const</span> Slice&amp;);</span><br><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="title">TwoLevelIterator</span><span class="params">(Iterator* index_iter, BlockFunction block_function,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="type">void</span>* arg, <span class="type">const</span> ReadOptions&amp; options)</span></span>;</span><br><span class="line"><span class="comment">//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。</span></span><br></pre></td></tr></table></figure>
-<h4 id="实现思路">实现思路</h4>
-<ol>
-<li><strong>索引块迭代器</strong>：遍历索引块的迭代器，用来获取每个数据块的元信息。</li>
-<li><strong>数据块读取函数</strong>：提供读取数据块的函数，该函数由 <code>TwoLevelIterator</code> 调用以加载具体的数据块。</li>
-<li><strong>封装 <code>TwoLevelIterator</code></strong>：结合索引块迭代器和数据块读取函数，创建 <code>TwoLevelIterator</code>。</li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Status status = <span class="built_in">MakeRoomForWrite</span>(updates == <span class="literal">nullptr</span>);</span><br><span class="line"><span class="type">uint64_t</span> last_sequence = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line">Writer* last_writer = &amp;w;</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>构建批次并执行写操作</li>
 </ol>
-<hr>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (status.<span class="built_in">ok</span>() &amp;&amp; updates != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">  WriteBatch* write_batch = <span class="built_in">BuildBatchGroup</span>(&amp;last_writer);</span><br><span class="line">  WriteBatchInternal::<span class="built_in">SetSequence</span>(write_batch, last_sequence + <span class="number">1</span>);</span><br><span class="line">  last_sequence += WriteBatchInternal::<span class="built_in">Count</span>(write_batch);</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">    status = log_-&gt;<span class="built_in">AddRecord</span>(WriteBatchInternal::<span class="built_in">Contents</span>(write_batch));</span><br><span class="line">    <span class="type">bool</span> sync_error = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (status.<span class="built_in">ok</span>() &amp;&amp; options.sync) &#123;</span><br><span class="line">      status = logfile_-&gt;<span class="built_in">Sync</span>();</span><br><span class="line">      <span class="keyword">if</span> (!status.<span class="built_in">ok</span>()) &#123;</span><br><span class="line">        sync_error = <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (status.<span class="built_in">ok</span>()) &#123;</span><br><span class="line">      status = WriteBatchInternal::<span class="built_in">InsertInto</span>(write_batch, mem_);</span><br><span class="line">    &#125;</span><br><span class="line">    mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">    <span class="keyword">if</span> (sync_error) &#123;</span><br><span class="line">      <span class="built_in">RecordBackgroundError</span>(status);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  versions_-&gt;<span class="built_in">SetLastSequence</span>(last_sequence);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li>清理并唤醒写操作</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  Writer* ready = writers_.<span class="built_in">front</span>();</span><br><span class="line">  writers_.<span class="built_in">pop_front</span>();</span><br><span class="line">  <span class="keyword">if</span> (ready != &amp;w) &#123;</span><br><span class="line">    ready-&gt;status = status;</span><br><span class="line">    ready-&gt;done = <span class="literal">true</span>;</span><br><span class="line">    ready-&gt;cv.<span class="built_in">Signal</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (ready == last_writer) <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (!writers_.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">  writers_.<span class="built_in">front</span>()-&gt;cv.<span class="built_in">Signal</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="读取过程">读取过程</h4>
+<ol type="1">
+<li>加锁，基于snapshot进行数据读取</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">DBImpl::Get</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options, <span class="type">const</span> Slice&amp; key,</span></span></span><br><span class="line"><span class="params"><span class="function">                   std::string* value)</span> </span>&#123;</span><br><span class="line">  Status s;</span><br><span class="line">  <span class="function">MutexLock <span class="title">l</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  SequenceNumber snapshot;</span><br><span class="line">  <span class="keyword">if</span> (options.snapshot != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    snapshot =</span><br><span class="line">        <span class="built_in">static_cast</span>&lt;<span class="type">const</span> SnapshotImpl*&gt;(options.snapshot)-&gt;<span class="built_in">sequence_number</span>();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    snapshot = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line">  &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>引用mem、imm以及current version，避免读取过程中被销毁</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MemTable* mem = mem_;</span><br><span class="line">  MemTable* imm = imm_;</span><br><span class="line">  Version* current = versions_-&gt;<span class="built_in">current</span>();</span><br><span class="line">  mem-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm != <span class="literal">nullptr</span>) imm-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  current-&gt;<span class="built_in">Ref</span>();</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>查询数据，释放锁避免占用cpu时间过长</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Unlock while reading from files and memtables</span></span><br><span class="line">  &#123;</span><br><span class="line">    mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">    <span class="comment">// First look in the memtable, then in the immutable memtable (if any).</span></span><br><span class="line">    <span class="function">LookupKey <span class="title">lkey</span><span class="params">(key, snapshot)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (mem-&gt;<span class="built_in">Get</span>(lkey, value, &amp;s)) &#123;</span><br><span class="line">      <span class="comment">// Done</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (imm != <span class="literal">nullptr</span> &amp;&amp; imm-&gt;<span class="built_in">Get</span>(lkey, value, &amp;s)) &#123;</span><br><span class="line">      <span class="comment">// Done</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      s = current-&gt;<span class="built_in">Get</span>(options, lkey, value, &amp;stats);</span><br><span class="line">      have_stat_update = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li>压缩解引等操作</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (have_stat_update &amp;&amp; current-&gt;<span class="built_in">UpdateStats</span>(stats)) &#123;</span><br><span class="line">    <span class="built_in">MaybeScheduleCompaction</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  mem-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm != <span class="literal">nullptr</span>) imm-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  current-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  <span class="keyword">return</span> s;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>leveldb读取分为三步：</p>
+<p>在memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；</p>
+<p>在冻结的memory
+db中查找指定的key，若搜索到符合条件的数据项，结束查找；</p>
+<p>按低层至高层的顺序在level
+i层的sstable文件中查找指定的key，若搜索到符合条件的数据项，结束查找，否则返回Not
+Found错误，表示数据库中不存在指定的数据；</p>
+<p>注解</p>
+<p>注意leveldb在每一层sstable中查找数据时，都是按序依次查找sstable的。</p>
+<p>0层的文件比较特殊。由于0层的文件中可能存在key重合的情况，因此在0层中，文件编号大的sstable优先查找。理由是文件编号较大的sstable中存储的总是最新的数据。</p>
+<p>非0层文件，一层中所有文件之间的key不重合，因此leveldb可以借助sstable的元数据（一个文件中最小与最大的key值）进行快速定位，每一层只需要查找一个sstable文件的内容。</p>
+</blockquote>
 
       
     </div>
@@ -296,7 +363,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/22/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/24/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/22/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/24/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -318,14 +385,34 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
+      <span>站点总字数：</span>
     <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">34 分钟</span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">35 分钟</span>
   </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
@@ -344,6 +431,8 @@
     <i class="fa fa-arrow-up fa-lg"></i>
     <span>0%</span>
   </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>

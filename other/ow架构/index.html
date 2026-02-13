@@ -18,20 +18,28 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="核心架构   Overwatch 采用 ECS 架构 管理复杂度  Entity：ID + 一组组件（Component，仅存储状态，无行为） System：执行行为，关注特定组件组合（tuple &#x2F; component-slice），在这些组件上处理逻辑    优点：  状态与行为分离，System 更纯洁、可组合 组件只存储数据，行为集中在 System 大多数 System 纯函数式（只读组">
+    <meta name="description" content="核心架构  Overwatch 采用 ECS 架构 管理复杂度  Entity：ID + 一组组件（Component，仅存储状态，无行为） System：执行行为，关注特定组件组合（tuple &#x2F; component-slice），在这些组件上处理逻辑  优点：  状态与行为分离，System 更纯洁、可组合 组件只存储数据，行为集中在 System 大多数 System 纯函数式（只读组件），">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ow架构">
 <meta property="og:url" content="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/index.html">
 <meta property="og:site_name" content="a Blog">
-<meta property="og:description" content="核心架构   Overwatch 采用 ECS 架构 管理复杂度  Entity：ID + 一组组件（Component，仅存储状态，无行为） System：执行行为，关注特定组件组合（tuple &#x2F; component-slice），在这些组件上处理逻辑    优点：  状态与行为分离，System 更纯洁、可组合 组件只存储数据，行为集中在 System 大多数 System 纯函数式（只读组">
+<meta property="og:description" content="核心架构  Overwatch 采用 ECS 架构 管理复杂度  Entity：ID + 一组组件（Component，仅存储状态，无行为） System：执行行为，关注特定组件组合（tuple &#x2F; component-slice），在这些组件上处理逻辑  优点：  状态与行为分离，System 更纯洁、可组合 组件只存储数据，行为集中在 System 大多数 System 纯函数式（只读组件），">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-09-16T00:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-09T05:49:18.332Z">
+<meta property="article:published_time" content="2025-09-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-13T02:34:11.852Z">
 <meta property="article:author" content="jungle">
-<meta property="article:tag" content="architecture">
-<meta property="article:tag" content="game dev">
+<meta property="article:tag" content="Architecture">
+<meta property="article:tag" content="ClientSidePrediction">
+<meta property="article:tag" content="ECS">
+<meta property="article:tag" content="EntityComponentSystem">
+<meta property="article:tag" content="GDC">
+<meta property="article:tag" content="GameDev">
+<meta property="article:tag" content="Netcode">
+<meta property="article:tag" content="Overwatch">
+<meta property="article:tag" content="Rollback">
+<meta property="article:tag" content="ServerAuthoritative">
 <meta name="twitter:card" content="summary">
 
 
@@ -55,16 +63,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
 <script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
   
 
-
-
-
-
-
-  
-
-
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
 
 
 
@@ -81,6 +98,9 @@
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -95,15 +115,46 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </header>
         
@@ -123,12 +174,16 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">核心架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ECS-%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E4%B8%8E%E6%9D%83%E8%A1%A1"><span class="nav-number">2.</span> <span class="nav-text">ECS 设计规范与权衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%90%8C%E6%AD%A5-Netcode"><span class="nav-number">3.</span> <span class="nav-text">网络同步 &#x2F; Netcode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%A2%84%E6%B5%8B%E4%B8%8E%E5%9B%9E%E6%BB%9A%EF%BC%88Prediction-Reconciliation%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">1. 预测与回滚（Prediction &amp; Reconciliation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E8%BE%93%E5%85%A5%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3-%E4%B8%A2%E5%8C%85%E8%A1%A5%E5%81%BF"><span class="nav-number">3.2.</span> <span class="nav-text">2. 输入滑动窗口 + 丢包补偿</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%BB%B6%E8%BF%9F-%E7%BC%93%E5%86%B2-%E6%97%B6%E9%97%B4%E8%86%A8%E8%83%80%EF%BC%88Buffering-Time-Dilation%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3. 延迟 &#x2F; 缓冲 &#x2F; 时间膨胀（Buffering &#x2F; Time Dilation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%91%BD%E4%B8%AD%E5%88%A4%E5%AE%9A%EF%BC%88Hit-Registration%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">4. 命中判定（Hit Registration）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">设计原则总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">核心架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ecs-%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E4%B8%8E%E6%9D%83%E8%A1%A1"><span class="nav-number">2.</span> <span class="nav-text">ECS 设计规范与权衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%90%8C%E6%AD%A5-netcode"><span class="nav-number">3.</span> <span class="nav-text">网络同步 &#x2F; Netcode</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E4%B8%8E%E5%9B%9E%E6%BB%9Aprediction-reconciliation"><span class="nav-number">3.1.</span> <span class="nav-text">1. 预测与回滚（Prediction
+&amp; Reconciliation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3-%E4%B8%A2%E5%8C%85%E8%A1%A5%E5%81%BF"><span class="nav-number">3.2.</span> <span class="nav-text">2. 输入滑动窗口 + 丢包补偿</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F-%E7%BC%93%E5%86%B2-%E6%97%B6%E9%97%B4%E8%86%A8%E8%83%80buffering-time-dilation"><span class="nav-number">3.3.</span> <span class="nav-text">3. 延迟 &#x2F; 缓冲 &#x2F;
+时间膨胀（Buffering &#x2F; Time Dilation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%B8%AD%E5%88%A4%E5%AE%9Ahit-registration"><span class="nav-number">3.4.</span> <span class="nav-text">4. 命中判定（Hit Registration）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">设计原则总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">jungle</p>
   <div class="site-description" itemprop="description">压力来自避而不赴</div>
 </div>
@@ -136,22 +191,30 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
         </div>
       </div>
@@ -177,7 +240,7 @@
     <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="jungle">
     </span>
 
@@ -203,14 +266,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+00:00">2025-09-16</time>
+      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-02-09 05:49:18" itemprop="dateModified" datetime="2026-02-09T05:49:18+00:00">2026-02-09</time>
+      <time title="修改时间：2026-02-13 10:34:11" itemprop="dateModified" datetime="2026-02-13T10:34:11+08:00">2026-02-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -223,6 +286,13 @@
     </span>
 
   
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
     <span class="post-meta-break"></span>
     <span class="post-meta-item" title="本文字数">
       <span class="post-meta-item-icon">
@@ -248,104 +318,87 @@
     
     <div class="post-body" itemprop="articleBody"><h3 id="核心架构">核心架构</h3>
 <ul>
-<li>
-<p>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度</p>
+<li>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度
 <ul>
-<li><strong>Entity</strong>：ID + 一组组件（Component，仅存储状态，无行为）</li>
-<li><strong>System</strong>：执行行为，关注特定组件组合（tuple / component-slice），在这些组件上处理逻辑</li>
-</ul>
-</li>
-<li>
-<p><strong>优点</strong>：</p>
+<li><strong>Entity</strong>：ID +
+一组组件（Component，仅存储状态，无行为）</li>
+<li><strong>System</strong>：执行行为，关注特定组件组合（tuple /
+component-slice），在这些组件上处理逻辑</li>
+</ul></li>
+<li><strong>优点</strong>：
 <ul>
 <li>状态与行为分离，System 更纯洁、可组合</li>
 <li>组件只存储数据，行为集中在 System</li>
 <li>大多数 System 纯函数式（只读组件），少数修改状态</li>
-</ul>
-</li>
-<li>
-<p><strong>单例组件（Singleton Component）</strong></p>
+</ul></li>
+<li><strong>单例组件（Singleton Component）</strong>
 <ul>
 <li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
 <li>减少 System 间耦合</li>
-</ul>
-</li>
-<li>
-<p><strong>Utility 函数</strong></p>
+</ul></li>
+<li><strong>Utility 函数</strong>
 <ul>
 <li>封装共享行为（被多个 System 调用的小逻辑）</li>
 <li>依赖少组件、低副作用，避免 System 之间互相调用</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<hr>
-<h3 id="ECS-设计规范与权衡">ECS 设计规范与权衡</h3>
+<hr />
+<h3 id="ecs-设计规范与权衡">ECS 设计规范与权衡</h3>
 <ul>
-<li>
-<p><strong>组件无行为，System 尽量无状态</strong></p>
-</li>
-<li>
-<p>如果 System 需要状态 → 放在 Singleton Component</p>
-</li>
-<li>
-<p><strong>副作用控制</strong>：</p>
+<li><p><strong>组件无行为，System 尽量无状态</strong></p></li>
+<li><p>如果 System 需要状态 → 放在 Singleton Component</p></li>
+<li><p><strong>副作用控制</strong>：</p>
 <ul>
-<li><strong>Deferred Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
+<li><strong>Deferred
+Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
 <li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
-</ul>
-</li>
-<li>
-<p><strong>实体创建与销毁</strong></p>
+</ul></li>
+<li><p><strong>实体创建与销毁</strong></p>
 <ul>
 <li>销毁推迟到帧末端安全</li>
 <li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<hr>
-<h3 id="网络同步-Netcode">网络同步 / Netcode</h3>
-<h4 id="1-预测与回滚（Prediction-Reconciliation）">1. 预测与回滚（Prediction &amp; Reconciliation）</h4>
+<hr />
+<h3 id="网络同步-netcode">网络同步 / Netcode</h3>
+<h4 id="预测与回滚prediction-reconciliation">1. 预测与回滚（Prediction
+&amp; Reconciliation）</h4>
 <ul>
 <li>客户端响应用户输入立即做预测，不等服务器确认</li>
 <li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
 <li>客户端保存输入历史和移动状态历史</li>
 <li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
 </ul>
-<h4 id="2-输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
+<h4 id="输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
 <ul>
 <li>每个发送包包含自上次确认以来的所有输入帧</li>
 <li>服务器缓冲区接收输入并补偿丢失帧</li>
 </ul>
-<h4 id="3-延迟-缓冲-时间膨胀（Buffering-Time-Dilation）">3. 延迟 / 缓冲 / 时间膨胀（Buffering / Time Dilation）</h4>
+<h4 id="延迟-缓冲-时间膨胀buffering-time-dilation">3. 延迟 / 缓冲 /
+时间膨胀（Buffering / Time Dilation）</h4>
 <ul>
 <li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
 <li>网络恢复稳定后，缩小缓冲区</li>
 </ul>
-<h4 id="4-命中判定（Hit-Registration）">4. 命中判定（Hit Registration）</h4>
+<h4 id="命中判定hit-registration">4. 命中判定（Hit Registration）</h4>
 <ul>
 <li>客户端可能预测子弹命中，但服务器是最终权威</li>
 <li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
 <li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
 </ul>
-<hr>
+<hr />
 <h3 id="设计原则总结">设计原则总结</h3>
-<ol>
-<li>
-<p>架构为 <strong>可维护性与可扩展性服务</strong></p>
+<ol type="1">
+<li>架构为 <strong>可维护性与可扩展性服务</strong>
 <ul>
 <li>ECS + 严格准则（组件无行为，System 少状态）</li>
-</ul>
-</li>
-<li>
-<p>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</p>
-</li>
-<li>
-<p>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</p>
-</li>
+</ul></li>
+<li>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</li>
+<li>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</li>
 </ol>
-<hr>
-<p>参考资料：<br>
-<a target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
+<hr />
+<p>参考资料： <a
+target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
 
     </div>
 
@@ -354,22 +407,47 @@
     
 
     <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/" title="ow架构">https://errorworld2000.github.io/other/ow架构/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
           <div class="post-tags">
-              <a href="/tags/game-dev/" rel="tag"># game dev</a>
-              <a href="/tags/architecture/" rel="tag"># architecture</a>
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+              <a href="/tags/GameDev/" rel="tag"># GameDev</a>
+              <a href="/tags/Overwatch/" rel="tag"># Overwatch</a>
+              <a href="/tags/ECS/" rel="tag"># ECS</a>
+              <a href="/tags/EntityComponentSystem/" rel="tag"># EntityComponentSystem</a>
+              <a href="/tags/Netcode/" rel="tag"># Netcode</a>
+              <a href="/tags/ClientSidePrediction/" rel="tag"># ClientSidePrediction</a>
+              <a href="/tags/ServerAuthoritative/" rel="tag"># ServerAuthoritative</a>
+              <a href="/tags/Rollback/" rel="tag"># Rollback</a>
+              <a href="/tags/GDC/" rel="tag"># GDC</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/other/%E5%9B%BE%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/" rel="prev" title="图最短路径算法">
-                  <i class="fa fa-angle-left"></i> 图最短路径算法
+                <a href="/gameframework/gameframework%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/" rel="prev" title="gameframework细节实现">
+                  <i class="fa fa-angle-left"></i> gameframework细节实现
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/other/neuronNet/" rel="next" title="neuronNet">
-                  neuronNet <i class="fa fa-angle-right"></i>
+                <a href="/other/%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E6%9B%B2%E7%BA%BF/" rel="next" title="最速降线曲线">
+                  最速降线曲线 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -401,14 +479,34 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
+      <span>站点总字数：</span>
     <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">34 分钟</span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">35 分钟</span>
   </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
@@ -427,6 +525,8 @@
     <i class="fa fa-arrow-up fa-lg"></i>
     <span>0%</span>
   </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
