@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/unity%E5%8D%8F%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/vlan/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/gameframework/unity%E5%8D%8F%E7%A8%8B/" class="post-title-link" itemprop="url">Unity协程深入分析</a>
+          <a href="/net/vlan/" class="post-title-link" itemprop="url">VLAN 虚拟局域网详解</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-09-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-19T00:00:00+08:00">2025-09-19</time>
+      <time title="创建时间：2026-02-19 00:00:00" itemprop="dateCreated datePublished" datetime="2026-02-19T00:00:00+08:00">2026-02-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-02-13 10:34:11" itemprop="dateModified" datetime="2026-02-13T10:34:11+08:00">2026-02-13</time>
+      <time title="修改时间：2026-03-06 13:53:31" itemprop="dateModified" datetime="2026-03-06T13:53:31+08:00">2026-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/gameframework/" itemprop="url" rel="index"><span itemprop="name">gameframework</span></a>
+          <a href="/categories/net/" itemprop="url" rel="index"><span itemprop="name">net</span></a>
         </span>
     </span>
 
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>907</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,97 +294,17 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="协程-vs-update-轮询">1. 协程 vs Update 轮询</h2>
-<ul>
-<li><strong>Update轮询</strong>：每帧主动检测状态，需要手动管理状态逻辑。</li>
-<li><strong>协程 Coroutine</strong>：逻辑暂停，等待条件满足时 Unity
-自动恢复执行。</li>
-</ul>
-<h3 id="核心区别对比">核心区别对比</h3>
-<table>
-<thead>
-<tr class="header">
-<th>对比项</th>
-<th>Update轮询</th>
-<th>协程 Coroutine</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>检查方式</td>
-<td>每帧自己 if 检查</td>
-<td><code>yield return</code> 后自动挂起</td>
-</tr>
-<tr class="even">
-<td>CPU开销</td>
-<td>多对象轮询累积大</td>
-<td>集中管理，开销小</td>
-</tr>
-<tr class="odd">
-<td>写法复杂度</td>
-<td>高，状态机逻辑复杂</td>
-<td>低，顺序逻辑直观</td>
-</tr>
-<tr class="even">
-<td>可读性</td>
-<td>差，容易出错</td>
-<td>像同步代码，自然清晰</td>
-</tr>
-<tr class="odd">
-<td>出错概率</td>
-<td>高，容易漏判或重复判定</td>
-<td>低，写完即能跑</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>一句话总结：协程让“等待”自动化，无需每帧检查。</p>
-</blockquote>
-<hr />
-<h2 id="update-检测请求示例传统方法">2. Update
-检测请求示例（传统方法）</h2>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UnityWebRequest m_Request;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StartRequest</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    m_Request = UnityWebRequest.Get(url);</span><br><span class="line">    m_Request.SendWebRequest();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_Request == <span class="literal">null</span> || !m_Request.isDone) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (m_Request.result == UnityWebRequest.Result.ConnectionError ||</span><br><span class="line">        m_Request.result == UnityWebRequest.Result.ProtocolError)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError(<span class="string">&quot;Request Error: &quot;</span> + m_Request.error);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Request Success: &quot;</span> + m_Request.downloadHandler.text);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    m_Request = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>缺点：Update 负担重，需要手动管理状态。</p>
-</blockquote>
-<hr />
-<h2 id="协程检测请求示例推荐方法">3. 协程检测请求示例（推荐方法）</h2>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">StartRequest</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    StartCoroutine(RequestCoroutine(url));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> IEnumerator <span class="title">RequestCoroutine</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span> (UnityWebRequest request = UnityWebRequest.Get(url))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> request.SendWebRequest();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (request.result == UnityWebRequest.Result.ConnectionError ||</span><br><span class="line">            request.result == UnityWebRequest.Result.ProtocolError)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.LogError(<span class="string">&quot;Request Error: &quot;</span> + request.error);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;Request Success: &quot;</span> + request.downloadHandler.text);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>优点：自动挂起等待，不用管理完成时机，逻辑自然顺序。</p>
-</blockquote>
-<hr />
-<h2 id="协程使用场景总结">4. 协程使用场景总结</h2>
-<ul>
-<li><strong>等待 I/O 操作</strong>：网络请求、文件读取、WWW
-请求等。</li>
-<li><strong>动画控制</strong>：顺序播放动画或控制延迟。</li>
-<li><strong>条件等待</strong>：等待某些状态触发，例如玩家进入区域或敌人死亡。</li>
-<li><strong>循环任务</strong>：无需每帧 Update 手动判断。</li>
-</ul>
-<hr />
-<h2 id="协程性能与调度机制">5. 协程性能与调度机制</h2>
-<ul>
-<li><code>yield return</code> 后，协程被挂起。</li>
-<li>Unity 集中管理所有挂起的协程。</li>
-<li>每帧只需检查协程状态量，不会像多对象轮询消耗过多 CPU。</li>
-<li>条件满足或 I/O 完成后直接唤醒，继续执行剩余逻辑。</li>
-<li>可以通过 <code>StopCoroutine</code> 或
-<code>StopAllCoroutines</code> 控制协程生命周期。</li>
-</ul>
-<hr />
-<h2 id="协程注意事项">6. 协程注意事项</h2>
-<ul>
-<li><strong>不可用于精确时间控制</strong>：帧率不稳定会影响时间判断。</li>
-<li><strong>避免长期阻塞</strong>：协程内部最好不要进行 CPU
-密集型计算。</li>
-<li><strong>嵌套协程管理</strong>：<code>yield return StartCoroutine(...)</code>
-会等待子协程完成。</li>
-<li><strong>异常处理</strong>：协程内部异常不会自动抛出到主线程，需要
-try-catch。</li>
-</ul>
-<hr />
-
+          <h1 id="vlan-虚拟局域网">VLAN 虚拟局域网</h1>
+<p>VLAN（Virtual Local Area
+Network，虚拟局域网）是一种将物理局域网在逻辑上划分成多个广播域的技术，可以在不改变物理网络拓扑的情况下实现网络隔离。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/net/vlan/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -403,7 +323,7 @@ try-catch。</li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

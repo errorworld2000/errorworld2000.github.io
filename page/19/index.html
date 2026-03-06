@@ -68,7 +68,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/cache/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E4%B8%80%E4%BA%9B%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/cache/" class="post-title-link" itemprop="url">缓存系统</a>
+          <a href="/other/%E4%B8%80%E4%BA%9B%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/" class="post-title-link" itemprop="url">一些数学公式</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
+      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-02-13 10:34:11" itemprop="dateModified" datetime="2026-02-13T10:34:11+08:00">2026-02-13</time>
+      <time title="修改时间：2026-03-06 13:53:31" itemprop="dateModified" datetime="2026-03-06T13:53:31+08:00">2026-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
         </span>
     </span>
 
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>604</span>
+      <span>727</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,62 +294,78 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="缓存系统">缓存系统</h3>
-<p>基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。</p>
-<h4 id="lruhandle">LRUHandle</h4>
+          <h2 id="n-阶带拉格朗日余项的泰勒展开式">1. n
+阶带拉格朗日余项的泰勒展开式</h2>
+<p><strong>公式</strong>：</p>
+<p><span class="math display">\[
+f(x) = \sum_{k=0}^{n} \frac{f^{(k)}(x_0)}{k!} (x-x_0)^k +
+\frac{f^{(n+1)}(\xi)}{(n+1)!} (x-x_0)^{n+1}, \quad \xi \in (x_0, x)
+\]</span></p>
+<p><strong>说明</strong>：</p>
 <ul>
-<li><strong>哈希表相关</strong>: <code>next_hash</code>
-用于链接哈希表中的条目。</li>
-<li><strong>链表相关</strong>: <code>next</code> 和 <code>prev</code>
-用于在 LRU
-链表和使用中的链表（<code>in_use</code>）中形成双向链表。</li>
+<li>前半部分是 n 阶泰勒多项式</li>
+<li>后半部分是拉格朗日余项，表示截断误差</li>
 </ul>
-<h4 id="哈希表">哈希表</h4>
+<hr />
+<h2 id="欧拉公式">2. 欧拉公式</h2>
+<p><span class="math display">\[
+e^{ix} = \cos x + i \sin x
+\]</span></p>
+<p><strong>说明</strong>：</p>
 <ul>
-<li><strong>结构</strong>:
-哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。</li>
-<li>插入逻辑：
-<ul>
-<li>先找到对应的存储桶。</li>
-<li>比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。</li>
-<li>当条目数量超过容量时，重新调整哈希表的大小。</li>
-</ul></li>
+<li>连接复指数函数与三角函数</li>
+<li>是复数分析和信号处理的基础</li>
 </ul>
-<h4 id="lrucache">LRUCache</h4>
-<p>由哈希表、LRU 链表头和 <code>in_use</code> 链表头构成。</p>
-<ol type="1">
-<li><strong>插入过程</strong>:
+<hr />
+<h2 id="向量运算基础">3. 向量运算基础</h2>
+<p><strong>内积（点积）</strong>：</p>
+<p><span class="math display">\[
+\langle x, y \rangle = x_1 y_1 + x_2 y_2 + \cdots + x_n y_n
+\]</span></p>
+<p><strong>向量模长</strong>：</p>
+<p><span class="math display">\[
+\|x\| = \sqrt{\langle x, x \rangle}
+\]</span></p>
+<p><strong>向量距离</strong>：</p>
+<p><span class="math display">\[
+d(x, y) = \|x - y\|
+\]</span></p>
+<hr />
+<h2 id="最小二乘法least-squares-method">4. 最小二乘法（Least Squares
+Method）</h2>
+<p><strong>目标函数</strong>：</p>
+<p><span class="math display">\[
+\frac{1}{2} \sum_{i=1}^n \left(h_\theta(x^{(i)}) - y^{(i)}\right)^2 =
+\delta
+\]</span></p>
+<p><span class="math display">\[
+\sum_{i=1}^n \left[h_\theta(x^{(i)}) - y^{(i)}\right]^2 = (X\theta -
+y)^T (X\theta - y)
+\]</span></p>
+<p><strong>求解公式</strong>：</p>
+<p><span class="math display">\[
+h_\theta(x) = X \theta, \quad y = y
+\]</span></p>
+<p><span class="math display">\[
+(X\theta - y)^T (X\theta - y) = \delta
+\]</span></p>
+<p><span class="math display">\[
+2 X^T (X\theta - y) = 0
+\]</span></p>
+<p><span class="math display">\[
+X^T X \theta = X^T y
+\]</span></p>
+<p><span class="math display">\[
+\theta = (X^T X)^{-1} X^T y
+\]</span></p>
+<p><strong>参考资料</strong>：</p>
 <ul>
-<li>加锁。</li>
-<li>根据键创建 <code>handle</code>，引用计数加 1，并插入到
-<code>in_use_</code> 链表。</li>
-<li>将 <code>handle</code> 添加到哈希表中。</li>
-<li>如果键已存在，则返回旧的
-<code>handle</code>，并从缓存和链表中删除旧条目，引用计数减 1。</li>
-<li>当缓存容量超出限制且 LRU 链表不为空时，从 LRU
-链表中移除第一个条目，并从缓存和链表中删除。</li>
-</ul></li>
-<li><strong>查找过程</strong>:
-<ul>
-<li>加锁。</li>
-<li>在哈希表中查找 <code>handle</code> 并返回，引用计数加 1。</li>
-</ul></li>
-<li><strong>释放过程</strong>:
-<ul>
-<li>使用完 <code>handle</code> 后需要手动释放。</li>
-<li>加锁，引用计数减 1。</li>
-</ul></li>
-<li><strong>擦除过程</strong>:
-<ul>
-<li>加锁，从缓存中移除条目，引用计数减 1。</li>
-</ul></li>
-</ol>
-<h4 id="sharedlrucache">SharedLRUCache</h4>
-<p>对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。</p>
-<ul>
-<li><strong>分片优势</strong>: 通过分片将缓存操作分散到多个 LRUCache
-实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/38128785">最小二乘法（least
+square method）</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/MoreAction_/article/details/106443383">一文让你彻底搞懂最小二乘法（超详细推导）</a></li>
 </ul>
+<hr />
 
       
     </div>
@@ -369,7 +385,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
