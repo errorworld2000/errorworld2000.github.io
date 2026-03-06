@@ -28,7 +28,7 @@
 <meta property="og:description" content="DPDK 简介 DPDK（Data Plane Development Kit）是一套高性能的数据平面开发套件，通过内核旁路（Kernel Bypass）技术，使应用程序能够直接访问网卡硬件，绑过传统的内核网络协议栈，从而实现极高的网络处理性能。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-02-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-06T05:53:31.192Z">
+<meta property="article:modified_time" content="2026-03-06T11:14:45.793Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="DPDK">
 <meta property="article:tag" content="HighPerformance">
@@ -185,7 +185,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -267,7 +267,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-06 13:53:31" itemprop="dateModified" datetime="2026-03-06T13:53:31+08:00">2026-03-06</time>
+      <time title="修改时间：2026-03-06 19:14:45" itemprop="dateModified" datetime="2026-03-06T19:14:45+08:00">2026-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -293,7 +293,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>744</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -335,6 +335,15 @@ Lookaside Buffer）缓存失效</li>
 <li><strong>DPI 设备</strong>：深度包检测设备，如防火墙、IDS/IPS</li>
 <li><strong>负载均衡器</strong>：高性能四层/七层负载均衡</li>
 </ol>
+<p>SMI（Serial Management Interface） 是 MAC 或 CPU 管理以太网 PHY
+的两线串行接口（MDC/MDIO）。 它允许读写 PHY
+寄存器，实现端口管理功能，如速率、双工、自动协商、功耗与状态监控。
+MII（Media Independent
+Interface），用于MAC和PHY之间传输数据。（RGMII因为同相位，所以得加延时
+MDI（Medium Dependent Interface）：PHY
+对外连接物理介质（线缆、光模块）的接口。</p>
+<p>UTP：全称：Unshielded Twisted Pair（无屏蔽双绞线）
+SDS：全称：SerDes（Serializer/Deserializer，串行/光口接口）</p>
 <h2 id="参考资料">参考资料</h2>
 <ul>
 <li><a
@@ -380,13 +389,13 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/xueqiuqiu/articles/
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/net/dsa/" rel="prev" title="dsa">
-                  <i class="fa fa-angle-left"></i> dsa
+                <a href="/net/vlan/" rel="prev" title="VLAN 虚拟局域网详解">
+                  <i class="fa fa-angle-left"></i> VLAN 虚拟局域网详解
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/gameframework/coroutine/" rel="next" title="协程深入分析">
-                  协程深入分析 <i class="fa fa-angle-right"></i>
+                <a href="/net/dsa/" rel="next" title="dsa">
+                  dsa <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -419,14 +428,14 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/xueqiuqiu/articles/
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">38k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">35 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

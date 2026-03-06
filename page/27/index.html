@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/sstable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">整体架构</a>
+          <a href="/leveldb/sstable/" class="post-title-link" itemprop="url">排序字符串表</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-06 13:53:31" itemprop="dateModified" datetime="2026-03-06T13:53:31+08:00">2026-03-06</time>
+      <time title="修改时间：2026-03-06 19:14:45" itemprop="dateModified" datetime="2026-03-06T19:14:45+08:00">2026-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
+      <span>816</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,169 +294,63 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="leveldb-整体架构">Leveldb 整体架构</h3>
-<p>Leveldb 是一个高性能的键值存储库，由 Google
-开发。它的设计目标是提供快速的读写操作，同时支持高效的压缩和持久化。以下是
-Leveldb的核心组件及其工作原理的详细说明：</p>
+          <hr />
+<h2 id="sstable">SSTable</h2>
+<h3 id="物理结构">物理结构</h3>
+<p>SSTable 按块划分，默认数据块大小为
+4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC
+校验码。</p>
+<h3 id="逻辑结构">逻辑结构</h3>
+<figure>
+<img src="sstable/sst-format.png" alt="SSTable 逻辑结构" />
+<figcaption aria-hidden="true">SSTable 逻辑结构</figcaption>
+</figure>
+<ol type="1">
+<li><strong>Data Block</strong>：存储键值对。</li>
+<li><strong>Filter Block</strong>：存储过滤器相关数据，采用专门的
+FilterBlock。</li>
+<li><strong>Meta Index Block</strong>：存储 Filter Block 在 SSTable
+文件中的位置和长度。</li>
+<li><strong>Index Block</strong>：存储每个 Data Block 的索引信息。</li>
+<li><strong>Footer</strong>：存储 Meta Index Block 和 Index Block
+的索引信息。</li>
+</ol>
+<h3 id="读写过程">读写过程</h3>
+<h4 id="写过程">写过程</h4>
+<figure>
+<img src="sstable/table-builder.png" alt="写过程" />
+<figcaption aria-hidden="true">写过程</figcaption>
+</figure>
+<h4 id="读过程">读过程</h4>
+<figure>
+<img src="sstable/sst-read.png" alt="读过程" />
+<figcaption aria-hidden="true">读过程</figcaption>
+</figure>
+<p>SSTable 使用两种缓存机制：</p>
+<ol type="1">
+<li><strong>Table Cache</strong>：存储已打开的 SSTable 文件。</li>
+<li><strong>Block Cache</strong>：存储已读取的数据块。</li>
+</ol>
+<p>Table Cache 的结构如下：</p>
+<figure>
+<img src="sstable/table-cache.png" alt="Table Cache 结构" />
+<figcaption aria-hidden="true">Table Cache 结构</figcaption>
+</figure>
+<h3 id="table-的迭代器">Table 的迭代器</h3>
+<h4 id="twoleveliterator">TwoLevelIterator</h4>
+<p><code>TwoLevelIterator</code>
+用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> BlockFunction = Iterator* (*)(<span class="type">void</span>*, <span class="type">const</span> ReadOptions&amp;, <span class="type">const</span> Slice&amp;);</span><br><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="title">TwoLevelIterator</span><span class="params">(Iterator* index_iter, BlockFunction block_function,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="type">void</span>* arg, <span class="type">const</span> ReadOptions&amp; options)</span></span>;</span><br><span class="line"><span class="comment">//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。</span></span><br></pre></td></tr></table></figure>
+<h4 id="实现思路">实现思路</h4>
+<ol type="1">
+<li><strong>索引块迭代器</strong>：遍历索引块的迭代器，用来获取每个数据块的元信息。</li>
+<li><strong>数据块读取函数</strong>：提供读取数据块的函数，该函数由
+<code>TwoLevelIterator</code> 调用以加载具体的数据块。</li>
+<li><strong>封装
+<code>TwoLevelIterator</code></strong>：结合索引块迭代器和数据块读取函数，创建
+<code>TwoLevelIterator</code>。</li>
+</ol>
 <hr />
-<h3 id="memtable"><strong>1. MemTable</strong></h3>
-<h4 id="概述"><strong>概述</strong></h4>
-<ul>
-<li><strong>MemTable</strong> 是 Leveldb
-在内存中用于组织和维护数据的结构。</li>
-<li>写入操作不会直接刷新到磁盘文件，而是先写入
-MemTable，因此写入性能非常高。</li>
-</ul>
-<h4 id="特点"><strong>特点</strong></h4>
-<ul>
-<li>基于 <strong>SkipList</strong>
-实现，支持高效的插入、删除和查找操作。</li>
-<li>数据按键排序存储，便于后续的持久化操作。</li>
-</ul>
-<h4 id="详情"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/memtable/" title="内存数据库">内存数据库</a>。</li>
-</ul>
-<hr />
-<h3 id="immutable-memtable"><strong>2. Immutable MemTable</strong></h3>
-<h4 id="概述-1"><strong>概述</strong></h4>
-<ul>
-<li>当 MemTable 的大小达到预设阈值时，它会转换为 <strong>Immutable
-MemTable</strong>。</li>
-<li>Immutable MemTable 是不可修改的，只允许读取操作。</li>
-</ul>
-<h4 id="作用"><strong>作用</strong></h4>
-<ul>
-<li>后台压缩进程会将 Immutable MemTable 中的数据转换为
-<strong>SSTable</strong>，并持久化到磁盘中。</li>
-<li>这种设计避免了写入阻塞，同时保证了数据的持久化。</li>
-</ul>
-<hr />
-<h3 id="log-write-ahead-log-wal"><strong>3. Log (Write-Ahead Log,
-WAL)</strong></h3>
-<h4 id="概述-2"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb 的写入操作首先会顺序写入日志文件（Log），然后再写入
-MemTable。</li>
-<li>日志文件用于在系统崩溃时恢复未持久化的数据。</li>
-</ul>
-<h4 id="特点-1"><strong>特点</strong></h4>
-<ul>
-<li>日志文件是追加写入的，因此写入性能非常高。</li>
-<li>日志文件与 MemTable 的数据保持一致，确保数据的可靠性。</li>
-</ul>
-<h4 id="详情-1"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/log/" title="日志">日志</a>。</li>
-</ul>
-<hr />
-<h3 id="sstable-sorted-string-table"><strong>4. SSTable (Sorted String
-Table)</strong></h3>
-<h4 id="概述-3"><strong>概述</strong></h4>
-<ul>
-<li>当内存中的数据超过一定阈值时，Leveldb会将数据持久化到磁盘，形成
-<strong>SSTable</strong> 文件。</li>
-<li>SSTable 是 Leveldb在磁盘上存储数据的主要形式。</li>
-</ul>
-<h4 id="层级结构"><strong>层级结构</strong></h4>
-<ul>
-<li>SSTable 文件在逻辑上分为多个层级（Level），最底层为 <strong>Level
-0</strong>，由内存直接持久化生成。</li>
-<li>更高层级的 SSTable 文件通过 <strong>Compaction</strong>
-操作整合生成，以减少文件之间的交集。</li>
-</ul>
-<h4 id="详情-2"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/sstable/" title="排序字符串表">排序字符串表</a>。</li>
-</ul>
-<hr />
-<h3 id="manifest"><strong>5. Manifest</strong></h3>
-<h4 id="概述-4"><strong>概述</strong></h4>
-<ul>
-<li><strong>Manifest</strong> 文件记录了 Leveldb的元数据信息，包括
-SSTable 文件的元信息、版本变更等。</li>
-</ul>
-<h4 id="核心组件"><strong>核心组件</strong></h4>
-<ul>
-<li><strong>FileMetaData</strong>：记录 SSTable
-文件的元信息，包括文件编号、文件大小、最小键、最大键等。</li>
-<li><strong>VersionEdit</strong>：记录数据库版本的变更，可能包含新增的文件元信息、删除的文件等。</li>
-</ul>
-<h4 id="工作原理"><strong>工作原理</strong></h4>
-<ul>
-<li>Manifest 文件与 Write-Ahead Log (WAL) 使用相同的存储方式。</li>
-<li>每次数据库启动时，都会通过 Manifest 文件恢复最新的版本信息。</li>
-</ul>
-<h4 id="详情-3"><strong>详情</strong></h4>
-<ul>
-<li>详情见。</li>
-</ul>
-<hr />
-<h3 id="读写操作"><strong>6. 读写操作</strong></h3>
-<h4 id="概述-5"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb的读写操作是其核心功能，设计目标是高效、可靠。</li>
-</ul>
-<h4 id="写操作"><strong>写操作</strong></h4>
-<ul>
-<li>数据首先写入日志文件（Log），然后写入 MemTable。</li>
-<li>当 MemTable 达到阈值时，转换为 Immutable
-MemTable，并触发后台压缩。</li>
-</ul>
-<h4 id="读操作"><strong>读操作</strong></h4>
-<ul>
-<li>数据首先从 MemTable 和 Immutable MemTable 中查找。</li>
-<li>如果未找到，则从磁盘中的 SSTable 文件中查找。</li>
-</ul>
-<h4 id="详情-4"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/read-write/" title="读写过程">读写过程</a>。</li>
-</ul>
-<hr />
-<h3 id="缓存系统"><strong>7. 缓存系统</strong></h3>
-<h4 id="概述-6"><strong>概述</strong></h4>
-<ul>
-<li>Leveldb使用缓存系统来加速读取操作，减少磁盘 I/O。</li>
-</ul>
-<h4 id="核心组件-1"><strong>核心组件</strong></h4>
-<ul>
-<li><strong>Block Cache</strong>：缓存 SSTable
-文件中的数据块，加速读取操作。</li>
-<li><strong>Table Cache</strong>：缓存 SSTable
-文件的元信息，减少文件打开和关闭的开销。</li>
-</ul>
-<h4 id="详情-5"><strong>详情</strong></h4>
-<ul>
-<li>详情见 <a href="/leveldb/cache/" title="缓存系统">缓存系统</a>。</li>
-</ul>
-<hr />
-<h3 id="compaction"><strong>8. Compaction</strong></h3>
-<h4 id="概述-7"><strong>概述</strong></h4>
-<ul>
-<li><strong>Compaction</strong> 是 Leveldb
-的核心机制之一，用于整合和优化 SSTable 文件。</li>
-</ul>
-<h4 id="作用-1"><strong>作用</strong></h4>
-<ul>
-<li>减少 SSTable 文件之间的交集，提高读取效率。</li>
-<li>清理过期或删除的数据，释放磁盘空间。</li>
-</ul>
-<h4 id="类型"><strong>类型</strong></h4>
-<ul>
-<li><strong>Minor Compaction</strong>：将 Immutable MemTable 转换为
-SSTable 文件。</li>
-<li><strong>Major Compaction</strong>：整合多个 SSTable
-文件，生成更高层级的文件。</li>
-</ul>
-<h4 id="详情-6"><strong>详情</strong></h4>
-<ul>
-<li>详情见 。</li>
-</ul>
-<hr />
-<h3 id="总结"><strong>总结</strong></h3>
-<p>Leveldb的整体架构通过 <strong>MemTable</strong>、<strong>Immutable
-MemTable</strong>、<strong>Log</strong>、<strong>SSTable</strong>、<strong>Manifest</strong>
-等组件的协同工作，实现了高效的读写操作和持久化存储。其设计充分考虑了性能、可靠性和可扩展性，适用于多种应用场景。</p>
 
       
     </div>
@@ -476,7 +370,7 @@ MemTable</strong>、<strong>Log</strong>、<strong>SSTable</strong>、<strong>Ma
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/26/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/26/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/28/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -499,14 +393,14 @@ MemTable</strong>、<strong>Log</strong>、<strong>SSTable</strong>、<strong>Ma
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">38k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">35 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

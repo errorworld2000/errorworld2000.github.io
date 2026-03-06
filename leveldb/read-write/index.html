@@ -28,7 +28,7 @@
 <meta property="og:description" content="写入过程 Leveldb的put&#x2F;delete操作实际都被转成batch然后write。 123WriteBatch batch;batch.Put(kvp.first, kvp.second);EXPECT_TRUE(db_-&gt;Write(WriteOptions(), &amp;batch).ok()); 在leveldb中，使用Write操作进行写入，流程如下：  创建writer对象">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-02-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-06T05:53:31.186Z">
+<meta property="article:modified_time" content="2026-03-06T11:14:45.787Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Compaction">
@@ -187,7 +187,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -269,7 +269,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-06 13:53:31" itemprop="dateModified" datetime="2026-03-06T13:53:31+08:00">2026-03-06</time>
+      <time title="修改时间：2026-03-06 19:14:45" itemprop="dateModified" datetime="2026-03-06T19:14:45+08:00">2026-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -389,8 +389,8 @@ Found错误，表示数据库中不存在指定的数据；</p>
 
           <div class="post-tags">
               <a href="/tags/LevelDB/" rel="tag"># LevelDB</a>
-              <a href="/tags/Concurrency/" rel="tag"># Concurrency</a>
               <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Concurrency/" rel="tag"># Concurrency</a>
               <a href="/tags/WritePath/" rel="tag"># WritePath</a>
               <a href="/tags/ReadPath/" rel="tag"># ReadPath</a>
               <a href="/tags/WriteBatch/" rel="tag"># WriteBatch</a>
@@ -441,14 +441,14 @@ Found错误，表示数据库中不存在指定的数据；</p>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">38k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">35 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
