@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/epoll/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/nat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/net/epoll/" class="post-title-link" itemprop="url">epoll —— Linux 高性能 I/O 多路复用详解</a>
+          <a href="/net/nat/" class="post-title-link" itemprop="url">NAT 与打洞技术简明说明</a>
         </h2>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-03-09 00:00:00 / 修改时间：17:45:33" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
+      <time title="创建时间：2026-03-09 00:00:00 / 修改时间：17:53:35" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>968</span>
+      <span>761</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -288,19 +288,60 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="epoll详解">epoll（详解）</h1>
-<p>epoll 是 Linux 提供的高性能 I/O
-多路复用机制，适合在大量并发连接场景下使用。相比传统的
-<code>select</code>/<code>poll</code>，epoll
-将被监控的描述符注册在内核中，内核维护就绪列表并通过事件通知用户态，从而实现更低的开销和更好的扩展性。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/net/epoll/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>NAT（网络地址转换）把私有网络地址映射到公网地址/端口，节省 IPv4
+地址并隔离内网。打洞（hole
+punching）是绕过中继，让两端直接建立点对点连接的常用技术，但其可行性取决于
+NAT 类型。</p>
+<h2 id="常见-nat-类型简要">常见 NAT 类型（简要）</h2>
+<ul>
+<li>Full Cone NAT（完全锥形）：内外映射固定，最容易打洞。</li>
+<li>Restricted Cone
+NAT（受限锥形）：仅允许被内部主机主动访问过的外部地址返回流量，UDP
+打洞通常可行。</li>
+<li>Port-Restricted Cone NAT（端口受限锥形）：更严格，需要匹配端口，UDP
+打洞仍经常可行。</li>
+<li>Symmetric NAT（对称
+NAT）：对每个目标分配不同的映射，端到端打洞通常失败或极其不稳定。</li>
+</ul>
+<blockquote>
+<p>结论：非对称（非-Symmetric）NAT 对 UDP 打洞友好；Symmetric NAT
+常需要中继（TURN）或其他穿透手段。</p>
+</blockquote>
+<h2 id="打洞hole-punching概述">打洞（Hole Punching）概述</h2>
+<ul>
+<li><p>UDP 打洞流程（常见）：</p>
+<ol type="1">
+<li>双方向公共服务（如 STUN）注册并获取各自公网映射。</li>
+<li>服务把双方的公网地址：端口互相告知。</li>
+<li>双端开始向对方的公网地址：端口发包（触发 NAT
+映射），从而建立直接路径。</li>
+</ol></li>
+<li><p>TCP 打洞：比 UDP
+更难，通常依赖同时发起连接或特殊中间协调，兼容性和成功率低于
+UDP。</p></li>
+<li><p>对称 NAT 问题：</p>
+<ul>
+<li>因为映射依赖目标地址/端口，直接用 STUN
+得到的映射对其它目标无效。</li>
+<li>结果是无法预测或复用端口，打洞失败，需要 TURN 等中继服务。</li>
+</ul></li>
+</ul>
+<h2 id="实践要点简洁">实践要点（简洁）</h2>
+<ul>
+<li>首选：先尝试 UDP 打洞 + STUN；若失败，降级到 TURN 中继。</li>
+<li>保持短周期 keepalive（NAT
+过期）以维持映射，但不要过于频繁以免浪费带宽。</li>
+<li>使用 <code>EPOLL</code>/异步 I/O
+在高并发场景处理大量打洞/心跳包时更高效。</li>
+<li>对称 NAT 环境：设计时假定需要中继，或尝试结合多路径/UDP
+穿透库（libp2p/ICE 等）。</li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/698709939">一文讲透所有网络穿透</a></li>
+</ul>
+
       
     </div>
 
