@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">170</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/gameframework%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/gameframework/gameframework%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">gameframework细节实现</a>
+          <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">ow架构</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
+      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-09 16:03:06" itemprop="dateModified" datetime="2026-03-09T16:03:06+08:00">2026-03-09</time>
+      <time title="修改时间：2026-03-09 17:45:33" itemprop="dateModified" datetime="2026-03-09T17:45:33+08:00">2026-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/gameframework/" itemprop="url" rel="index"><span itemprop="name">gameframework</span></a>
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
         </span>
     </span>
 
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>978</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,70 +294,89 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="reference">Reference</h2>
-<h3 id="ireference">IReference</h3>
-<p>被引用的对象需实现 <code>IReference</code> 接口（包含一个
-<code>Clear</code>
-函数），当对象被回收时调用，恢复初始状态，以便下次使用。</p>
-<h3 id="referencecollection">ReferenceCollection</h3>
-<p>代表一种类型的引用池，位于 <code>ReferencePool</code> 内部：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> Queue&lt;IReference&gt; m_References;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> Type m_ReferenceType;</span><br><span class="line"><span class="comment">// ...状态计数</span></span><br></pre></td></tr></table></figure>
-<h3 id="referenceinfo">ReferenceInfo</h3>
-<p>获取引用池的状态计数，相较 <code>ReferenceCollection</code> 少了
-<code>m_References</code>。</p>
-<h3 id="referencepool">ReferencePool</h3>
-<p>静态类，管理所有类型的引用池：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Dictionary&lt;Type, ReferenceCollection&gt; s_ReferenceCollections = <span class="keyword">new</span> Dictionary&lt;Type, ReferenceCollection&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">Acquire</span>&lt;<span class="title">T</span>&gt;() <span class="keyword">where</span> T : <span class="keyword">class</span>, IReference, <span class="keyword">new</span>()</span> =&gt; GetReferenceCollection(<span class="keyword">typeof</span>(T)).Acquire&lt;T&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IReference <span class="title">Acquire</span>(<span class="params">Type referenceType</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    InternalCheckReferenceType(referenceType);</span><br><span class="line">    <span class="keyword">return</span> GetReferenceCollection(referenceType).Acquire();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>具体操作时先根据类型（为 <code>Type</code>
-时先要对类型进行检查）获取对应的
-<code>ReferenceCollection</code>，再进行其他操作。</p>
-</blockquote>
-<hr />
-<h2 id="fsm-状态机">Fsm (状态机)</h2>
-<h3 id="fsmstate">FsmState<T></h3>
-<p>状态机状态的抽象类，包括状态初始化、状态更新等逻辑。</p>
-<h3 id="ifsm">IFsm<T></h3>
-<p>状态机接口。</p>
-<h3 id="fsmbase">FsmBase</h3>
-<p>状态机的抽象类。</p>
-<h3 id="fsm">Fsm<T></h3>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">Fsm</span>&lt;<span class="title">T</span>&gt; : <span class="title">FsmBase</span>, <span class="title">IReference</span>, <span class="title">IFsm</span>&lt;<span class="title">T</span>&gt; <span class="keyword">where</span> <span class="title">T</span> : <span class="keyword">class</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> T m_Owner;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Dictionary&lt;Type, FsmState&lt;T&gt;&gt; m_States;</span><br><span class="line">    <span class="keyword">private</span> Dictionary&lt;<span class="built_in">string</span>, Variable&gt; m_Datas;</span><br><span class="line">    <span class="keyword">private</span> FsmState&lt;T&gt; m_CurrentState;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>一个状态机，包括所有状态类以及当前数据。</p>
-</blockquote>
-<h3 id="ifsmmanager">IFsmManager</h3>
-<p>接口，管理所有状态机。</p>
-<hr />
-<h2 id="procedure">Procedure</h2>
-<h3 id="proceduremanager">ProcedureManager</h3>
-<p>特殊的 <code>Fsm</code>，也由 <code>FsmManager</code> 管理。</p>
-<hr />
-<h2 id="setting">Setting</h2>
-<p>只需根据 <code>ISettingHelper</code>
-创建设置辅助器即可完成，<code>ISettingManager</code> 用于使用。</p>
-<hr />
-<h2 id="module">Module</h2>
-<p>只暴露接口，具体实现仅在程序集可见。通过
-<code>GetModule&lt;Interface&gt;</code> 实例化：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">InScene</span>(<span class="params"><span class="keyword">this</span> GameObject gameObject</span>)</span></span><br></pre></td></tr></table></figure>
+          <h3 id="核心架构">核心架构</h3>
 <ul>
-<li><code>this</code>：表示这是一个扩展方法，并且该方法是对
-<code>GameObject</code> 类型的扩展。</li>
-<li><code>GameObject</code>：表示要扩展的类型（Unity 的
-<code>GameObject</code> 类）。</li>
-<li><code>gameObject</code>：方法参数，调用时传入的目标对象。</li>
+<li>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度
+<ul>
+<li><strong>Entity</strong>：ID +
+一组组件（Component，仅存储状态，无行为）</li>
+<li><strong>System</strong>：执行行为，关注特定组件组合（tuple /
+component-slice），在这些组件上处理逻辑</li>
+</ul></li>
+<li><strong>优点</strong>：
+<ul>
+<li>状态与行为分离，System 更纯洁、可组合</li>
+<li>组件只存储数据，行为集中在 System</li>
+<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
+</ul></li>
+<li><strong>单例组件（Singleton Component）</strong>
+<ul>
+<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
+<li>减少 System 间耦合</li>
+</ul></li>
+<li><strong>Utility 函数</strong>
+<ul>
+<li>封装共享行为（被多个 System 调用的小逻辑）</li>
+<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
+</ul></li>
 </ul>
 <hr />
-<h2 id="dataprovider">DataProvider</h2>
-<h3 id="readdata">ReadData</h3>
-<p><code>m_ResourceManager.LoadAsset</code>
-加载资产，并传入回调函数，回调函数触发 provider 的事件：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnCloseUIFormComplete</span>(<span class="params"><span class="built_in">object</span> sender, CloseUIFormCompleteEventArgs e</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    m_EventComponent.Fire(<span class="keyword">this</span>, CloseUIFormCompleteEventArgs.Create(e));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">m_UIManager.CloseUIFormComplete += OnCloseUIFormComplete;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>在 GameFramework 提供接口，在 runtime 中将不同模块结合起来。</p>
-</blockquote>
+<h3 id="ecs-设计规范与权衡">ECS 设计规范与权衡</h3>
+<ul>
+<li><p><strong>组件无行为，System 尽量无状态</strong></p></li>
+<li><p>如果 System 需要状态 → 放在 Singleton Component</p></li>
+<li><p><strong>副作用控制</strong>：</p>
+<ul>
+<li><strong>Deferred
+Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
+<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
+</ul></li>
+<li><p><strong>实体创建与销毁</strong></p>
+<ul>
+<li>销毁推迟到帧末端安全</li>
+<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
+</ul></li>
+</ul>
 <hr />
+<h3 id="网络同步-netcode">网络同步 / Netcode</h3>
+<h4 id="预测与回滚prediction-reconciliation">1. 预测与回滚（Prediction
+&amp; Reconciliation）</h4>
+<ul>
+<li>客户端响应用户输入立即做预测，不等服务器确认</li>
+<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
+<li>客户端保存输入历史和移动状态历史</li>
+<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
+</ul>
+<h4 id="输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
+<ul>
+<li>每个发送包包含自上次确认以来的所有输入帧</li>
+<li>服务器缓冲区接收输入并补偿丢失帧</li>
+</ul>
+<h4 id="延迟-缓冲-时间膨胀buffering-time-dilation">3. 延迟 / 缓冲 /
+时间膨胀（Buffering / Time Dilation）</h4>
+<ul>
+<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
+<li>网络恢复稳定后，缩小缓冲区</li>
+</ul>
+<h4 id="命中判定hit-registration">4. 命中判定（Hit Registration）</h4>
+<ul>
+<li>客户端可能预测子弹命中，但服务器是最终权威</li>
+<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
+<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
+</ul>
+<hr />
+<h3 id="设计原则总结">设计原则总结</h3>
+<ol type="1">
+<li>架构为 <strong>可维护性与可扩展性服务</strong>
+<ul>
+<li>ECS + 严格准则（组件无行为，System 少状态）</li>
+</ul></li>
+<li>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</li>
+<li>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</li>
+</ol>
+<hr />
+<p>参考资料： <a
+target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
 
       
     </div>
@@ -377,7 +396,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/17/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -400,14 +419,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">42k</span>
+    <span title="站点总字数">43k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">38 分钟</span>
+    <span title="站点阅读时长">39 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">170</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/async/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">git开发流程</a>
+          <a href="/other/async/" class="post-title-link" itemprop="url">async</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-09 16:03:06" itemprop="dateModified" datetime="2026-03-09T16:03:06+08:00">2026-03-09</time>
+      <time title="修改时间：2026-03-09 17:45:33" itemprop="dateModified" datetime="2026-03-09T17:45:33+08:00">2026-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>989</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,123 +294,39 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="分支核心职责">1. 分支核心职责</h2>
-<table>
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 11%" />
-<col style="width: 73%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">分支类型</th>
-<th style="text-align: left;">生命周期</th>
-<th style="text-align: left;">核心职责</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong><code>master</code></strong></td>
-<td style="text-align: left;">永久</td>
-<td
-style="text-align: left;"><strong>只读</strong>。指向最新<strong>已发布</strong>版本，生产环境代码最终来源。</td>
-</tr>
-<tr class="even">
-<td
-style="text-align: left;"><strong><code>release/x.y.z</code></strong></td>
-<td style="text-align: left;">长期</td>
-<td
-style="text-align: left;"><strong>开发、测试、修复主战场</strong>。合并
-<code>feature</code> 和 <code>hotfix</code>。新版本从上一个
-<code>release</code> 创建。</td>
-</tr>
-<tr class="odd">
-<td
-style="text-align: left;"><strong><code>feature/xxx</code></strong></td>
-<td style="text-align: left;">短期</td>
-<td style="text-align: left;"><strong>开发新功能</strong>。从目标
-<code>release</code> 创建，完成后合并回 <code>release</code>。</td>
-</tr>
-<tr class="even">
-<td
-style="text-align: left;"><strong><code>hotfix/xxx</code></strong></td>
-<td style="text-align: left;">短期、紧急修复</td>
-<td style="text-align: left;"><strong>修复线上 Bug</strong>。从出问题的
-<code>release</code> 创建，修复后合并回该分支并同步到后续
-<code>release</code> 分支。</td>
-</tr>
-</tbody>
-</table>
+          <h2 id="异步示例制作早餐">异步示例：制作早餐</h2>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 同步倒咖啡</span></span><br><span class="line">    Coffee cup = PourCoffee();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;coffee is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 并发煎蛋、炸薯饼、烤吐司</span></span><br><span class="line">    <span class="keyword">var</span> eggsTask = FryEggsAsync(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">var</span> hashBrownTask = FryHashBrownsAsync(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">var</span> toastTask = MakeToastWithButterAndJamAsync(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> breakfastTasks = <span class="keyword">new</span> List&lt;Task&gt; &#123; eggsTask, hashBrownTask, toastTask &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (breakfastTasks.Count &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 等待任意一个任务完成</span></span><br><span class="line">        Task finishedTask = <span class="keyword">await</span> Task.WhenAny(breakfastTasks);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (finishedTask == eggsTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;eggs are ready&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == hashBrownTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;hash browns are ready&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (finishedTask == toastTask)</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;toast is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 可选：处理异常</span></span><br><span class="line">        <span class="keyword">await</span> finishedTask;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 从任务列表移除已完成任务</span></span><br><span class="line">        breakfastTasks.Remove(finishedTask);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 同步倒橙汁</span></span><br><span class="line">    Juice oj = PourOJ();</span><br><span class="line">    Console.WriteLine(<span class="string">&quot;oj is ready&quot;</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Breakfast is ready!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr />
-<h2 id="个人开发标准流程">2. 个人开发标准流程</h2>
-<h3 id="步骤-1同步并创建分支">步骤 1：同步并创建分支</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout release/1.11.0         <span class="comment"># 切换到目标 release 分支</span></span><br><span class="line">git pull origin release/1.11.0      <span class="comment"># 拉取最新代码</span></span><br><span class="line">git checkout -b feature/your-task   <span class="comment"># 创建功能分支</span></span><br></pre></td></tr></table></figure>
-<h3 id="步骤-2本地开发与提交">步骤 2：本地开发与提交</h3>
-<p>在 <code>feature</code>
-分支上编码，并进行<strong>原子化提交</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;feat: implement user login modal&quot;</span></span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;fix: resolve button style issue&quot;</span></span><br></pre></td></tr></table></figure>
-<h3 id="步骤-3整理提交记录pr-前">步骤 3：整理提交记录（PR 前）</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br><span class="line">git rebase -i origin/release/1.11.0</span><br></pre></td></tr></table></figure>
+<h2 id="io-bound等待-io-的任务">🔹 I/O Bound（等待 I/O 的任务）</h2>
 <ul>
-<li>合并零碎 commit，保持提交历史清晰。</li>
-</ul>
-<h3 id="步骤-4推送并创建-pr">步骤 4：推送并创建 PR</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f origin feature/your-task-name  <span class="comment"># 强制推送</span></span><br></pre></td></tr></table></figure>
+<li><strong>特点</strong>：程序瓶颈在等待外部资源（网络、磁盘等），CPU
+大部分时间空闲。</li>
+<li><strong>解决方案</strong>：使用 <code>await</code>
+异步等待，释放线程资源，避免阻塞主线程。</li>
+<li><strong><code>await</code> 会做什么</strong>：
 <ul>
-<li>在 GitHub / GitLab 上，从功能分支向目标 <code>release</code> 发起
-PR。</li>
+<li>挂起当前方法（如 UI 回调）。</li>
+<li>控制权交还给事件循环，不阻塞界面。</li>
+<li>等待完成后再恢复执行。</li>
+</ul></li>
 </ul>
+<p><strong>示例</strong>：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> HttpClient.GetAsync(<span class="string">&quot;https://api.example.com&quot;</span>);</span><br></pre></td></tr></table></figure>
 <hr />
-<h2 id="pr-审查与合并流程">3. PR 审查与合并流程</h2>
-<h3 id="第一步代码审查">第一步：代码审查</h3>
+<h2 id="cpu-bound计算密集型任务">🔸 CPU Bound（计算密集型任务）</h2>
 <ul>
-<li>检查逻辑、规范、目标分支。</li>
-<li>至少一名成员 <code>Approve</code>。</li>
+<li><strong>特点</strong>：瓶颈在本地 CPU 运算，I/O 很少。</li>
+<li><strong>解决方案</strong>：使用 <code>Task.Run</code>
+将计算任务放到线程池，<strong>并行执行</strong>，减轻主线程压力。</li>
 </ul>
-<h3 id="第二步合并前检查">第二步：合并前检查</h3>
+<p><strong>示例</strong>：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="keyword">await</span> Task.Run(() =&gt; CalculateSomethingHeavy());</span><br></pre></td></tr></table></figure>
+<hr />
 <ul>
-<li>确认 CI/CD 全通过。</li>
-<li>提交历史整理干净。</li>
-<li>无合并冲突。</li>
+<li><strong>参考文档</strong>： <a
+target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/">Async
+in depth | Microsoft Docs</a></li>
 </ul>
-<h3 id="第三步执行合并">第三步：执行合并</h3>
-<p><strong>推荐策略</strong>（严禁使用 Merge Commit）：</p>
-<table>
-<colgroup>
-<col style="width: 27%" />
-<col style="width: 30%" />
-<col style="width: 41%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">合并方式</th>
-<th style="text-align: left;">操作方式</th>
-<th style="text-align: left;">优点</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Squash and Merge</strong>
-(推荐)</td>
-<td style="text-align: left;">点击 <strong>Squash and Merge</strong>
-按钮</td>
-<td style="text-align: left;">将所有 commit
-合并为一个，生成干净历史。</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Rebase and Merge</strong>
-(可选)</td>
-<td style="text-align: left;">点击 <strong>Rebase and Merge</strong>
-按钮</td>
-<td style="text-align: left;">保持线性历史，按顺序追加 commit。</td>
-</tr>
-</tbody>
-</table>
-<h3 id="第四步清理分支">第四步：清理分支</h3>
-<ul>
-<li>PR 合并后删除 <code>feature</code> 分支：</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete feature/your-task-name</span><br></pre></td></tr></table></figure>
 <hr />
 
       
@@ -431,7 +347,7 @@ PR。</li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/21/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -454,14 +370,14 @@ PR。</li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">42k</span>
+    <span title="站点总字数">43k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">38 分钟</span>
+    <span title="站点阅读时长">39 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">170</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/command/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">系统基础（启动、页缓存、kdump、UIO/VFIO、页表）</a>
+          <a href="/os/command/" class="post-title-link" itemprop="url">常用命令速查</a>
         </h2>
 
         <div class="post-meta-container">
@@ -251,7 +251,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-03-09 00:00:00 / 修改时间：16:03:06" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
+      <time title="创建时间：2026-03-09 00:00:00 / 修改时间：17:45:33" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>691</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -288,75 +288,97 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="启动过程简要">启动过程（简要）</h2>
-<ol type="1">
-<li>上电 → BootROM（SoC 固件）
+          <h2 id="u-boot">U-Boot</h2>
 <ul>
-<li>读取 RCW（Reset Configuration Word）、初始化最小硬件、加载 BL2 到
-SRAM</li>
-</ul></li>
-<li>BL2（ATF early）
-<ul>
-<li>初始化 DDR，加载 BL31（ATF runtime）和 BL33（通常为 U‑Boot）到
-DDR</li>
-</ul></li>
-<li>BL31（ATF runtime）
-<ul>
-<li>设置安全环境后跳转到 U‑Boot</li>
-</ul></li>
-<li>U‑Boot
-<ul>
-<li>初始化外设，加载 Linux 内核与设备树</li>
-</ul></li>
-</ol>
-<p>（此流程适用于常见 Arm SoC 的多阶段引导；具体实现随平台而异。）</p>
-<h2 id="磁盘-页缓存-用户空间io-路径">磁盘 → 页缓存 → 用户空间（I/O
-路径）</h2>
-<p>传统路径：磁盘 → DMA → 内核页缓存（page cache）→ copy_to_user →
-用户缓冲区</p>
-<p>零拷贝优化：磁盘文件 → 页缓存 →
-直接映射到用户虚拟地址（避免额外内存拷贝）。</p>
-<p>原因与优点：</p>
-<ul>
-<li>零拷贝：减少一次内存复制，提升性能</li>
-<li>按需分页：只在访问时加载页面，节省内存</li>
-<li>虚拟地址映射：允许映射超大文件以便用户态直接访问</li>
+<li><code>mvsw_reg</code> # 读写寄存器（平台相关）</li>
+<li><code>setenv ipaddr</code> # 设置环境变量 IP</li>
+<li><code>dhcp</code> # 通过 DHCP 获取地址</li>
+<li><code>bdinfo</code> # 显示板级信息</li>
+<li><code>mii device</code> / <code>mii info</code> # PHY 信息</li>
+<li><code>md $load_addr 100</code> # 内存 hexdump</li>
+<li><code>load usb 0:1</code> # 从 USB 加载</li>
+<li><code>booti $kernel_addr - $fdt_addr</code> # 启动内核</li>
 </ul>
-<h2 id="kdump核心转储">kdump（核心转储）</h2>
-<p>kdump 使用 <code>kexec</code> 启动一个最小化内核（crash
-kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
-<code>/proc/vmcore</code>。用户态工具可像读文件一样转储系统内存用于分析。</p>
-<h2 id="uio-vs-vfio设备直通对比">UIO vs VFIO（设备直通对比）</h2>
-<table>
-<colgroup>
-<col style="width: 4%" />
-<col style="width: 40%" />
-<col style="width: 54%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>方案</th>
-<th>作用</th>
-<th>优缺点</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>UIO</td>
-<td>用户态访问设备寄存器</td>
-<td>简单、适合调试；不提供安全 DMA/隔离，风险较高</td>
-</tr>
-<tr class="even">
-<td>VFIO</td>
-<td>通过 IOMMU 提供安全 DMA 与设备直通</td>
-<td>安全、支持高性能网卡与 DPDK；适合生产和虚拟化</td>
-</tr>
-</tbody>
-</table>
-<h2 id="页表与多级页表的由来">页表与多级页表的由来</h2>
-<p>CPU 的 MMU 要求一级页表是可直接索引的连续数组；对于 64
-位广阔的地址空间，单级页表会非常大且不可行。多级页表通过分层索引实现稀疏映射，节省内存并支持按需分配。</p>
-<hr />
+<h2 id="linux常用">Linux（常用）</h2>
+<ul>
+<li><code>systemctl restart &lt;svc&gt;</code></li>
+<li><code>/etc/init.d/ssh stop</code></li>
+<li><code>hexdump /dev/ttyS &amp;</code> # 后台查看串口原始数据</li>
+<li><code>jobs</code> / <code>bg %1</code> / <code>fg %1</code></li>
+<li><code>screen</code> / <code>tmux</code></li>
+</ul>
+<h2 id="网络诊断">网络诊断</h2>
+<ul>
+<li><code>dig</code> / <code>nslookup</code></li>
+<li><code>traceroute</code></li>
+<li><code>ip route get &lt;dst&gt;</code></li>
+<li><code>systemd-resolve --status</code></li>
+<li><code>cat /etc/resolv.conf</code></li>
+<li><code>dhclient br-lan</code> # 向网桥请求 DHCP</li>
+<li><code>tcpdump -i eth1 -e -xx</code></li>
+</ul>
+<h2 id="vlan-链路配置">VLAN / 链路配置</h2>
+<ul>
+<li><code>bridge vlan add dev eth1 vid 100 pvid untagged</code></li>
+<li><code>ip link add link eth1 name eth1.100 type vlan id 100</code></li>
+</ul>
+<h2 id="ip-常用命令"><code>ip</code> 常用命令</h2>
+<ul>
+<li><code>ip a</code></li>
+<li><code>ip link show</code></li>
+<li><code>ip link set enp3s0 up</code></li>
+<li><code>ip link add name br-lan type bridge</code></li>
+<li><code>ip link set br-lan up</code></li>
+<li><code>ip link set enp3s0 master br-lan</code></li>
+<li><code>ip addr add 192.168.1.6/24 dev br-lan</code></li>
+<li><code>ip route add default via 192.168.1.1 dev br-lan</code></li>
+</ul>
+<h2 id="块设备与文件系统">块设备与文件系统</h2>
+<ul>
+<li><code>lsblk -f</code></li>
+<li><code>blkid</code></li>
+</ul>
+<h2 id="内存与-io-信息">内存与 I/O 信息</h2>
+<ul>
+<li><code>free -h</code></li>
+<li><code>cat /proc/iomem</code></li>
+<li><code>cat /proc/meminfo</code></li>
+</ul>
+<h2 id="系统信息与日志">系统信息与日志</h2>
+<ul>
+<li><code>lscpu</code></li>
+<li><code>zcat /proc/config.gz | grep CONFIG</code></li>
+<li><code>dmesg | grep -i &lt;term&gt;</code></li>
+<li><code>cat /etc/os-release</code></li>
+<li><code>lsb_release -a</code></li>
+<li><code>uname -a</code></li>
+<li><code>journalctl -u systemd-modules-load --no-pager</code></li>
+</ul>
+<h2 id="i2c">I2C</h2>
+<ul>
+<li><code>i2cdetect -a -y 0</code></li>
+<li><code>i2cdump -y 1 0x50</code></li>
+</ul>
+<h2 id="gpio">GPIO</h2>
+<ul>
+<li><code>cat /sys/kernel/debug/gpio</code></li>
+<li><code>gpioset gpiochip3 6=0</code></li>
+<li><code>echo 65 &gt; /sys/class/gpio/export</code></li>
+<li><code>gpioinfo</code></li>
+</ul>
+<h2 id="git">Git</h2>
+<ul>
+<li><code>git config --list --show-origin</code></li>
+<li><code>git submodule update --init --recursive</code></li>
+<li><code>git clone --recurse-submodules &lt;repo&gt;</code></li>
+<li><code>git submodule add &lt;url&gt; &lt;path&gt;</code></li>
+</ul>
+<h2 id="编译-make">编译 / Make</h2>
+<ul>
+<li><code>export CROSS_COMPILE=&lt;toolchain&gt; ARCH=arm64</code></li>
+<li><code>make defconfig</code></li>
+<li><code>make -j16 Image modules</code></li>
+</ul>
 
       
     </div>
@@ -376,7 +398,7 @@ kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -399,14 +421,14 @@ kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">42k</span>
+    <span title="站点总字数">43k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">38 分钟</span>
+    <span title="站点阅读时长">39 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
