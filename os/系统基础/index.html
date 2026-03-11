@@ -28,7 +28,7 @@
 <meta property="og:description" content="启动过程（简要）  上电 → BootROM（SoC 固件）  读取 RCW（Reset Configuration Word）、初始化最小硬件、加载 BL2 到 SRAM  BL2（ATF early）  初始化 DDR，加载 BL31（ATF runtime）和 BL33（通常为 U‑Boot）到 DDR  BL31（ATF runtime）  设置安全环境后跳转到 U‑Boot  U‑Boo">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-09T09:53:35.000Z">
+<meta property="article:modified_time" content="2026-03-11T07:20:36.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="MMU">
 <meta property="article:tag" content="UIO">
@@ -171,7 +171,7 @@
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
             <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E7%AE%80%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">启动过程（简要）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98-%E9%A1%B5%E7%BC%93%E5%AD%98-%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4io-%E8%B7%AF%E5%BE%84"><span class="nav-number">2.</span> <span class="nav-text">磁盘 → 页缓存 → 用户空间（I&#x2F;O
-路径）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kdump%E6%A0%B8%E5%BF%83%E8%BD%AC%E5%82%A8"><span class="nav-number">3.</span> <span class="nav-text">kdump（核心转储）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uio-vs-vfio%E8%AE%BE%E5%A4%87%E7%9B%B4%E9%80%9A%E5%AF%B9%E6%AF%94"><span class="nav-number">4.</span> <span class="nav-text">UIO vs VFIO（设备直通对比）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B5%E8%A1%A8%E4%B8%8E%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="nav-number">5.</span> <span class="nav-text">页表与多级页表的由来</span></a></li></ol></div>
+路径）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kdump%E6%A0%B8%E5%BF%83%E8%BD%AC%E5%82%A8"><span class="nav-number">3.</span> <span class="nav-text">kdump（核心转储）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uio-vs-vfio%E8%AE%BE%E5%A4%87%E7%9B%B4%E9%80%9A%E5%AF%B9%E6%AF%94"><span class="nav-number">4.</span> <span class="nav-text">UIO vs VFIO（设备直通对比）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B5%E8%A1%A8%E4%B8%8E%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8%E7%9A%84%E7%94%B1%E6%9D%A5"><span class="nav-number">5.</span> <span class="nav-text">页表与多级页表的由来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%A1%AC%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">系统硬件</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -260,9 +260,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2026-03-09 00:00:00 / 修改时间：17:53:35" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
+      <time title="创建时间：2026-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-03-11 15:20:36" itemprop="dateModified" datetime="2026-03-11T15:20:36+08:00">2026-03-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,7 +294,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>691</span>
+      <span>912</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -373,6 +379,48 @@ kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
 <h2 id="页表与多级页表的由来">页表与多级页表的由来</h2>
 <p>CPU 的 MMU 要求一级页表是可直接索引的连续数组；对于 64
 位广阔的地址空间，单级页表会非常大且不可行。多级页表通过分层索引实现稀疏映射，节省内存并支持按需分配。</p>
+<h2 id="系统硬件">系统硬件</h2>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 41%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>特性</th>
+<th>ARM/嵌入式</th>
+<th>x86/PCIe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>硬件发现</td>
+<td>写死，需要 DT 或 platform_data</td>
+<td>自描述，扫描 PCI 配置空间</td>
+</tr>
+<tr class="even">
+<td>驱动匹配</td>
+<td>通过 <code>compatible</code> / platform_device</td>
+<td>通过 VendorID/DeviceID</td>
+</tr>
+<tr class="odd">
+<td>硬件信息</td>
+<td>由 DT 或手工提供地址、中断、时钟等</td>
+<td>PCI 配置空间提供资源和中断信息</td>
+</tr>
+<tr class="even">
+<td>驱动初始化</td>
+<td><code>probe()</code> 从 DT 读取资源初始化</td>
+<td><code>probe()</code> 从 PCI 配置空间读取资源初始化</td>
+</tr>
+<tr class="odd">
+<td>可移植性</td>
+<td>需要针对不同板子修改 DT</td>
+<td>基本通用（同类 PCIe 设备）</td>
+</tr>
+</tbody>
+</table>
 <hr />
 
     </div>
@@ -451,14 +499,14 @@ kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">43k</span>
+    <span title="站点总字数">45k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">39 分钟</span>
+    <span title="站点阅读时长">41 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
