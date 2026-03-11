@@ -68,7 +68,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">170</span>
+        <span class="site-state-item-count">165</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/cache/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E7%9B%B8%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/cache/" class="post-title-link" itemprop="url">缓存系统</a>
+          <a href="/other/%E7%9B%B8%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">相机视觉基础</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-20T00:00:00+08:00">2025-02-20</time>
+      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-11 15:20:36" itemprop="dateModified" datetime="2026-03-11T15:20:36+08:00">2026-03-11</time>
+      <time title="修改时间：2026-03-11 18:58:25" itemprop="dateModified" datetime="2026-03-11T18:58:25+08:00">2026-03-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/leveldb/" itemprop="url" rel="index"><span itemprop="name">leveldb</span></a>
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
         </span>
     </span>
 
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>604</span>
+      <span>1.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,62 +294,105 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="缓存系统">缓存系统</h3>
-<p>基于 LRUCache 的缓存系统，其结构包括哈希表和 LRU 双向链表。</p>
-<h4 id="lruhandle">LRUHandle</h4>
+          <h2 id="相机参数">1. 相机参数</h2>
+<h3 id="分辨率resolution">1.1 分辨率（Resolution）</h3>
+<p>指相机一次采集图像的<strong>像素点数</strong>，也可理解为传感器上感光单元的数量。分辨率越高，图像细节越丰富。</p>
+<hr />
+<h3 id="传感器尺寸sensor-size">1.2 传感器尺寸（Sensor Size）</h3>
+<p>决定相机的<strong>成像视野大小</strong>，常见尺寸有
+1/3”、1/2”、2/3”、1” 等。</p>
+<hr />
+<h3 id="像元尺寸pixel-size">1.3 像元尺寸（Pixel Size）</h3>
+<p>单个像素感光单元的尺寸。尺寸越大，感光能力越强，信噪比越高，图像质量更好。</p>
+<p>公式：</p>
+<p><span class="math display">\[
+\text{像元尺寸} = \frac{\text{传感器尺寸}}{\text{分辨率（像素个数）}}
+\]</span></p>
+<hr />
+<h3 id="图像精度accuracy">1.4 图像精度（Accuracy）</h3>
+<p>指一个像素代表的实际物理尺寸，常用单位：μm/pixel。</p>
+<p>公式：</p>
+<p><span class="math display">\[
+\text{精度} = \frac{\text{视野（FOV）}}{\text{分辨率}}
+\]</span></p>
 <ul>
-<li><strong>哈希表相关</strong>: <code>next_hash</code>
-用于链接哈希表中的条目。</li>
-<li><strong>链表相关</strong>: <code>next</code> 和 <code>prev</code>
-用于在 LRU
-链表和使用中的链表（<code>in_use</code>）中形成双向链表。</li>
+<li>背光源应用：推荐精度为 <strong>1–3 像素</strong></li>
+<li>正光源应用：推荐精度为 <strong>3–5 像素</strong></li>
 </ul>
-<h4 id="哈希表">哈希表</h4>
+<hr />
+<h3 id="iso">1.5 ISO</h3>
+<p>表示图像传感器对光的灵敏度。</p>
 <ul>
-<li><strong>结构</strong>:
-哈希表由多个存储桶组成，每个存储桶包含一个链接链表，用于存储散列到该存储桶中的缓存条目。</li>
-<li>插入逻辑：
+<li>实际上 ISO
+调整的是<strong>光电信号的放大倍数</strong>，并非传感器本身的灵敏度。</li>
+<li>ISO 过高会引入<strong>噪点</strong>，降低图像质量。</li>
+</ul>
+<hr />
+<h2 id="镜头参数">2. 镜头参数</h2>
+<h3 id="焦距focal-length-f">2.1 焦距（Focal Length, f）</h3>
+<p>焦距决定成像比例与视场范围。</p>
 <ul>
-<li>先找到对应的存储桶。</li>
-<li>比较哈希值和键值，如果找到则替换条目，否则将新条目插入到链表末尾。</li>
-<li>当条目数量超过容量时，重新调整哈希表的大小。</li>
+<li><strong>物距 &gt; 2f</strong>：像距在 f–2f 之间，成
+<strong>倒立缩小实像</strong>（照相机成像）。</li>
+<li><strong>f &lt; 物距 &lt; 2f</strong>：像距 &gt; 2f，成
+<strong>倒立放大实像</strong>（幻灯机、微距拍摄）。</li>
+<li><strong>物距 &lt; f</strong>：像距为负，在物体同侧成
+<strong>正立放大虚像</strong>（放大镜）。</li>
+</ul>
+<p>定焦镜头的对焦环实质上调整的是<strong>像距</strong>。</p>
+<p><img src="相机视觉基础/focal_length.png" alt="focal_length" width="50%"></p>
+<hr />
+<h3 id="视场角field-of-view-fov">2.2 视场角（Field of View, FOV）</h3>
+<p>镜头可覆盖的最大成像范围，取决于 <strong>镜头焦距</strong> 与
+<strong>传感器尺寸</strong>。</p>
+<p><img src="相机视觉基础/fov.png" alt="fov" width="50%"></p>
+<hr />
+<h3 id="光圈aperture-f-number-f">2.3 光圈（Aperture, f-number, F）</h3>
+<p>光圈大小用 <strong>F 值</strong> 表示：</p>
+<p><span class="math display">\[
+F = \frac{f}{D}
+\]</span></p>
+<p>其中 <strong>f</strong> 为焦距，<strong>D</strong> 为入瞳直径。</p>
+<ul>
+<li>F 值越小 → 光圈越大 → 进光量越多。</li>
+<li>F 值越大 → 光圈越小 → 进光量越少。</li>
+</ul>
+<hr />
+<h3 id="景深depth-of-field-dof">2.4 景深（Depth of Field, DOF）</h3>
+<p>景深表示在一定清晰度范围内，被摄体前后可接受的成像范围。</p>
+<ul>
+<li><strong>本质</strong>：只有一个平面真正处于合焦状态，其他位置形成“弥散圆”（Circle
+of Confusion）。</li>
+<li><strong>影响因素</strong>：
+<ul>
+<li>光圈大小：景深与光圈近似
+<strong>成反比</strong>（光圈越大，景深越小）。</li>
+<li>焦距：景深与
+<strong>焦距平方成反比</strong>（焦距越长，景深越小，影响比光圈更显著）。</li>
+<li>物距：景深与
+<strong>物距平方成正比</strong>（物体越远，景深越大）。</li>
 </ul></li>
 </ul>
-<h4 id="lrucache">LRUCache</h4>
-<p>由哈希表、LRU 链表头和 <code>in_use</code> 链表头构成。</p>
+<p><img src="相机视觉基础/dof.png" alt="dof" width="50%">
+<img src="相机视觉基础/dof_iris.png" alt="dof_iris" width="50%">
+<img src="相机视觉基础/dof_focal_length.png" alt="dof_focal_length" width="50%"></p>
+<hr />
+<h3 id="工作距离working-distance-wd">2.5 工作距离（Working Distance,
+WD）</h3>
+<p>指镜头最前端到被摄物体的距离。工作距离过小可能导致安装受限。</p>
+<p><img src="相机视觉基础/working_distance.png" alt="working_distance" width="50%"></p>
+<hr />
+<h2 id="参考资料">3. 参考资料</h2>
 <ol type="1">
-<li><strong>插入过程</strong>:
-<ul>
-<li>加锁。</li>
-<li>根据键创建 <code>handle</code>，引用计数加 1，并插入到
-<code>in_use_</code> 链表。</li>
-<li>将 <code>handle</code> 添加到哈希表中。</li>
-<li>如果键已存在，则返回旧的
-<code>handle</code>，并从缓存和链表中删除旧条目，引用计数减 1。</li>
-<li>当缓存容量超出限制且 LRU 链表不为空时，从 LRU
-链表中移除第一个条目，并从缓存和链表中删除。</li>
-</ul></li>
-<li><strong>查找过程</strong>:
-<ul>
-<li>加锁。</li>
-<li>在哈希表中查找 <code>handle</code> 并返回，引用计数加 1。</li>
-</ul></li>
-<li><strong>释放过程</strong>:
-<ul>
-<li>使用完 <code>handle</code> 后需要手动释放。</li>
-<li>加锁，引用计数减 1。</li>
-</ul></li>
-<li><strong>擦除过程</strong>:
-<ul>
-<li>加锁，从缓存中移除条目，引用计数减 1。</li>
-</ul></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40770527/article/details/104827855">工业相机与镜头选型方法（含实例）</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/hangl_ciom/article/details/89397506">镜头焦距、光圈、物距与景深之间的关系</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/486600045">什么是视场角？它的大小由什么决定？</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/149329775">工业相机各种参数计算方法</a></li>
 </ol>
-<h4 id="sharedlrucache">SharedLRUCache</h4>
-<p>对 LRUCache 进行进一步封装，通过取哈希值的高 4 位来决定分片位置。</p>
-<ul>
-<li><strong>分片优势</strong>: 通过分片将缓存操作分散到多个 LRUCache
-实例中，提升了访问效率，降低了锁的竞争，改善了并发性能。</li>
-</ul>
 
       
     </div>
@@ -369,7 +412,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/23/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/25/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/23/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/25/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

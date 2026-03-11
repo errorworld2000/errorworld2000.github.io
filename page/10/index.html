@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">170</span>
+        <span class="site-state-item-count">165</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/vpn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/net/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">mac</a>
+          <a href="/net/vpn/" class="post-title-link" itemprop="url">VPN 代理与 TUN 模式配置指南</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-11 15:20:36" itemprop="dateModified" datetime="2026-03-11T15:20:36+08:00">2026-03-11</time>
+      <time title="修改时间：2026-03-11 18:58:25" itemprop="dateModified" datetime="2026-03-11T18:58:25+08:00">2026-03-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -294,246 +294,16 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="网络基础">网络基础</h1>
-<h2 id="一物理层physical-layer">一、物理层（Physical Layer）</h2>
-<p><strong>作用：</strong></p>
-<ul>
-<li>定义网络的<strong>物理特性</strong></li>
-<li>规定<strong>传输介质</strong>（网线、光纤等）</li>
-<li>实现<strong>相邻节点之间的比特流传输</strong></li>
-</ul>
-<p><strong>核心：</strong></p>
-<blockquote>
-<p>负责把 <strong>0 / 1 比特流在物理媒介上传输</strong></p>
-</blockquote>
-<hr />
-<h1 id="二mac-子层数据链路层">二、MAC 子层（数据链路层）</h1>
-<p>在以太网中通常 <strong>只实现 MAC 子层</strong>，不使用 LLC
-子层（Ethernet II）。</p>
-<h2 id="mac-的主要功能">1 MAC 的主要功能</h2>
-<h3 id="数据封装">（1）数据封装</h3>
-<ul>
-<li><strong>成帧</strong>
-<ul>
-<li>帧同步</li>
-<li>确定帧边界</li>
-</ul></li>
-<li><strong>地址处理</strong>
-<ul>
-<li>处理源 / 目的 MAC 地址</li>
-</ul></li>
-<li><strong>错误检测</strong>
-<ul>
-<li>通过 <strong>FCS</strong> 检测传输错误</li>
-</ul></li>
-</ul>
-<hr />
-<h3 id="媒体访问控制media-access-control">（2）媒体访问控制（Media
-Access Control）</h3>
-<p>用于解决多个设备共享介质的问题：</p>
-<ul>
-<li><strong>媒质分配</strong>
-<ul>
-<li>冲突避免</li>
-</ul></li>
-<li><strong>冲突处理</strong></li>
-</ul>
-<p>典型机制：</p>
-<ul>
-<li>CSMA/CD（早期共享以太网）</li>
-</ul>
-<hr />
-<h1 id="三ethernet-ii-帧结构">三、Ethernet II 帧结构</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">| 目的MAC | 源MAC | Type | Data | FCS（Frame Check Sequence） |</span><br><span class="line">|  6B    |  6B   | 2B   |46~1500B|4B|</span><br></pre></td></tr></table></figure>
-<hr />
-<h1 id="四常见-ethertype">四、常见 EtherType</h1>
-<table>
-<thead>
-<tr class="header">
-<th>协议</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>IPv4</td>
-<td>0x0800</td>
-</tr>
-<tr class="even">
-<td>ARP</td>
-<td>0x0806</td>
-</tr>
-<tr class="odd">
-<td>VLAN (802.1Q)</td>
-<td>0x8100</td>
-</tr>
-<tr class="even">
-<td>IPv6</td>
-<td>0x86DD</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h1 id="五二层与三层转发">五、二层与三层转发</h1>
-<h2 id="二层交换机">二层交换机</h2>
-<p>使用 <strong>MAC 地址表</strong></p>
-<p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MAC地址  →  端口</span><br></pre></td></tr></table></figure>
-<p>作用：</p>
-<blockquote>
-<p>根据目的 MAC 地址转发帧</p>
-</blockquote>
-<p>过程：</p>
-<blockquote>
-<p>二层转发是交换机根据 MAC 地址
-将以太网帧在局域网内部转发的过程。当交换机收到一个帧时，会先记录帧的 源
-MAC 地址和接入端口 到 MAC 地址表，以便以后快速找到发送端口；然后查找帧的
-目的 MAC
-地址：如果在表中找到对应端口，就只从该端口转发帧；如果找不到或是广播/多播地址，则将帧洪泛到其他所有端口，实现局域网内的点对点或广播通信。整个过程仅处理二层数据，不涉及
-IP 或路由信息。</p>
-</blockquote>
-<hr />
-<h2 id="三层设备路由器">三层设备（路由器）</h2>
-<p>使用 <strong>路由表</strong></p>
-<p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目的网络 → 下一跳 / 出口接口</span><br></pre></td></tr></table></figure>
-<p>作用：</p>
-<blockquote>
-<p>根据 <strong>IP 地址</strong> 转发数据包</p>
-</blockquote>
-<p>过程：</p>
-<blockquote>
-<p>三层转发是路由器或三层交换机根据 目的 IP 地址
-将数据包从一个网络转发到另一个网络的过程。它的基本流程是：设备收到一个数据包后，先检查包头的
-目的 IP，在 路由表
-中查找下一跳或出口接口；然后根据查找到的出口接口，将数据包重新封装成适合该链路层的帧（修改源/目的
-MAC），最后从对应端口发送出去，实现跨网段通信。与二层转发不同，三层转发需要解析
-IP 层信息，并可能改变 MAC 地址，但不改变 IP 地址。</p>
-</blockquote>
-<hr />
-<h1 id="六传输层常见协议号ip-protocol">六、传输层常见协议号（IP
-Protocol）</h1>
-<table>
-<thead>
-<tr class="header">
-<th>协议</th>
-<th>协议号</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ICMP</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td>TCP</td>
-<td>6</td>
-</tr>
-<tr class="odd">
-<td>UDP</td>
-<td>17</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h1 id="七以太网流量控制flow-control">七、以太网流量控制（Flow
-Control）</h1>
-<p><strong>作用：</strong></p>
-<p>防止接收方缓存溢出导致丢包。</p>
-<p><strong>机制：</strong></p>
-<p>发送 <strong>PAUSE 控制帧</strong> 通知对端：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">暂停发送一段时间</span><br></pre></td></tr></table></figure>
-<p>特点：</p>
-<ul>
-<li>属于 <strong>链路层机制</strong></li>
-<li>常见于 <strong>全双工以太网</strong></li>
-</ul>
-<h2 id="数据包处理流程接收路径">数据包处理流程（接收路径）</h2>
-<p>假设一个 IP 包到达网卡：</p>
-<ol type="1">
-<li><strong>网卡驱动接收包</strong>
-<ul>
-<li>DMA buffer → skb</li>
-<li>调用 <code>napi_schedule()</code>
-安排软中断处理(发送也是发接收软中断)</li>
-</ul></li>
-<li><strong>软中断上下文执行</strong>
-<ul>
-<li><code>NET_RX_SOFTIRQ</code> → <code>net_rx_action()</code></li>
-<li>遍历 per-CPU <code>softnet_data-&gt;poll_list</code></li>
-<li>调用 <code>napi_poll()</code> → 驱动的 poll 函数处理包</li>
-<li>skb 被交给协议栈 (<code>__netif_receive_skb_core()</code>)</li>
-</ul></li>
-<li><strong>分发到协议处理器</strong>
-<ul>
-<li><strong>先通过 <code>ptype_base</code></strong> 找到 IP 层处理函数
-<code>ip_rcv()</code></li>
-<li><code>ip_rcv()</code> 根据 IP 协议号（TCP/UDP/ICMP）去
-<code>inet_protos</code> 找对应处理函数
-<ul>
-<li>TCP → <code>tcp_v4_rcv()</code></li>
-<li>UDP → <code>udp_rcv()</code></li>
-</ul></li>
-</ul></li>
-<li><strong>广播给抓包工具</strong>
-<ul>
-<li>遍历 <code>ptype_all</code> 链表</li>
-<li>调用 <code>deliver_skb()</code> 给每个注册的 packet_type</li>
-<li>tcpdump 注册的 AF_PACKET socket 就在这里获取 skb
-可以简化成和你前面一样的风格：</li>
-</ul></li>
-<li><strong>递交到socket</strong>
-<ul>
-<li><code>ip_rcv_finish()</code> →
-<code>ip_local_deliver_finish()</code></li>
-<li>根据协议调用 <code>tcp_v4_rcv()</code> / <code>udp_rcv()</code></li>
-<li>找到对应 socket，将 skb 放入 <strong>socket 接收队列</strong></li>
-</ul></li>
-<li><strong>用户态读取</strong>
-<ul>
-<li>用户调用 <code>recvfrom()</code>（glibc）</li>
-<li>触发系统调用 <code>sys_recvfrom()</code> →
-<code>sock_recvmsg()</code></li>
-<li>从 <strong>socket 接收队列</strong> 取出数据返回给用户程序</li>
-</ul></li>
-</ol>
-<hr />
-<table>
-<thead>
-<tr class="header">
-<th>次数</th>
-<th>位置</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>第一次</td>
-<td>用户态 → 内核</td>
-<td><strong>深拷贝</strong></td>
-</tr>
-<tr class="even">
-<td>第二次</td>
-<td>TCP → IP</td>
-<td><strong>浅拷贝（skb_clone）</strong></td>
-</tr>
-<tr class="odd">
-<td>第三次</td>
-<td>IP 分片</td>
-<td><strong>深拷贝（fragmentation）</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="参考">参考</h2>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/GoYDsfy9m0wRoXi_NCfCmg">图解Linux网络包接收过程</a></li>
-<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/wThfD9th9e_-YGHJJ3HXNQ">25
-张图，一万字，拆解 Linux 网络包发送过程</a></li>
-<li><a target="_blank" rel="noopener" href="https://arthurchiao.art/blog/tuning-stack-tx-zh/">[译]
-Linux 网络栈监控和调优：发送数据（2017）</a></li>
-</ul>
-
+          <h1 id="vpn-代理与-tun-模式配置指南">VPN 代理与 TUN 模式配置指南</h1>
+<p>本文介绍代理工具的核心概念和 sing-box 在 WSL2 环境下的配置方法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/net/vpn/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -552,7 +322,7 @@ Linux 网络栈监控和调优：发送数据（2017）</a></li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/11/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/9/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/11/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
