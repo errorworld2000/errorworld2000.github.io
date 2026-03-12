@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://errorworld2000.github.io/leveldb/memtable/memtable-entry.png">
 <meta property="article:published_time" content="2025-02-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-12T03:48:31.000Z">
+<meta property="article:modified_time" content="2026-03-12T06:42:58.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="leveldb">
@@ -266,7 +266,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-12 11:48:31" itemprop="dateModified" datetime="2026-03-12T11:48:31+08:00">2026-03-12</time>
+      <time title="修改时间：2026-03-12 14:42:58" itemprop="dateModified" datetime="2026-03-12T14:42:58+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -350,8 +350,8 @@ LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前�
 <li>为新节点随机生成层高，并根据前任节点信息，将节点插入到层的链表中；</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    subgraph MemTable_System [&quot;MemTable 系统&quot;]</span><br><span class="line">        MemTable --&gt; SkipList</span><br><span class="line">        MemTable --&gt; Arena</span><br><span class="line">        SkipList --&gt; Entry</span><br><span class="line">        Entry --&gt; Arena</span><br><span class="line">        SkipList --&gt; KeyComparator</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<style>.kvqspbhbnqxk{zoom:50%;}</style>
-<img src="/leveldb/memtable/memtable-entry.png" class="kvqspbhbnqxk" alt="en">
+<style>.oldermribnuj{zoom:50%;}</style>
+<img src="/leveldb/memtable/memtable-entry.png" class="oldermribnuj" alt="en">
 
     </div>
 
@@ -392,8 +392,8 @@ LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前�
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/leveldb/dbiter/" rel="next" title="迭代器">
-                  迭代器 <i class="fa fa-angle-right"></i>
+                <a href="/leveldb/log/" rel="next" title="日志">
+                  日志 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -406,6 +406,12 @@ LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前�
 
 
 
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
 </div>
   </main>
 
@@ -477,6 +483,34 @@ LoadLoad 屏障，确保屏障之后的所有操作不会重排到屏障之前�
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
 
 </body>
 </html>

@@ -28,7 +28,7 @@
 <meta property="og:description" content="写入过程 Leveldb的put&#x2F;delete操作实际都被转成batch然后write。 123WriteBatch batch;batch.Put(kvp.first, kvp.second);EXPECT_TRUE(db_-&gt;Write(WriteOptions(), &amp;batch).ok()); 在leveldb中，使用Write操作进行写入，流程如下：  创建writer对象">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-02-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-12T03:48:31.000Z">
+<meta property="article:modified_time" content="2026-03-12T06:42:58.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="leveldb">
@@ -263,7 +263,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-12 11:48:31" itemprop="dateModified" datetime="2026-03-12T11:48:31+08:00">2026-03-12</time>
+      <time title="修改时间：2026-03-12 14:42:58" itemprop="dateModified" datetime="2026-03-12T14:42:58+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -390,8 +390,8 @@ Found错误，表示数据库中不存在指定的数据；</p>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/leveldb/log/" rel="prev" title="日志">
-                  <i class="fa fa-angle-left"></i> 日志
+                <a href="/leveldb/sstable/" rel="prev" title="排序字符串表">
+                  <i class="fa fa-angle-left"></i> 排序字符串表
                 </a>
             </div>
             <div class="post-nav-item">
@@ -409,6 +409,12 @@ Found错误，表示数据库中不存在指定的数据；</p>
 
 
 
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
 </div>
   </main>
 
@@ -480,6 +486,34 @@ Found错误，表示数据库中不存在指定的数据；</p>
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
 
 </body>
 </html>

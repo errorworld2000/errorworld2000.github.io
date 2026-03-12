@@ -279,6 +279,26 @@
       </div>
 
       <div class="post-title">
+          <a class="post-title-link" href="/leveldb/log/" itemprop="url">
+            <span itemprop="name">日志</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2025-02-20T00:00:00+08:00"
+              content="2025-02-20">
+          02-20
+        </time>
+      </div>
+
+      <div class="post-title">
           <a class="post-title-link" href="/leveldb/memtable/" itemprop="url">
             <span itemprop="name">内存数据库</span>
           </a>
@@ -319,8 +339,8 @@
       </div>
 
       <div class="post-title">
-          <a class="post-title-link" href="/leveldb/log/" itemprop="url">
-            <span itemprop="name">日志</span>
+          <a class="post-title-link" href="/leveldb/sstable/" itemprop="url">
+            <span itemprop="name">排序字符串表</span>
           </a>
       </div>
 
@@ -341,26 +361,6 @@
       <div class="post-title">
           <a class="post-title-link" href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" itemprop="url">
             <span itemprop="name">整体架构</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-02-20T00:00:00+08:00"
-              content="2025-02-20">
-          02-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/leveldb/sstable/" itemprop="url">
-            <span itemprop="name">排序字符串表</span>
           </a>
       </div>
 
@@ -446,6 +446,34 @@
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
 
 </body>
 </html>
