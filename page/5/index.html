@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/os/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" class="post-title-link" itemprop="url">常用命令速查</a>
+          <a href="/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">系统基础</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-12 11:36:51" itemprop="dateModified" datetime="2026-03-12T11:36:51+08:00">2026-03-12</time>
+      <time title="修改时间：2026-03-12 11:40:57" itemprop="dateModified" datetime="2026-03-12T11:40:57+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.6k</span>
+      <span>818</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,138 +294,106 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="u-boot">U-Boot</h2>
+          <h2 id="启动过程简要">启动过程（简要）</h2>
+<ol type="1">
+<li>上电 → BootROM（SoC 固件）：读取 RCW、初始化最小硬件、加载 BL2 到
+SRAM</li>
+<li>BL2（ATF early）：初始化 DDR，加载 BL31（ATF runtime）和
+BL33（通常为 U‑Boot）</li>
+<li>BL31（ATF runtime）：设置安全环境后跳转 U‑Boot</li>
+<li>U‑Boot：初始化外设，加载 Linux 内核与设备树</li>
+</ol>
+<blockquote>
+<p>此流程适用于常见 Arm SoC 的多阶段引导；具体实现随平台而异。</p>
+</blockquote>
+<h2 id="文件加载路径">文件加载路径</h2>
+<p>传统路径：磁盘 → DMA → 内核页缓存（page cache）→ copy_to_user →
+用户缓冲区</p>
+<p>零拷贝优化：磁盘文件 → 页缓存 →
+直接映射到用户虚拟地址（避免额外内存拷贝）。</p>
+<p>原因与优点：</p>
 <ul>
-<li><code>mvsw_reg &lt;addr&gt; [val]</code> # 读写寄存器，val
-可选写入</li>
-<li><code>setenv &lt;var&gt; &lt;value&gt;</code> # 设置环境变量</li>
-<li><code>dhcp</code> # 获取 DHCP 地址</li>
-<li><code>bdinfo</code> # 显示板级信息（内存、CPU、设备等）</li>
-<li><code>mii device</code> / <code>mii info</code> # 查询 PHY 状态</li>
-<li><code>md $addr &lt;len&gt;</code> # 内存 hexdump</li>
-<li><code>load usb &lt;bus&gt;:&lt;dev&gt; &lt;file&gt;</code> # 从 USB
-加载文件</li>
-<li><code>booti $kernel_addr - $fdt_addr</code> #
-启动内核，加载设备树</li>
+<li>零拷贝：减少一次内存复制，提升性能</li>
+<li>按需分页：只在访问时加载页面，节省内存</li>
+<li>虚拟地址映射：允许映射超大文件以便用户态直接访问</li>
 </ul>
-<h2 id="linux-基础">Linux 基础</h2>
-<ul>
-<li><code>systemctl restart &lt;service&gt;</code> # 重启系统服务</li>
-<li><code>/etc/init.d/&lt;service&gt; stop</code> #
-停止服务（兼容旧脚本）</li>
-<li><code>hexdump /dev/ttyS &amp;</code> # 后台查看串口原始数据</li>
-<li><code>jobs</code> / <code>bg %&lt;job&gt;</code> /
-<code>fg %&lt;job&gt;</code> # 查看/后台/前台作业</li>
-<li><code>screen</code> / <code>tmux</code> # 终端复用，保持会话</li>
-</ul>
-<h2 id="网络诊断">网络诊断</h2>
-<ul>
-<li><code>dig &lt;host&gt;</code> / <code>nslookup &lt;host&gt;</code> #
-DNS 查询</li>
-<li><code>traceroute &lt;dst&gt;</code> # 路径追踪</li>
-<li><code>ip route get &lt;dst&gt;</code> # 查询路由到目标</li>
-<li><code>systemd-resolve --status</code> # 本地 DNS 状态</li>
-<li><code>cat /etc/resolv.conf</code> # 查看 DNS 配置</li>
-<li><code>dhclient &lt;iface&gt;</code> # 请求 DHCP</li>
-<li><code>tcpdump -i &lt;iface&gt; -e -xx</code> #
-抓包，显示帧头和数据</li>
-<li><code>ethtool -S/-g/-G/-l/-L/-c/-C &lt;iface&gt;</code> #
-查询接口统计/队列/中断</li>
-</ul>
-<h2 id="vlan-链路配置">VLAN / 链路配置</h2>
-<ul>
-<li><code>bridge vlan add dev &lt;dev&gt; vid &lt;vid&gt; pvid untagged</code>
-# 添加 VLAN</li>
-<li><code>ip link add link &lt;dev&gt; name &lt;dev&gt;.&lt;vid&gt; type vlan id &lt;vid&gt;</code>
-# 创建 VLAN 子接口</li>
-</ul>
-<h2 id="ip-常用命令"><code>ip</code> 常用命令</h2>
-<ul>
-<li><code>ip a</code> # 显示所有地址</li>
-<li><code>ip link show</code> # 显示接口状态</li>
-<li><code>ip link set &lt;dev&gt; up</code> # 启用接口</li>
-<li><code>ip link add name &lt;br&gt; type bridge</code> # 创建网桥</li>
-<li><code>ip link set &lt;br&gt; up</code> # 启用网桥</li>
-<li><code>ip link set &lt;dev&gt; master &lt;br&gt;</code> #
-添加接口到网桥</li>
-<li><code>ip addr add &lt;ip&gt;/&lt;mask&gt; dev &lt;br&gt;</code> #
-配置 IP</li>
-<li><code>ip route add default via &lt;gw&gt; dev &lt;br&gt;</code> #
-默认路由</li>
-</ul>
-<h2 id="块设备与文件系统">块设备与文件系统</h2>
-<ul>
-<li><code>lsblk -f</code> # 列出块设备及文件系统</li>
-<li><code>blkid</code> # 查看设备 UUID/类型</li>
-</ul>
-<h2 id="内存与-io">内存与 I/O</h2>
-<ul>
-<li><code>free -h</code> # 查看内存使用</li>
-<li><code>cat /proc/iomem</code> # 查看物理内存映射</li>
-<li><code>cat /proc/meminfo</code> # 内存状态</li>
-</ul>
-<h2 id="系统信息与日志">系统信息与日志</h2>
-<ul>
-<li><code>lscpu</code> # CPU 信息</li>
-<li><code>zcat /proc/config.gz | grep CONFIG_&lt;term&gt;</code> #
-查看内核配置</li>
-<li><code>dmesg | grep -i &lt;term&gt;</code> # 内核日志过滤</li>
-<li><code>cat /etc/os-release</code> # 系统发行信息</li>
-<li><code>lsb_release -a</code> # 系统信息</li>
-<li><code>uname -a</code> # 内核版本</li>
-<li><code>journalctl -u &lt;unit&gt; --no-pager</code> # 服务日志</li>
-<li><code>sysctl -a</code> /
-<code>sysctl -w &lt;param&gt;=&lt;val&gt;</code> #
-查看/修改内核参数</li>
-<li><code>cat /proc/interrupts</code> # 中断统计</li>
-<li><code>cat /proc/softirqs</code> # 软件中断统计</li>
-<li><code>cat /proc/irq/&lt;irq&gt;/smp_affinity</code> # 中断 CPU
-亲和性</li>
-<li><code>ethtool -k &lt;iface&gt; | grep generic-receive-offload</code>
-# 查看 GRO/GSO</li>
-<li><code>ethtool -K &lt;iface&gt; gro/gso on</code> # 启用 Generic
-Receive/Segmentation Offload</li>
-</ul>
-<h2 id="i2c">I2C</h2>
-<ul>
-<li><code>i2cdetect -a -y &lt;bus&gt;</code> # 扫描 I2C 总线</li>
-<li><code>i2cdump -y &lt;bus&gt; &lt;addr&gt;</code> # 查看 I2C
-设备寄存器</li>
-</ul>
-<h2 id="gpio">GPIO</h2>
-<ul>
-<li><code>cat /sys/kernel/debug/gpio</code> # 查看 GPIO 状态</li>
-<li><code>gpioset &lt;chip&gt; &lt;line&gt;=&lt;val&gt;</code> # 设置
-GPIO 输出</li>
-<li><code>echo &lt;num&gt; &gt; /sys/class/gpio/export</code> # 导出
-GPIO</li>
-<li><code>gpioinfo</code> # GPIO 信息</li>
-</ul>
-<h2 id="git">Git</h2>
-<ul>
-<li><code>git config --list --show-origin</code> # 查看配置及来源</li>
-<li><code>git submodule update --init --recursive</code> #
-初始化子模块</li>
-<li><code>git clone --recurse-submodules &lt;repo&gt;</code> #
-克隆包含子模块</li>
-<li><code>git submodule add &lt;url&gt; &lt;path&gt;</code> #
-添加子模块</li>
-</ul>
-<h2 id="编译-make-cmake">编译 / Make / CMake</h2>
-<ul>
-<li><code>export CROSS_COMPILE=&lt;toolchain&gt; ARCH=&lt;arch&gt;</code>
-# 设置交叉编译工具链</li>
-<li><code>make &lt;defconfig&gt;</code> # 生成配置</li>
-<li><code>make modules_prepare</code> # 准备模块编译</li>
-<li><code>bear make -j&lt;cores&gt; Image modules</code> # 生成 Image
-和模块，并记录编译信息</li>
-<li><code>bear make -C &lt;kernel-src&gt; M=$PWD -j&lt;cores&gt;</code>
-# 单目录模块编译</li>
-<li><code>make -C &lt;kernel-src&gt; modules_install INSTALL_MOD_PATH=&lt;rootfs&gt;</code>
-# 安装模块</li>
-<li><code>cmake -B &lt;build-dir&gt; -S . -DCMAKE_TOOLCHAIN_FILE=&lt;file&gt; -DCMAKE_BUILD_TYPE=&lt;type&gt; -DCMAKE_EXPORT_COMPILE_COMMANDS=1</code>
-# CMake 构建</li>
-</ul>
+<h2 id="kdump核心转储">kdump（核心转储）</h2>
+<p>kdump 使用 <code>kexec</code> 启动一个最小化内核（crash
+kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
+<code>/proc/vmcore</code>。用户态工具可像读文件一样转储系统内存用于分析。</p>
+<h2 id="uio-vs-vfio">UIO vs VFIO</h2>
+<table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 40%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>方案</th>
+<th>作用</th>
+<th>优缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>UIO</td>
+<td>用户态访问设备寄存器</td>
+<td>简单、适合调试；不提供安全 DMA/隔离，风险较高</td>
+</tr>
+<tr class="even">
+<td>VFIO</td>
+<td>通过 IOMMU 提供安全 DMA 与设备直通</td>
+<td>安全、支持高性能网卡与 DPDK；适合生产和虚拟化</td>
+</tr>
+</tbody>
+</table>
+<h2 id="页表与多级页表的由来">页表与多级页表的由来</h2>
+<p>CPU 的 MMU 要求一级页表是可直接索引的连续数组；单级页表对 64
+位地址空间过大，多级页表通过分层索引实现稀疏映射，节省内存并支持按需分配。</p>
+<h2 id="系统硬件">系统硬件</h2>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 42%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>特性</th>
+<th>ARM/嵌入式</th>
+<th>x86/PCIe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>硬件发现</td>
+<td>写死，需 DT 或 platform_data</td>
+<td>自描述，扫描 PCI 配置空间</td>
+</tr>
+<tr class="even">
+<td>驱动匹配</td>
+<td><code>compatible</code> / platform_device</td>
+<td>VendorID/DeviceID</td>
+</tr>
+<tr class="odd">
+<td>硬件信息</td>
+<td>DT 或手工提供地址、中断、时钟</td>
+<td>PCI 配置空间提供资源和中断</td>
+</tr>
+<tr class="even">
+<td>驱动初始化</td>
+<td><code>probe()</code> 读取资源</td>
+<td><code>probe()</code> 读取 PCI 配置空间资源</td>
+</tr>
+<tr class="odd">
+<td>可移植性</td>
+<td>需修改 DT</td>
+<td>基本通用</td>
+</tr>
+</tbody>
+</table>
+<hr />
 
       
     </div>
