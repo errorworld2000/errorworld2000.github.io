@@ -28,18 +28,10 @@
 <meta property="og:description" content="核心架构  Overwatch 采用 ECS 架构 管理复杂度  Entity：ID + 一组组件（Component，仅存储状态，无行为） System：执行行为，关注特定组件组合（tuple &#x2F; component-slice），在这些组件上处理逻辑  优点：  状态与行为分离，System 更纯洁、可组合 组件只存储数据，行为集中在 System 大多数 System 纯函数式（只读组件），">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-15T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-11T10:58:25.000Z">
+<meta property="article:modified_time" content="2026-03-12T03:36:51.000Z">
 <meta property="article:author" content="jungle">
-<meta property="article:tag" content="Architecture">
-<meta property="article:tag" content="ClientSidePrediction">
 <meta property="article:tag" content="ECS">
-<meta property="article:tag" content="EntityComponentSystem">
-<meta property="article:tag" content="GDC">
-<meta property="article:tag" content="GameDev">
-<meta property="article:tag" content="Netcode">
-<meta property="article:tag" content="Overwatch">
-<meta property="article:tag" content="Rollback">
-<meta property="article:tag" content="ServerAuthoritative">
+<meta property="article:tag" content="arch">
 <meta name="twitter:card" content="summary">
 
 
@@ -191,7 +183,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -202,7 +194,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -273,7 +265,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-11 18:58:25" itemprop="dateModified" datetime="2026-03-11T18:58:25+08:00">2026-03-11</time>
+      <time title="修改时间：2026-03-12 11:36:51" itemprop="dateModified" datetime="2026-03-12T11:36:51+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -425,29 +417,21 @@ target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-archi
 </div>
 
           <div class="post-tags">
-              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
-              <a href="/tags/GameDev/" rel="tag"># GameDev</a>
-              <a href="/tags/Overwatch/" rel="tag"># Overwatch</a>
+              <a href="/tags/arch/" rel="tag"># arch</a>
               <a href="/tags/ECS/" rel="tag"># ECS</a>
-              <a href="/tags/EntityComponentSystem/" rel="tag"># EntityComponentSystem</a>
-              <a href="/tags/Netcode/" rel="tag"># Netcode</a>
-              <a href="/tags/ClientSidePrediction/" rel="tag"># ClientSidePrediction</a>
-              <a href="/tags/ServerAuthoritative/" rel="tag"># ServerAuthoritative</a>
-              <a href="/tags/Rollback/" rel="tag"># Rollback</a>
-              <a href="/tags/GDC/" rel="tag"># GDC</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/other/%E5%9B%BE%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/" rel="prev" title="图最短路径算法">
-                  <i class="fa fa-angle-left"></i> 图最短路径算法
+                <a href="/other/neuronNet/" rel="prev" title="neuronNet">
+                  <i class="fa fa-angle-left"></i> neuronNet
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/other/neuronNet/" rel="next" title="neuronNet">
-                  neuronNet <i class="fa fa-angle-right"></i>
+                <a href="/other/gc/" rel="next" title="gc">
+                  gc <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -480,14 +464,14 @@ target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-archi
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">44k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">40 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

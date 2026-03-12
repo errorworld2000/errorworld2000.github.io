@@ -27,24 +27,19 @@
 <meta property="og:site_name" content="a Blog">
 <meta property="og:description" content="SSTable 物理结构 SSTable 按块划分，默认数据块大小为 4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC 校验码。 逻辑结构   SSTable 逻辑结构   Data Block：存储键值对。 Filter Block：存储过滤器相关数据，采用专门的 FilterBlock。 Meta Index Block：存储 Filter Block 在 SSTa">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sstable/sst-format.png">
-<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sstable/table-builder.png">
-<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sstable/sst-read.png">
-<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sstable/table-cache.png">
+<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sst-format.png">
+<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/table-builder.png">
+<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/sst-read.png">
+<meta property="og:image" content="https://errorworld2000.github.io/leveldb/sstable/table-cache.png">
 <meta property="article:published_time" content="2025-02-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-11T10:58:25.000Z">
+<meta property="article:modified_time" content="2026-03-12T03:36:51.000Z">
 <meta property="article:author" content="jungle">
-<meta property="article:tag" content="BloomFilter">
-<meta property="article:tag" content="C++">
-<meta property="article:tag" content="Cache">
-<meta property="article:tag" content="DataStructure">
-<meta property="article:tag" content="FileFormat">
-<meta property="article:tag" content="Indexing">
-<meta property="article:tag" content="LevelDB">
-<meta property="article:tag" content="SSTable">
-<meta property="article:tag" content="StorageEngine">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="iter">
+<meta property="article:tag" content="leveldb">
+<meta property="article:tag" content="table">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://errorworld2000.github.io/leveldb/sstable/sstable/sst-format.png">
+<meta name="twitter:image" content="https://errorworld2000.github.io/leveldb/sstable/sst-format.png">
 
 
 <link rel="canonical" href="https://errorworld2000.github.io/leveldb/sstable/">
@@ -193,7 +188,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -204,7 +199,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -275,7 +270,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-11 18:58:25" itemprop="dateModified" datetime="2026-03-11T18:58:25+08:00">2026-03-11</time>
+      <time title="修改时间：2026-03-12 11:36:51" itemprop="dateModified" datetime="2026-03-12T11:36:51+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -326,7 +321,7 @@
 校验码。</p>
 <h3 id="逻辑结构">逻辑结构</h3>
 <figure>
-<img src="sstable/sst-format.png" alt="SSTable 逻辑结构" />
+<img src="sst-format.png" alt="SSTable 逻辑结构" />
 <figcaption aria-hidden="true">SSTable 逻辑结构</figcaption>
 </figure>
 <ol type="1">
@@ -342,12 +337,12 @@ FilterBlock。</li>
 <h3 id="读写过程">读写过程</h3>
 <h4 id="写过程">写过程</h4>
 <figure>
-<img src="sstable/table-builder.png" alt="写过程" />
+<img src="table-builder.png" alt="写过程" />
 <figcaption aria-hidden="true">写过程</figcaption>
 </figure>
 <h4 id="读过程">读过程</h4>
 <figure>
-<img src="sstable/sst-read.png" alt="读过程" />
+<img src="sst-read.png" alt="读过程" />
 <figcaption aria-hidden="true">读过程</figcaption>
 </figure>
 <p>SSTable 使用两种缓存机制：</p>
@@ -357,7 +352,7 @@ FilterBlock。</li>
 </ol>
 <p>Table Cache 的结构如下：</p>
 <figure>
-<img src="sstable/table-cache.png" alt="Table Cache 结构" />
+<img src="table-cache.png" alt="Table Cache 结构" />
 <figcaption aria-hidden="true">Table Cache 结构</figcaption>
 </figure>
 <h3 id="table-的迭代器">Table 的迭代器</h3>
@@ -401,25 +396,23 @@ FilterBlock。</li>
 </div>
 
           <div class="post-tags">
-              <a href="/tags/LevelDB/" rel="tag"># LevelDB</a>
-              <a href="/tags/Cache/" rel="tag"># Cache</a>
-              <a href="/tags/DataStructure/" rel="tag"># DataStructure</a>
-              <a href="/tags/C/" rel="tag"># C++</a>
-              <a href="/tags/StorageEngine/" rel="tag"># StorageEngine</a>
-              <a href="/tags/FileFormat/" rel="tag"># FileFormat</a>
-              <a href="/tags/SSTable/" rel="tag"># SSTable</a>
-              <a href="/tags/Indexing/" rel="tag"># Indexing</a>
-              <a href="/tags/BloomFilter/" rel="tag"># BloomFilter</a>
+              <a href="/tags/leveldb/" rel="tag"># leveldb</a>
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/iter/" rel="tag"># iter</a>
+              <a href="/tags/table/" rel="tag"># table</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" rel="prev" title="整体架构">
+                  <i class="fa fa-angle-left"></i> 整体架构
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" rel="next" title="整体架构">
-                  整体架构 <i class="fa fa-angle-right"></i>
+                <a href="/leveldb/read-write/" rel="next" title="读写过程">
+                  读写过程 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -452,14 +445,14 @@ FilterBlock。</li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">44k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">40 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

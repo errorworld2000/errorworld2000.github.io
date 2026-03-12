@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">165</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/coroutine/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E5%8D%8F%E7%A8%8B%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/gameframework/coroutine/" class="post-title-link" itemprop="url">协程深入分析</a>
+          <a href="/os/%E5%8D%8F%E7%A8%8B%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">协程深入分析</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-11 18:58:25" itemprop="dateModified" datetime="2026-03-11T18:58:25+08:00">2026-03-11</time>
+      <time title="修改时间：2026-03-12 11:36:51" itemprop="dateModified" datetime="2026-03-12T11:36:51+08:00">2026-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -294,8 +294,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="协程深入分析">协程深入分析</h1>
-<h2 id="为什么需要协程">1.为什么需要协程</h2>
+          <h2 id="为什么需要协程">1.为什么需要协程</h2>
 <p>在游戏开发中，经常需要处理 <strong>需要等待的逻辑</strong>：</p>
 <ul>
 <li>等待网络请求</li>
@@ -432,7 +431,7 @@
 </table>
 <hr />
 <h2 id="栈帧结构">栈帧结构</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![函数堆栈](coroutine/image.png)</span><br><span class="line">PS:最后一个划分有点问题</span><br><span class="line"></span><br><span class="line">![调用协程时的堆栈](coroutine/image-1.png)</span><br><span class="line">PS:esp执行return（第一个红框），esp+4指向变量1（第二个红框）</span><br><span class="line"></span><br><span class="line">&gt; 协程主要是创建新的堆栈空间并切换，其他没啥差别</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">## 协程上下文保存</span><br><span class="line"></span><br><span class="line">切换协程时需要保存：</span><br><span class="line"></span><br><span class="line">- 寄存器</span><br><span class="line">- 栈指针</span><br><span class="line">- 返回地址</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line"></span><br><span class="line">```asm</span><br><span class="line">movl (%esp), %ecx</span><br><span class="line">movl %ecx, -4(%eax)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![函数堆栈](函数堆栈.png)</span><br><span class="line">PS:最后一个划分有点问题</span><br><span class="line"></span><br><span class="line">![调用协程时的堆栈](调用协程时的堆栈.png)</span><br><span class="line">PS:esp执行return（第一个红框），esp+4指向变量1（第二个红框）</span><br><span class="line"></span><br><span class="line">&gt; 协程主要是创建新的堆栈空间并切换，其他没啥差别</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">## 协程上下文保存</span><br><span class="line"></span><br><span class="line">切换协程时需要保存：</span><br><span class="line"></span><br><span class="line">- 寄存器</span><br><span class="line">- 栈指针</span><br><span class="line">- 返回地址</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line"></span><br><span class="line">```asm</span><br><span class="line">movl (%esp), %ecx</span><br><span class="line">movl %ecx, -4(%eax)</span><br></pre></td></tr></table></figure>
 <p>含义：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">栈顶</span><br><span class="line">│ return address</span><br><span class="line">│ 参数1</span><br><span class="line">│ 参数2</span><br></pre></td></tr></table></figure>
 <p>保存 return address 后：</p>
@@ -503,7 +502,7 @@ target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -526,14 +525,14 @@ target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">44k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">40 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
