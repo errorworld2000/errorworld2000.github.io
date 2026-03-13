@@ -176,18 +176,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Spring%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/git%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">git开发流程</a>
+          <a href="/other/Spring%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Spring基础</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-12 14:42:58" itemprop="dateModified" datetime="2026-03-12T14:42:58+08:00">2026-03-12</time>
+      <time title="修改时间：2026-03-13 18:15:57" itemprop="dateModified" datetime="2026-03-13T18:15:57+08:00">2026-03-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>989</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,123 +294,162 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="分支核心职责">1. 分支核心职责</h2>
+          <h2 id="一spring-xml-配置与注解">一、Spring XML 配置与注解</h2>
+<h3 id="自动扫描-bean-beans.xml">1. 自动扫描 Bean
+(<code>beans.xml</code>)</h3>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>作用</strong>：扫描指定包及子包，将标注了以下注解的类注册为
+Spring Bean：
+<ul>
+<li><code>@Component</code>（普通组件）</li>
+<li><code>@Service</code>（业务逻辑层）</li>
+<li><code>@Repository</code>（DAO 层，支持异常转换）</li>
+<li><code>@Controller</code>（Web 控制层）</li>
+</ul></li>
+</ul>
+<h3 id="常见注解说明">2. 常见注解说明</h3>
 <table>
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 11%" />
-<col style="width: 73%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">分支类型</th>
-<th style="text-align: left;">生命周期</th>
-<th style="text-align: left;">核心职责</th>
+<th>注解</th>
+<th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong><code>master</code></strong></td>
-<td style="text-align: left;">永久</td>
-<td
-style="text-align: left;"><strong>只读</strong>。指向最新<strong>已发布</strong>版本，生产环境代码最终来源。</td>
+<td><code>@Component</code></td>
+<td>普通组件，交给 Spring 管理</td>
 </tr>
 <tr class="even">
-<td
-style="text-align: left;"><strong><code>release/x.y.z</code></strong></td>
-<td style="text-align: left;">长期</td>
-<td
-style="text-align: left;"><strong>开发、测试、修复主战场</strong>。合并
-<code>feature</code> 和 <code>hotfix</code>。新版本从上一个
-<code>release</code> 创建。</td>
+<td><code>@Service</code></td>
+<td>业务逻辑组件，语义清晰</td>
 </tr>
 <tr class="odd">
-<td
-style="text-align: left;"><strong><code>feature/xxx</code></strong></td>
-<td style="text-align: left;">短期</td>
-<td style="text-align: left;"><strong>开发新功能</strong>。从目标
-<code>release</code> 创建，完成后合并回 <code>release</code>。</td>
+<td><code>@Repository</code></td>
+<td>DAO 层组件，支持异常转换</td>
 </tr>
 <tr class="even">
-<td
-style="text-align: left;"><strong><code>hotfix/xxx</code></strong></td>
-<td style="text-align: left;">短期、紧急修复</td>
-<td style="text-align: left;"><strong>修复线上 Bug</strong>。从出问题的
-<code>release</code> 创建，修复后合并回该分支并同步到后续
-<code>release</code> 分支。</td>
+<td><code>@Controller</code></td>
+<td>控制层组件，处理 Web 请求</td>
+</tr>
+<tr class="odd">
+<td><code>@Autowired</code></td>
+<td>按类型自动注入依赖</td>
+</tr>
+<tr class="even">
+<td><code>@Qualifier("beanName")</code></td>
+<td>与 <code>@Autowired</code> 配合，按名称注入</td>
+</tr>
+<tr class="odd">
+<td><code>@PostConstruct</code></td>
+<td>初始化方法（容器加载后执行）</td>
+</tr>
+<tr class="even">
+<td><code>@PreDestroy</code></td>
+<td>销毁方法（容器关闭前执行）</td>
+</tr>
+<tr class="odd">
+<td><code>@Scope("singleton")</code></td>
+<td>单例（默认）</td>
+</tr>
+<tr class="even">
+<td><code>@Scope("prototype")</code></td>
+<td>多例，每次获取新对象</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="个人开发标准流程">2. 个人开发标准流程</h2>
-<h3 id="步骤-1同步并创建分支">步骤 1：同步并创建分支</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout release/1.11.0         <span class="comment"># 切换到目标 release 分支</span></span><br><span class="line">git pull origin release/1.11.0      <span class="comment"># 拉取最新代码</span></span><br><span class="line">git checkout -b feature/your-task   <span class="comment"># 创建功能分支</span></span><br></pre></td></tr></table></figure>
-<h3 id="步骤-2本地开发与提交">步骤 2：本地开发与提交</h3>
-<p>在 <code>feature</code>
-分支上编码，并进行<strong>原子化提交</strong>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;feat: implement user login modal&quot;</span></span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;fix: resolve button style issue&quot;</span></span><br></pre></td></tr></table></figure>
-<h3 id="步骤-3整理提交记录pr-前">步骤 3：整理提交记录（PR 前）</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br><span class="line">git rebase -i origin/release/1.11.0</span><br></pre></td></tr></table></figure>
-<ul>
-<li>合并零碎 commit，保持提交历史清晰。</li>
-</ul>
-<h3 id="步骤-4推送并创建-pr">步骤 4：推送并创建 PR</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f origin feature/your-task-name  <span class="comment"># 强制推送</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>在 GitHub / GitLab 上，从功能分支向目标 <code>release</code> 发起
-PR。</li>
-</ul>
-<hr />
-<h2 id="pr-审查与合并流程">3. PR 审查与合并流程</h2>
-<h3 id="第一步代码审查">第一步：代码审查</h3>
-<ul>
-<li>检查逻辑、规范、目标分支。</li>
-<li>至少一名成员 <code>Approve</code>。</li>
-</ul>
-<h3 id="第二步合并前检查">第二步：合并前检查</h3>
-<ul>
-<li>确认 CI/CD 全通过。</li>
-<li>提交历史整理干净。</li>
-<li>无合并冲突。</li>
-</ul>
-<h3 id="第三步执行合并">第三步：执行合并</h3>
-<p><strong>推荐策略</strong>（严禁使用 Merge Commit）：</p>
+<h2 id="二spring-aop-与-aspectj-区别">二、Spring AOP 与 AspectJ
+区别</h2>
 <table>
 <colgroup>
-<col style="width: 27%" />
-<col style="width: 30%" />
-<col style="width: 41%" />
+<col style="width: 14%" />
+<col style="width: 46%" />
+<col style="width: 39%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">合并方式</th>
-<th style="text-align: left;">操作方式</th>
-<th style="text-align: left;">优点</th>
+<th>特性</th>
+<th>Spring AOP</th>
+<th>AspectJ</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Squash and Merge</strong>
-(推荐)</td>
-<td style="text-align: left;">点击 <strong>Squash and Merge</strong>
-按钮</td>
-<td style="text-align: left;">将所有 commit
-合并为一个，生成干净历史。</td>
+<td><strong>实现方式</strong></td>
+<td>JDK 或 CGLIB 动态代理</td>
+<td>编译时织入 / 类加载时织入</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Rebase and Merge</strong>
-(可选)</td>
-<td style="text-align: left;">点击 <strong>Rebase and Merge</strong>
-按钮</td>
-<td style="text-align: left;">保持线性历史，按顺序追加 commit。</td>
+<td><strong>原理</strong></td>
+<td>运行时生成代理类，拦截方法调用插入增强</td>
+<td>修改字节码，将切面代码插入目标类</td>
+</tr>
+<tr class="odd">
+<td><strong>优点</strong></td>
+<td>简单易用，非侵入式</td>
+<td>性能高，控制精细</td>
+</tr>
+<tr class="even">
+<td><strong>缺点</strong></td>
+<td>存在性能开销</td>
+<td>配置复杂，侵入性强</td>
 </tr>
 </tbody>
 </table>
-<h3 id="第四步清理分支">第四步：清理分支</h3>
+<hr />
+<h2
+id="三项目结构分层经典三层架构">三、项目结构分层（经典三层架构）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">controller --&gt; service --&gt; dao</span><br><span class="line">     |            |          |</span><br><span class="line">   Web层       业务逻辑层   数据访问层</span><br></pre></td></tr></table></figure>
 <ul>
-<li>PR 合并后删除 <code>feature</code> 分支：</li>
+<li><strong>POJO</strong>：简单 Java 对象，表示数据结构</li>
+<li><strong>Controller</strong>：接收请求、返回响应</li>
+<li><strong>Service</strong>：封装业务逻辑</li>
+<li><strong>DAO</strong>：操作数据库 CRUD</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete feature/your-task-name</span><br></pre></td></tr></table></figure>
+<hr />
+<h2 id="四mysql-数据库设计范式">四、MySQL 数据库设计范式</h2>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 38%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>范式</th>
+<th>核心要求</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1NF（第一范式）</td>
+<td>字段原子性，每列不可拆分</td>
+<td><code>姓名</code> 不能为 <code>"张三,李四"</code></td>
+</tr>
+<tr class="even">
+<td>2NF（第二范式）</td>
+<td>消除部分依赖，非主键字段完全依赖主键</td>
+<td>复合主键 <code>学生ID+课程ID</code>，姓名只依赖 <code>学生ID</code>
+应拆表</td>
+</tr>
+<tr class="odd">
+<td>3NF（第三范式）</td>
+<td>消除传递依赖，非主键字段不依赖其他非主键字段</td>
+<td><code>班级编号 → 班主任 → 电话号</code>，电话号依赖班主任，应拆表</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="五总结">五、总结</h2>
+<ul>
+<li>Spring 支持 XML + 注解混合配置，提高开发灵活性</li>
+<li>Spring AOP 简单易用；AspectJ 适合高性能场景</li>
+<li>三层架构利于职责分离与项目维护</li>
+<li>数据库设计应遵循范式，避免冗余和异常依赖</li>
+</ul>
 <hr />
 
       
@@ -431,7 +470,7 @@ PR。</li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/20/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/22/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/20/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/22/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
