@@ -68,7 +68,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/gameframework/gameframework%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E6%9B%B2%E7%BA%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/gameframework/gameframework%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">GameFramework细节实现</a>
+          <a href="/other/%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E6%9B%B2%E7%BA%BF/" class="post-title-link" itemprop="url">最速降线曲线</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-19T00:00:00+08:00">2025-07-19</time>
+      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-17 18:54:38" itemprop="dateModified" datetime="2026-03-17T18:54:38+08:00">2026-03-17</time>
+      <time title="修改时间：2026-03-20 17:53:27" itemprop="dateModified" datetime="2026-03-20T17:53:27+08:00">2026-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/gameframework/" itemprop="url" rel="index"><span itemprop="name">gameframework</span></a>
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
         </span>
     </span>
 
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>1.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,70 +294,123 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="reference">Reference</h2>
-<h3 id="ireference">IReference</h3>
-<p>被引用的对象需实现 <code>IReference</code> 接口（包含一个
-<code>Clear</code>
-函数），当对象被回收时调用，恢复初始状态，以便下次使用。</p>
-<h3 id="referencecollection">ReferenceCollection</h3>
-<p>代表一种类型的引用池，位于 <code>ReferencePool</code> 内部：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> Queue&lt;IReference&gt; m_References;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> Type m_ReferenceType;</span><br><span class="line"><span class="comment">// ...状态计数</span></span><br></pre></td></tr></table></figure>
-<h3 id="referenceinfo">ReferenceInfo</h3>
-<p>获取引用池的状态计数，相较 <code>ReferenceCollection</code> 少了
-<code>m_References</code>。</p>
-<h3 id="referencepool">ReferencePool</h3>
-<p>静态类，管理所有类型的引用池：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Dictionary&lt;Type, ReferenceCollection&gt; s_ReferenceCollections = <span class="keyword">new</span> Dictionary&lt;Type, ReferenceCollection&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">Acquire</span>&lt;<span class="title">T</span>&gt;() <span class="keyword">where</span> T : <span class="keyword">class</span>, IReference, <span class="keyword">new</span>()</span> =&gt; GetReferenceCollection(<span class="keyword">typeof</span>(T)).Acquire&lt;T&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IReference <span class="title">Acquire</span>(<span class="params">Type referenceType</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    InternalCheckReferenceType(referenceType);</span><br><span class="line">    <span class="keyword">return</span> GetReferenceCollection(referenceType).Acquire();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>具体操作时先根据类型（为 <code>Type</code>
-时先要对类型进行检查）获取对应的
-<code>ReferenceCollection</code>，再进行其他操作。</p>
-</blockquote>
+          <h2 id="最速降线brachistochrone">最速降线（Brachistochrone）</h2>
+<p>最速降线是指在重力作用下，从点 A 到点 B 物体运动时间最短的曲线。</p>
+<p>运动时间公式：</p>
+<p><span class="math display">\[
+T = \int_{x_A}^{x_B} \frac{\sqrt{1 + [y&#39;(x)]^2}}{\sqrt{2g(y_A -
+y(x))}} \, dx
+\]</span></p>
 <hr />
-<h2 id="fsm-状态机">Fsm (状态机)</h2>
-<h3 id="fsmstate">FsmState<T></h3>
-<p>状态机状态的抽象类，包括状态初始化、状态更新等逻辑。</p>
-<h3 id="ifsm">IFsm<T></h3>
-<p>状态机接口。</p>
-<h3 id="fsmbase">FsmBase</h3>
-<p>状态机的抽象类。</p>
-<h3 id="fsm">Fsm<T></h3>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">Fsm</span>&lt;<span class="title">T</span>&gt; : <span class="title">FsmBase</span>, <span class="title">IReference</span>, <span class="title">IFsm</span>&lt;<span class="title">T</span>&gt; <span class="keyword">where</span> <span class="title">T</span> : <span class="keyword">class</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> T m_Owner;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> Dictionary&lt;Type, FsmState&lt;T&gt;&gt; m_States;</span><br><span class="line">    <span class="keyword">private</span> Dictionary&lt;<span class="built_in">string</span>, Variable&gt; m_Datas;</span><br><span class="line">    <span class="keyword">private</span> FsmState&lt;T&gt; m_CurrentState;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>一个状态机，包括所有状态类以及当前数据。</p>
-</blockquote>
-<h3 id="ifsmmanager">IFsmManager</h3>
-<p>接口，管理所有状态机。</p>
+<h2 id="泛函与欧拉-拉格朗日方程">泛函与欧拉-拉格朗日方程</h2>
+<p>泛函定义：</p>
+<p><span class="math display">\[
+I[y] = \int_{x_1}^{x_2} f(x, y, y&#39;) \, dx
+\]</span></p>
+<p>对泛函进行微扰：</p>
+<p><span class="math display">\[
+Y = y + \epsilon \delta(x), \quad \delta(x_1) = \delta(x_2) = 0
+\]</span></p>
+<p><span class="math display">\[
+I[y + \epsilon \delta(x)] = \int_{x_1}^{x_2} f(x, Y, Y&#39;) \, dx
+\]</span></p>
+<p>取极值的必要条件：</p>
+<p><span class="math display">\[
+\left. \frac{d}{d\epsilon} I[y+\epsilon \delta(x)] \right|_{\epsilon=0}
+= 0
+\]</span></p>
+<p><span class="math display">\[
+\frac{dF(\epsilon)}{d\epsilon} = \int_{x_1}^{x_2} \left[ \frac{\partial
+f}{\partial Y} - \frac{d}{dx} \left( \frac{\partial f}{\partial Y&#39;}
+\right) \right] \delta(x) \, dx = 0
+\]</span></p>
+<p>对任意 <span
+class="math inline">\(\delta(x)\)</span>，得到欧拉-拉格朗日方程：</p>
+<p><span class="math display">\[
+\frac{\partial f}{\partial y} - \frac{d}{dx} \left( \frac{\partial
+f}{\partial y&#39;} \right) = 0
+\]</span></p>
 <hr />
-<h2 id="procedure">Procedure</h2>
-<h3 id="proceduremanager">ProcedureManager</h3>
-<p>特殊的 <code>Fsm</code>，也由 <code>FsmManager</code> 管理。</p>
+<h2 id="贝尔特拉米积分beltrami-identity">贝尔特拉米积分（Beltrami
+Identity）</h2>
+<p>如果 <span class="math inline">\(F(y, y&#39;)\)</span> 不显含 <span
+class="math inline">\(x\)</span>，满足欧拉-拉格朗日方程：</p>
+<p><span class="math display">\[
+\frac{d}{dx} \left( \frac{\partial F}{\partial y&#39;} \right) =
+\frac{\partial F}{\partial y}
+\]</span></p>
+<p>定义：</p>
+<p><span class="math display">\[
+E = F - y&#39; \frac{\partial F}{\partial y&#39;}
+\]</span></p>
+<p>得：</p>
+<p><span class="math display">\[
+F - y&#39; \frac{\partial F}{\partial y&#39;} = C
+\]</span></p>
 <hr />
-<h2 id="setting">Setting</h2>
-<p>只需根据 <code>ISettingHelper</code>
-创建设置辅助器即可完成，<code>ISettingManager</code> 用于使用。</p>
+<h2 id="最速降线求解">最速降线求解</h2>
+<p>泛函：</p>
+<p><span class="math display">\[
+L(y, y&#39;) = \frac{\sqrt{1 + y&#39;^2}}{\sqrt{2g(y_A - y)}}
+\]</span></p>
+<p>由于不显含 <span
+class="math inline">\(x\)</span>，使用贝尔特拉米积分：</p>
+<p><span class="math display">\[
+\frac{\partial L}{\partial y&#39;} = \frac{y&#39;}{\sqrt{2g(y_A - y)}
+\sqrt{1 + y&#39;^2}}
+\]</span></p>
+<p>解得：</p>
+<p><span class="math display">\[
+1 + y&#39;^2 = \frac{1}{2gC^2 (y_A - y)}
+\]</span></p>
+<p>令 <span class="math inline">\(y = y_A - u\)</span>：</p>
+<p><span class="math display">\[
+\sqrt{\frac{u}{\frac{1}{2gC^2} - u}} \, du = dx
+\]</span></p>
+<p>令 <span class="math inline">\(v = 2gC^2 u\)</span>：</p>
+<p><span class="math display">\[
+dx = \frac{1}{2gC^2} \sqrt{\frac{v}{1 - v}} \, dv
+\]</span></p>
+<p>令 <span class="math inline">\(v = \sin^2 \theta\)</span>
+并积分：</p>
+<p><span class="math display">\[
+x = \frac{1}{2gC^2} \int 2 \sin^2 \theta \, d\theta = \frac{1}{2gC^2}
+\left( \theta - \frac{\sin 2\theta}{2} \right) + D
+\]</span></p>
+<p><span class="math display">\[
+y = y_A - \frac{\sin^2 \theta}{2gC^2}
+\]</span></p>
+<p>最终可写成摆线方程：</p>
+<p><span class="math display">\[
+x = a (\theta - \sin \theta) + x_A
+\]</span></p>
+<p><span class="math display">\[
+y = -a (1 - \cos \theta) + y_A
+\]</span></p>
+<p><span class="math display">\[
+a = \frac{1}{4 g C^2}
+\]</span></p>
+<p>其中 <span class="math inline">\(a\)</span> 为滚动圆半径<a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>。</p>
 <hr />
-<h2 id="module">Module</h2>
-<p>只暴露接口，具体实现仅在程序集可见。通过
-<code>GetModule&lt;Interface&gt;</code> 实例化：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">InScene</span>(<span class="params"><span class="keyword">this</span> GameObject gameObject</span>)</span></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
 <ul>
-<li><code>this</code>：表示这是一个扩展方法，并且该方法是对
-<code>GameObject</code> 类型的扩展。</li>
-<li><code>GameObject</code>：表示要扩展的类型（Unity 的
-<code>GameObject</code> 类）。</li>
-<li><code>gameObject</code>：方法参数，调用时传入的目标对象。</li>
+<li><a
+target="_blank" rel="noopener" href="https://www.jianshu.com/p/961e890e88b2">最速降线的数学模型—变分法
+- 简书</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/126421949">摆线的那些事儿——数学界的大型装逼事件
+- 知乎</a></li>
 </ul>
+<aside id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
 <hr />
-<h2 id="dataprovider">DataProvider</h2>
-<h3 id="readdata">ReadData</h3>
-<p><code>m_ResourceManager.LoadAsset</code>
-加载资产，并传入回调函数，回调函数触发 provider 的事件：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnCloseUIFormComplete</span>(<span class="params"><span class="built_in">object</span> sender, CloseUIFormCompleteEventArgs e</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    m_EventComponent.Fire(<span class="keyword">this</span>, CloseUIFormCompleteEventArgs.Create(e));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">m_UIManager.CloseUIFormComplete += OnCloseUIFormComplete;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>在 GameFramework 提供接口，在 runtime 中将不同模块结合起来。</p>
-</blockquote>
-<hr />
+<ol>
+<li id="fn1"><p>半径就是直径的一半<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
 
       
     </div>
@@ -377,7 +430,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
