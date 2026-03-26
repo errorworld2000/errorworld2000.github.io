@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/gc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">ow架构</a>
+          <a href="/other/gc/" class="post-title-link" itemprop="url">gc</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-20 17:53:27" itemprop="dateModified" datetime="2026-03-20T17:53:27+08:00">2026-03-20</time>
+      <time title="修改时间：2026-03-26 15:30:38" itemprop="dateModified" datetime="2026-03-26T15:30:38+08:00">2026-03-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>978</span>
+      <span>834</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,89 +294,70 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="核心架构">核心架构</h3>
+          <h2 id="为什么要有-gcgc-出现的背景">为什么要有 GC（GC 出现的背景）</h2>
 <ul>
-<li>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度
+<li>在 C/C++
+等语言中，内存分配（malloc/new）和释放（free/delete）需要手动管理。</li>
+<li>手动管理常出错，例如：
 <ul>
-<li><strong>Entity</strong>：ID +
-一组组件（Component，仅存储状态，无行为）</li>
-<li><strong>System</strong>：执行行为，关注特定组件组合（tuple /
-component-slice），在这些组件上处理逻辑</li>
+<li><strong>内存泄漏</strong>：分配了但忘记释放。</li>
+<li><strong>悬空指针</strong>：释放了但还有引用指向那块内存。</li>
 </ul></li>
-<li><strong>优点</strong>：
-<ul>
-<li>状态与行为分离，System 更纯洁、可组合</li>
-<li>组件只存储数据，行为集中在 System</li>
-<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
-</ul></li>
-<li><strong>单例组件（Singleton Component）</strong>
-<ul>
-<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
-<li>减少 System 间耦合</li>
-</ul></li>
-<li><strong>Utility 函数</strong>
-<ul>
-<li>封装共享行为（被多个 System 调用的小逻辑）</li>
-<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
-</ul></li>
+<li>GC（垃圾回收）使这类问题自动化处理，减轻程序员负担，但带来性能和暂停（stop-the-world）等代价。</li>
 </ul>
+<h2 id="gc-的几种核心算法-实现方法及其原理">GC 的几种核心算法 /
+实现方法及其原理</h2>
+<p>下面是几种经典或主流 GC 算法的简要原理、优缺点对比：</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 35%" />
+<col style="width: 25%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>算法</th>
+<th>核心原理</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Mark-Sweep（标记-清除）</strong></td>
+<td>从“根”（root）开始标记所有可达对象 →
+遍历堆，把未标记的对象清除。</td>
+<td>不移动对象 → 指针引用简单；空间利用率还算不错（除碎片问题）</td>
+<td>清扫阶段扫描整个堆；产生内存碎片；暂停时间长（必须停止应用线程）</td>
+</tr>
+<tr class="even">
+<td><strong>复制算法（Copying / Semi-space / Cheney
+的算法）</strong></td>
+<td>将堆分为两个半区：一边分配（from-space），满了之后将所有活对象复制到另一半（to-space），然后交换两边。</td>
+<td>分配速度快；无需空闲列表管理；自动避免外部碎片；活对象移动后，新生代
+gc 开销较低（年轻对象死亡率高）</td>
+<td>需要两倍空间（两个半区）；复制活对象本身也有成本；指针更新复杂（因为对象被移动）</td>
+</tr>
+<tr class="odd">
+<td><strong>标记-压缩（Mark-Compact / 标记-整理）</strong></td>
+<td>先标记可达对象；然后将可达对象向堆的一端紧凑移动，更新所有指向这些对象的引用。</td>
+<td>消除碎片；保持堆连续性，有利于缓存局部性；比传统标记-清除在碎片多时更稳定。</td>
+<td>移动对象代价；必须更新所有指针引用；压缩阶段通常暂停时间较长。</td>
+</tr>
+<tr class="even">
+<td><strong>分代 GC（Generational GC）</strong></td>
+<td>将对象分代（年轻代 / 老年代等），假设大多数对象很快死亡 →
+年轻代频繁清理，用复制算法／较快垃圾回收；老年代较少清理，用标记-清除或压缩算法。</td>
+<td>减少多数 GC 的暂停时间；年轻代 GC
+快且频繁，整体开销低；效率高。</td>
+<td>老年代回收仍然可能是高成本；跨代对象指针管理复杂；晋升策略调优不当可能导致老年代“存活”对象过多。</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h3 id="ecs-设计规范与权衡">ECS 设计规范与权衡</h3>
-<ul>
-<li><p><strong>组件无行为，System 尽量无状态</strong></p></li>
-<li><p>如果 System 需要状态 → 放在 Singleton Component</p></li>
-<li><p><strong>副作用控制</strong>：</p>
-<ul>
-<li><strong>Deferred
-Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
-<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
-</ul></li>
-<li><p><strong>实体创建与销毁</strong></p>
-<ul>
-<li>销毁推迟到帧末端安全</li>
-<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
-</ul></li>
-</ul>
-<hr />
-<h3 id="网络同步-netcode">网络同步 / Netcode</h3>
-<h4 id="预测与回滚prediction-reconciliation">1. 预测与回滚（Prediction
-&amp; Reconciliation）</h4>
-<ul>
-<li>客户端响应用户输入立即做预测，不等服务器确认</li>
-<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
-<li>客户端保存输入历史和移动状态历史</li>
-<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
-</ul>
-<h4 id="输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
-<ul>
-<li>每个发送包包含自上次确认以来的所有输入帧</li>
-<li>服务器缓冲区接收输入并补偿丢失帧</li>
-</ul>
-<h4 id="延迟-缓冲-时间膨胀buffering-time-dilation">3. 延迟 / 缓冲 /
-时间膨胀（Buffering / Time Dilation）</h4>
-<ul>
-<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
-<li>网络恢复稳定后，缩小缓冲区</li>
-</ul>
-<h4 id="命中判定hit-registration">4. 命中判定（Hit Registration）</h4>
-<ul>
-<li>客户端可能预测子弹命中，但服务器是最终权威</li>
-<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
-<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
-</ul>
-<hr />
-<h3 id="设计原则总结">设计原则总结</h3>
-<ol type="1">
-<li>架构为 <strong>可维护性与可扩展性服务</strong>
-<ul>
-<li>ECS + 严格准则（组件无行为，System 少状态）</li>
-</ul></li>
-<li>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</li>
-<li>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</li>
-</ol>
-<hr />
-<p>参考资料： <a
-target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7410654079842910217">#
+深度探索垃圾回收器(GC)</a></p>
 
       
     </div>
