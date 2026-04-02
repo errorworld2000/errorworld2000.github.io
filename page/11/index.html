@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/VPN%20%E4%BB%A3%E7%90%86%E4%B8%8E%20TUN%20%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/net/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">网络基础</a>
+          <a href="/net/VPN%20%E4%BB%A3%E7%90%86%E4%B8%8E%20TUN%20%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE/" class="post-title-link" itemprop="url">VPN 代理与 TUN 模式配置</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-03-30 14:38:56" itemprop="dateModified" datetime="2026-03-30T14:38:56+08:00">2026-03-30</time>
+      <time title="修改时间：2026-04-02 11:56:25" itemprop="dateModified" datetime="2026-04-02T11:56:25+08:00">2026-04-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1k</span>
+      <span>3.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -294,158 +294,119 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="一物理层physical-layer">一、物理层（Physical Layer）</h2>
-<p><strong>作用：</strong></p>
-<ul>
-<li>定义网络的<strong>物理特性</strong></li>
-<li>规定<strong>传输介质</strong>（网线、光纤等）</li>
-<li>实现<strong>相邻节点之间的比特流传输</strong></li>
-</ul>
-<p><strong>核心：</strong></p>
+          <span id="more"></span>
+<h2 id="fake-ip-模式">Fake-IP 模式</h2>
+<p><code>fake-ip</code> 用于在代理内部维护 域名与 IP
+的映射关系，以便在连接建立时能够根据域名进行精确分流。 当应用发起 DNS
+查询时，代理工具会拦截该请求并返回一个 虚假的 IP
+地址。这样应用可以像正常情况一样使用该 IP 建立连接，而代理在内部记录该
+IP 对应的真实域名。
+当后续连接请求到达代理时，代理可以通过该映射恢复出原始域名，从而像传统代理那样基于域名进行分流或远程解析，同时避免本地
+DNS 解析带来的泄露问题(泄露看DNS的查询策略)。</p>
 <blockquote>
-<p>负责把 <strong>0 / 1 比特流在物理媒介上传输</strong></p>
+<p>sing-box还是用realip，sniff记录ip和域名关系
+代理客户端决定发到哪里，远程服务端负责解析和转发
+<code>nameserver-policy</code> 用于指定特定域名的 DNS
+服务器，避免内网域名无法解析。例如，公司内网域名需要使用内网 DNS
+服务器才能正确解析。</p>
 </blockquote>
-<hr />
-<h1 id="二mac-子层数据链路层">二、MAC 子层（数据链路层）</h1>
-<p>在以太网中通常 <strong>只实现 MAC 子层</strong>，不使用 LLC
-子层（Ethernet II）。</p>
-<h2 id="mac-的主要功能">1 MAC 的主要功能</h2>
-<h3 id="数据封装">（1）数据封装</h3>
-<ul>
-<li><strong>成帧</strong>
-<ul>
-<li>帧同步</li>
-<li>确定帧边界</li>
-</ul></li>
-<li><strong>地址处理</strong>
-<ul>
-<li>处理源 / 目的 MAC 地址</li>
-</ul></li>
-<li><strong>错误检测</strong>
-<ul>
-<li>通过 <strong>FCS</strong> 检测传输错误</li>
-</ul></li>
-</ul>
-<hr />
-<h3 id="媒体访问控制media-access-control">（2）媒体访问控制（Media
-Access Control）</h3>
-<p>用于解决多个设备共享介质的问题：</p>
-<ul>
-<li><strong>媒质分配</strong>
-<ul>
-<li>冲突避免</li>
-</ul></li>
-<li><strong>冲突处理</strong></li>
-</ul>
-<p>典型机制：</p>
-<ul>
-<li>CSMA/CD（早期共享以太网）</li>
-</ul>
-<hr />
-<h1 id="三ethernet-ii-帧结构">三、Ethernet II 帧结构</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">| 目的MAC | 源MAC | Type | Data | FCS（Frame Check Sequence） |</span><br><span class="line">|  6B    |  6B   | 2B   |46~1500B|4B|</span><br></pre></td></tr></table></figure>
-<hr />
-<h1 id="四常见-ethertype">四、常见 EtherType</h1>
+<h2 id="系统代理-vs-tun-模式">系统代理 vs TUN 模式</h2>
+<p>两种模式的流量最终都会经过代理端口（如
+7897），主要区别在于流量的捕获方式：</p>
 <table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 32%" />
+<col style="width: 23%" />
+<col style="width: 30%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th>协议</th>
-<th>Type</th>
+<th>模式</th>
+<th>工作原理</th>
+<th>优势</th>
+<th>劣势</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>IPv4</td>
-<td>0x0800</td>
+<td><strong>系统代理</strong></td>
+<td>应用程序把域名发给代理</td>
+<td>配置简单</td>
+<td>需应用支持代理设置</td>
 </tr>
 <tr class="even">
-<td>ARP</td>
-<td>0x0806</td>
-</tr>
-<tr class="odd">
-<td>VLAN (802.1Q)</td>
-<td>0x8100</td>
-</tr>
-<tr class="even">
-<td>IPv6</td>
-<td>0x86DD</td>
+<td><strong>TUN 模式</strong></td>
+<td>系统强制将所有流量交给虚拟网卡</td>
+<td>全局代理，无需应用支持</td>
+<td>配置复杂，可能影响局域网访问</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h1 id="五二层与三层转发">五、二层与三层转发</h1>
-<h2 id="二层交换机">二层交换机</h2>
-<p>使用 <strong>MAC 地址表</strong></p>
-<p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MAC地址  →  端口</span><br></pre></td></tr></table></figure>
-<p>作用：</p>
 <blockquote>
-<p>根据目的 MAC 地址转发帧</p>
+<p><strong>提示</strong>：如果存在内网服务器，需要配置 DNS
+服务器以便获取正确的内网地址并进行分流。</p>
 </blockquote>
-<p>过程：</p>
+<h2 id="wsl2-环境配置">WSL2 环境配置</h2>
+<h3 id="前置条件">前置条件</h3>
+<p>在 <code>.wslconfig</code> 文件中配置：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[wsl2]</span></span><br><span class="line"><span class="attr">networkingMode</span>=mirrored</span><br><span class="line"><span class="attr">autoProxy</span>=<span class="literal">false</span></span><br><span class="line"><span class="attr">dnsTunneling</span>=<span class="literal">false</span></span><br><span class="line"><span class="attr">dnsProxy</span>=<span class="literal">false</span></span><br><span class="line"><span class="attr">firewall</span>=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>二层转发是交换机根据 MAC 地址
-将以太网帧在局域网内部转发的过程。当交换机收到一个帧时，会先记录帧的 源
-MAC 地址和接入端口 到 MAC 地址表，以便以后快速找到发送端口；然后查找帧的
-目的 MAC
-地址：如果在表中找到对应端口，就只从该端口转发帧；如果找不到或是广播/多播地址，则将帧洪泛到其他所有端口，实现局域网内的点对点或广播通信。整个过程仅处理二层数据，不涉及
-IP 或路由信息。</p>
+<p><strong>重要</strong>：需要在 Windows 防火墙中放行相关端口。</p>
 </blockquote>
-<hr />
-<h2 id="三层设备路由器">三层设备（路由器）</h2>
-<p>使用 <strong>路由表</strong></p>
-<p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目的网络 → 下一跳 / 出口接口</span><br></pre></td></tr></table></figure>
-<p>作用：</p>
-<blockquote>
-<p>根据 <strong>IP 地址</strong> 转发数据包</p>
-</blockquote>
-<p>过程：</p>
-<blockquote>
-<p>三层转发是路由器或三层交换机根据 目的 IP 地址
-将数据包从一个网络转发到另一个网络的过程。它的基本流程是：设备收到一个数据包后，先检查包头的
-目的 IP，在 路由表
-中查找下一跳或出口接口；然后根据查找到的出口接口，将数据包重新封装成适合该链路层的帧（修改源/目的
-MAC），最后从对应端口发送出去，实现跨网段通信。与二层转发不同，三层转发需要解析
-IP 层信息，并可能改变 MAC 地址，但不改变 IP 地址。</p>
-</blockquote>
-<hr />
-<h1 id="六传输层常见协议号ip-protocol">六、传输层常见协议号（IP
-Protocol）</h1>
+<h3 id="安装-sing-box">安装 sing-box</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 sing-box</span></span><br><span class="line">curl -fsSL https://sing-box.app/install.sh | sh</span><br></pre></td></tr></table></figure>
+<h3 id="配置文件">配置文件</h3>
+<p>配置文件路径：<code>/etc/sing-box/config.json</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="string">&quot;info&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dns&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;google-doh&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8.8.8.8&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;detour&quot;</span><span class="punctuation">:</span> <span class="string">&quot;proxy&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;company-dns&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;udp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;192.168.13.1&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;local-dns&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;local&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;domain_suffix&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;xxx.com&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xxx-dns&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;final&quot;</span><span class="punctuation">:</span> <span class="string">&quot;google-doh&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;strategy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ipv4_only&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tun&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tun-in&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;interface_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tun0&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;172.19.0.1/30&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;auto_route&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;strict_route&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;stack&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gvisor&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;mtu&quot;</span><span class="punctuation">:</span> <span class="number">9000</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;sniff&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;socks&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;proxy&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;server&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;server_port&quot;</span><span class="punctuation">:</span> <span class="number">7897</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;route&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">123</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;outbound&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dns&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;hijack-dns&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;ip_is_private&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;outbound&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;quic&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;outbound&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;auto_detect_interface&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;default_domain_resolver&quot;</span><span class="punctuation">:</span> <span class="string">&quot;google-doh&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;final&quot;</span><span class="punctuation">:</span> <span class="string">&quot;proxy&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置说明">配置说明</h3>
 <table>
 <thead>
 <tr class="header">
-<th>协议</th>
-<th>协议号</th>
+<th>配置项</th>
+<th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>ICMP</td>
-<td>1</td>
+<td><code>dns.servers</code></td>
+<td>配置多个 DNS 服务器，包括代理 DNS 和内网 DNS</td>
 </tr>
 <tr class="even">
-<td>TCP</td>
-<td>6</td>
+<td><code>dns.rules</code></td>
+<td>内网域名使用指定的 DNS 服务器解析</td>
 </tr>
 <tr class="odd">
-<td>UDP</td>
-<td>17</td>
+<td><code>inbounds.tun</code></td>
+<td>TUN 虚拟网卡配置，创建 <code>tun0</code> 接口</td>
+</tr>
+<tr class="even">
+<td><code>route.rules</code></td>
+<td>路由规则，私有 IP 直连，其他走代理</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h1 id="七以太网流量控制flow-control">七、以太网流量控制（Flow
-Control）</h1>
-<p><strong>作用：</strong></p>
-<p>防止接收方缓存溢出导致丢包。</p>
-<p><strong>机制：</strong></p>
-<p>发送 <strong>PAUSE 控制帧</strong> 通知对端：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">暂停发送一段时间</span><br></pre></td></tr></table></figure>
-<p>特点：</p>
+<h2 id="已知问题">已知问题</h2>
 <ul>
-<li>属于 <strong>链路层机制</strong></li>
-<li>常见于 <strong>全双工以太网</strong></li>
+<li>局域网代理目前存在问题，无法通过 Git 协议访问，只能通过 HTTP</li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://web.archive.org/web/20250706082234/https://www.pupboss.com/post/2024/clash-tun-fake-ip-best-practice/">关于
+Clash 科学上网的最佳实践</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://bflome.com/archives/clash-verge-best-practice">Clash-Verge-Rev
+最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.lololowe.com/posts/8f1e/">浅谈 DNS
+泄露</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/Aethersailor/Custom_OpenClash_Rules/wiki/OpenClash-%E8%AE%BE%E7%BD%AE%E6%96%B9%E6%A1%88">OpenClash
+设置方案</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/ashton2914/gfw_guidebook/blob/main/%E4%BB%80%E4%B9%88%E6%98%AFFake-IP.md">什么是Fake-IP</a></li>
+<li><a target="_blank" rel="noopener" href="http://v2ex.com/t/1069923">如果 DNS
+没有泄露，是否还有必要使用 Fakeip 吗</a></li>
 </ul>
 
       
