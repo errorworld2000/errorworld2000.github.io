@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/read-write/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/read-write/" class="post-title-link" itemprop="url">读写过程</a>
+          <a href="/leveldb/%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">整体架构</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-09 16:47:48" itemprop="dateModified" datetime="2026-04-09T16:47:48+08:00">2026-04-09</time>
+      <time title="修改时间：2026-04-17 20:16:54" itemprop="dateModified" datetime="2026-04-17T20:16:54+08:00">2026-04-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.3k</span>
+      <span>1.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -294,56 +294,169 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h4 id="写入过程">写入过程</h4>
-<p>Leveldb的put/delete操作实际都被转成batch然后write。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WriteBatch batch;</span><br><span class="line">batch.<span class="built_in">Put</span>(kvp.first, kvp.second);</span><br><span class="line"><span class="built_in">EXPECT_TRUE</span>(db_-&gt;<span class="built_in">Write</span>(<span class="built_in">WriteOptions</span>(), &amp;batch).<span class="built_in">ok</span>());</span><br></pre></td></tr></table></figure>
-<p>在leveldb中，使用Write操作进行写入，流程如下：</p>
-<ol type="1">
-<li>创建writer对象并加入队列（同时只允许一个写入操作运行）</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">DBImpl::Write</span><span class="params">(<span class="type">const</span> WriteOptions&amp; options, WriteBatch* updates)</span> </span>&#123;</span><br><span class="line">  <span class="function">Writer <span class="title">w</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  w.batch = updates;</span><br><span class="line">  w.sync = options.sync;</span><br><span class="line">  w.done = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">MutexLock <span class="title">l</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  writers_.<span class="built_in">push_back</span>(&amp;w);</span><br><span class="line">  <span class="comment">// 若当前 Writer 不是队列头部，则等待（锁被释放，进入阻塞）</span></span><br><span class="line">  <span class="keyword">while</span> (!w.done &amp;&amp; &amp;w != writers_.<span class="built_in">front</span>()) &#123;</span><br><span class="line">    w.cv.<span class="built_in">Wait</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (w.done) &#123;</span><br><span class="line">    <span class="keyword">return</span> w.status;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>为写操作分配空间</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Status status = <span class="built_in">MakeRoomForWrite</span>(updates == <span class="literal">nullptr</span>);</span><br><span class="line"><span class="type">uint64_t</span> last_sequence = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line">Writer* last_writer = &amp;w;</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li>构建批次并执行写操作</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (status.<span class="built_in">ok</span>() &amp;&amp; updates != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">  WriteBatch* write_batch = <span class="built_in">BuildBatchGroup</span>(&amp;last_writer);</span><br><span class="line">  WriteBatchInternal::<span class="built_in">SetSequence</span>(write_batch, last_sequence + <span class="number">1</span>);</span><br><span class="line">  last_sequence += WriteBatchInternal::<span class="built_in">Count</span>(write_batch);</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">    status = log_-&gt;<span class="built_in">AddRecord</span>(WriteBatchInternal::<span class="built_in">Contents</span>(write_batch));</span><br><span class="line">    <span class="type">bool</span> sync_error = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (status.<span class="built_in">ok</span>() &amp;&amp; options.sync) &#123;</span><br><span class="line">      status = logfile_-&gt;<span class="built_in">Sync</span>();</span><br><span class="line">      <span class="keyword">if</span> (!status.<span class="built_in">ok</span>()) &#123;</span><br><span class="line">        sync_error = <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (status.<span class="built_in">ok</span>()) &#123;</span><br><span class="line">      status = WriteBatchInternal::<span class="built_in">InsertInto</span>(write_batch, mem_);</span><br><span class="line">    &#125;</span><br><span class="line">    mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">    <span class="keyword">if</span> (sync_error) &#123;</span><br><span class="line">      <span class="built_in">RecordBackgroundError</span>(status);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  versions_-&gt;<span class="built_in">SetLastSequence</span>(last_sequence);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<ol start="4" type="1">
-<li>清理并唤醒写操作</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  Writer* ready = writers_.<span class="built_in">front</span>();</span><br><span class="line">  writers_.<span class="built_in">pop_front</span>();</span><br><span class="line">  <span class="keyword">if</span> (ready != &amp;w) &#123;</span><br><span class="line">    ready-&gt;status = status;</span><br><span class="line">    ready-&gt;done = <span class="literal">true</span>;</span><br><span class="line">    ready-&gt;cv.<span class="built_in">Signal</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (ready == last_writer) <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (!writers_.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">  writers_.<span class="built_in">front</span>()-&gt;cv.<span class="built_in">Signal</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="读取过程">读取过程</h4>
-<ol type="1">
-<li>加锁，基于snapshot进行数据读取</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">DBImpl::Get</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options, <span class="type">const</span> Slice&amp; key,</span></span></span><br><span class="line"><span class="params"><span class="function">                   std::string* value)</span> </span>&#123;</span><br><span class="line">  Status s;</span><br><span class="line">  <span class="function">MutexLock <span class="title">l</span><span class="params">(&amp;mutex_)</span></span>;</span><br><span class="line">  SequenceNumber snapshot;</span><br><span class="line">  <span class="keyword">if</span> (options.snapshot != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    snapshot =</span><br><span class="line">        <span class="built_in">static_cast</span>&lt;<span class="type">const</span> SnapshotImpl*&gt;(options.snapshot)-&gt;<span class="built_in">sequence_number</span>();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    snapshot = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line">  &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>引用mem、imm以及current version，避免读取过程中被销毁</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MemTable* mem = mem_;</span><br><span class="line">  MemTable* imm = imm_;</span><br><span class="line">  Version* current = versions_-&gt;<span class="built_in">current</span>();</span><br><span class="line">  mem-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm != <span class="literal">nullptr</span>) imm-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  current-&gt;<span class="built_in">Ref</span>();</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li>查询数据，释放锁避免占用cpu时间过长</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Unlock while reading from files and memtables</span></span><br><span class="line">  &#123;</span><br><span class="line">    mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">    <span class="comment">// First look in the memtable, then in the immutable memtable (if any).</span></span><br><span class="line">    <span class="function">LookupKey <span class="title">lkey</span><span class="params">(key, snapshot)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (mem-&gt;<span class="built_in">Get</span>(lkey, value, &amp;s)) &#123;</span><br><span class="line">      <span class="comment">// Done</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (imm != <span class="literal">nullptr</span> &amp;&amp; imm-&gt;<span class="built_in">Get</span>(lkey, value, &amp;s)) &#123;</span><br><span class="line">      <span class="comment">// Done</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      s = current-&gt;<span class="built_in">Get</span>(options, lkey, value, &amp;stats);</span><br><span class="line">      have_stat_update = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<ol start="4" type="1">
-<li>压缩解引等操作</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (have_stat_update &amp;&amp; current-&gt;<span class="built_in">UpdateStats</span>(stats)) &#123;</span><br><span class="line">    <span class="built_in">MaybeScheduleCompaction</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  mem-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm != <span class="literal">nullptr</span>) imm-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  current-&gt;<span class="built_in">Unref</span>();</span><br><span class="line">  <span class="keyword">return</span> s;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>leveldb读取分为三步：</p>
-<p>在memory db中查找指定的key，若搜索到符合条件的数据项，结束查找；</p>
-<p>在冻结的memory
-db中查找指定的key，若搜索到符合条件的数据项，结束查找；</p>
-<p>按低层至高层的顺序在level
-i层的sstable文件中查找指定的key，若搜索到符合条件的数据项，结束查找，否则返回Not
-Found错误，表示数据库中不存在指定的数据；</p>
-<p>注解</p>
-<p>注意leveldb在每一层sstable中查找数据时，都是按序依次查找sstable的。</p>
-<p>0层的文件比较特殊。由于0层的文件中可能存在key重合的情况，因此在0层中，文件编号大的sstable优先查找。理由是文件编号较大的sstable中存储的总是最新的数据。</p>
-<p>非0层文件，一层中所有文件之间的key不重合，因此leveldb可以借助sstable的元数据（一个文件中最小与最大的key值）进行快速定位，每一层只需要查找一个sstable文件的内容。</p>
-</blockquote>
+          <h3 id="leveldb-整体架构">Leveldb 整体架构</h3>
+<p>Leveldb 是一个高性能的键值存储库，由 Google
+开发。它的设计目标是提供快速的读写操作，同时支持高效的压缩和持久化。以下是
+Leveldb的核心组件及其工作原理的详细说明：</p>
+<hr />
+<h3 id="memtable"><strong>1. MemTable</strong></h3>
+<h4 id="概述"><strong>概述</strong></h4>
+<ul>
+<li><strong>MemTable</strong> 是 Leveldb
+在内存中用于组织和维护数据的结构。</li>
+<li>写入操作不会直接刷新到磁盘文件，而是先写入
+MemTable，因此写入性能非常高。</li>
+</ul>
+<h4 id="特点"><strong>特点</strong></h4>
+<ul>
+<li>基于 <strong>SkipList</strong>
+实现，支持高效的插入、删除和查找操作。</li>
+<li>数据按键排序存储，便于后续的持久化操作。</li>
+</ul>
+<h4 id="详情"><strong>详情</strong></h4>
+<ul>
+<li>详情见 <a href="/leveldb/memtable/" title="内存数据库">内存数据库</a>。</li>
+</ul>
+<hr />
+<h3 id="immutable-memtable"><strong>2. Immutable MemTable</strong></h3>
+<h4 id="概述-1"><strong>概述</strong></h4>
+<ul>
+<li>当 MemTable 的大小达到预设阈值时，它会转换为 <strong>Immutable
+MemTable</strong>。</li>
+<li>Immutable MemTable 是不可修改的，只允许读取操作。</li>
+</ul>
+<h4 id="作用"><strong>作用</strong></h4>
+<ul>
+<li>后台压缩进程会将 Immutable MemTable 中的数据转换为
+<strong>SSTable</strong>，并持久化到磁盘中。</li>
+<li>这种设计避免了写入阻塞，同时保证了数据的持久化。</li>
+</ul>
+<hr />
+<h3 id="log-write-ahead-log-wal"><strong>3. Log (Write-Ahead Log,
+WAL)</strong></h3>
+<h4 id="概述-2"><strong>概述</strong></h4>
+<ul>
+<li>Leveldb 的写入操作首先会顺序写入日志文件（Log），然后再写入
+MemTable。</li>
+<li>日志文件用于在系统崩溃时恢复未持久化的数据。</li>
+</ul>
+<h4 id="特点-1"><strong>特点</strong></h4>
+<ul>
+<li>日志文件是追加写入的，因此写入性能非常高。</li>
+<li>日志文件与 MemTable 的数据保持一致，确保数据的可靠性。</li>
+</ul>
+<h4 id="详情-1"><strong>详情</strong></h4>
+<ul>
+<li>详情见 <a href="/leveldb/log/" title="日志">日志</a>。</li>
+</ul>
+<hr />
+<h3 id="sstable-sorted-string-table"><strong>4. SSTable (Sorted String
+Table)</strong></h3>
+<h4 id="概述-3"><strong>概述</strong></h4>
+<ul>
+<li>当内存中的数据超过一定阈值时，Leveldb会将数据持久化到磁盘，形成
+<strong>SSTable</strong> 文件。</li>
+<li>SSTable 是 Leveldb在磁盘上存储数据的主要形式。</li>
+</ul>
+<h4 id="层级结构"><strong>层级结构</strong></h4>
+<ul>
+<li>SSTable 文件在逻辑上分为多个层级（Level），最底层为 <strong>Level
+0</strong>，由内存直接持久化生成。</li>
+<li>更高层级的 SSTable 文件通过 <strong>Compaction</strong>
+操作整合生成，以减少文件之间的交集。</li>
+</ul>
+<h4 id="详情-2"><strong>详情</strong></h4>
+<ul>
+<li>详情见 <a href="/leveldb/sstable/" title="排序字符串表">排序字符串表</a>。</li>
+</ul>
+<hr />
+<h3 id="manifest"><strong>5. Manifest</strong></h3>
+<h4 id="概述-4"><strong>概述</strong></h4>
+<ul>
+<li><strong>Manifest</strong> 文件记录了 Leveldb的元数据信息，包括
+SSTable 文件的元信息、版本变更等。</li>
+</ul>
+<h4 id="核心组件"><strong>核心组件</strong></h4>
+<ul>
+<li><strong>FileMetaData</strong>：记录 SSTable
+文件的元信息，包括文件编号、文件大小、最小键、最大键等。</li>
+<li><strong>VersionEdit</strong>：记录数据库版本的变更，可能包含新增的文件元信息、删除的文件等。</li>
+</ul>
+<h4 id="工作原理"><strong>工作原理</strong></h4>
+<ul>
+<li>Manifest 文件与 Write-Ahead Log (WAL) 使用相同的存储方式。</li>
+<li>每次数据库启动时，都会通过 Manifest 文件恢复最新的版本信息。</li>
+</ul>
+<h4 id="详情-3"><strong>详情</strong></h4>
+<ul>
+<li>详情见。</li>
+</ul>
+<hr />
+<h3 id="读写操作"><strong>6. 读写操作</strong></h3>
+<h4 id="概述-5"><strong>概述</strong></h4>
+<ul>
+<li>Leveldb的读写操作是其核心功能，设计目标是高效、可靠。</li>
+</ul>
+<h4 id="写操作"><strong>写操作</strong></h4>
+<ul>
+<li>数据首先写入日志文件（Log），然后写入 MemTable。</li>
+<li>当 MemTable 达到阈值时，转换为 Immutable
+MemTable，并触发后台压缩。</li>
+</ul>
+<h4 id="读操作"><strong>读操作</strong></h4>
+<ul>
+<li>数据首先从 MemTable 和 Immutable MemTable 中查找。</li>
+<li>如果未找到，则从磁盘中的 SSTable 文件中查找。</li>
+</ul>
+<h4 id="详情-4"><strong>详情</strong></h4>
+<ul>
+<li>详情见 <a href="/leveldb/read-write/" title="读写过程">读写过程</a>。</li>
+</ul>
+<hr />
+<h3 id="缓存系统"><strong>7. 缓存系统</strong></h3>
+<h4 id="概述-6"><strong>概述</strong></h4>
+<ul>
+<li>Leveldb使用缓存系统来加速读取操作，减少磁盘 I/O。</li>
+</ul>
+<h4 id="核心组件-1"><strong>核心组件</strong></h4>
+<ul>
+<li><strong>Block Cache</strong>：缓存 SSTable
+文件中的数据块，加速读取操作。</li>
+<li><strong>Table Cache</strong>：缓存 SSTable
+文件的元信息，减少文件打开和关闭的开销。</li>
+</ul>
+<h4 id="详情-5"><strong>详情</strong></h4>
+<ul>
+<li>详情见 <a href="/leveldb/cache/" title="缓存系统">缓存系统</a>。</li>
+</ul>
+<hr />
+<h3 id="compaction"><strong>8. Compaction</strong></h3>
+<h4 id="概述-7"><strong>概述</strong></h4>
+<ul>
+<li><strong>Compaction</strong> 是 Leveldb
+的核心机制之一，用于整合和优化 SSTable 文件。</li>
+</ul>
+<h4 id="作用-1"><strong>作用</strong></h4>
+<ul>
+<li>减少 SSTable 文件之间的交集，提高读取效率。</li>
+<li>清理过期或删除的数据，释放磁盘空间。</li>
+</ul>
+<h4 id="类型"><strong>类型</strong></h4>
+<ul>
+<li><strong>Minor Compaction</strong>：将 Immutable MemTable 转换为
+SSTable 文件。</li>
+<li><strong>Major Compaction</strong>：整合多个 SSTable
+文件，生成更高层级的文件。</li>
+</ul>
+<h4 id="详情-6"><strong>详情</strong></h4>
+<ul>
+<li>详情见 。</li>
+</ul>
+<hr />
+<h3 id="总结"><strong>总结</strong></h3>
+<p>Leveldb的整体架构通过 <strong>MemTable</strong>、<strong>Immutable
+MemTable</strong>、<strong>Log</strong>、<strong>SSTable</strong>、<strong>Manifest</strong>
+等组件的协同工作，实现了高效的读写操作和持久化存储。其设计充分考虑了性能、可靠性和可扩展性，适用于多种应用场景。</p>
 
       
     </div>
