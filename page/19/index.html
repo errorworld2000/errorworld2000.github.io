@@ -68,7 +68,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E6%9B%B2%E7%BA%BF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">ow架构</a>
+          <a href="/other/%E6%9C%80%E9%80%9F%E9%99%8D%E7%BA%BF%E6%9B%B2%E7%BA%BF/" class="post-title-link" itemprop="url">最速降线曲线</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-17 20:16:54" itemprop="dateModified" datetime="2026-04-17T20:16:54+08:00">2026-04-17</time>
+      <time title="修改时间：2026-06-01 14:27:29" itemprop="dateModified" datetime="2026-06-01T14:27:29+08:00">2026-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>978</span>
+      <span>1.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,89 +294,123 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="核心架构">核心架构</h3>
-<ul>
-<li>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度
-<ul>
-<li><strong>Entity</strong>：ID +
-一组组件（Component，仅存储状态，无行为）</li>
-<li><strong>System</strong>：执行行为，关注特定组件组合（tuple /
-component-slice），在这些组件上处理逻辑</li>
-</ul></li>
-<li><strong>优点</strong>：
-<ul>
-<li>状态与行为分离，System 更纯洁、可组合</li>
-<li>组件只存储数据，行为集中在 System</li>
-<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
-</ul></li>
-<li><strong>单例组件（Singleton Component）</strong>
-<ul>
-<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
-<li>减少 System 间耦合</li>
-</ul></li>
-<li><strong>Utility 函数</strong>
-<ul>
-<li>封装共享行为（被多个 System 调用的小逻辑）</li>
-<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
-</ul></li>
-</ul>
+          <h2 id="最速降线brachistochrone">最速降线（Brachistochrone）</h2>
+<p>最速降线是指在重力作用下，从点 A 到点 B 物体运动时间最短的曲线。</p>
+<p>运动时间公式：</p>
+<p><span class="math display">\[
+T = \int_{x_A}^{x_B} \frac{\sqrt{1 + [y&#39;(x)]^2}}{\sqrt{2g(y_A -
+y(x))}} \, dx
+\]</span></p>
 <hr />
-<h3 id="ecs-设计规范与权衡">ECS 设计规范与权衡</h3>
-<ul>
-<li><p><strong>组件无行为，System 尽量无状态</strong></p></li>
-<li><p>如果 System 需要状态 → 放在 Singleton Component</p></li>
-<li><p><strong>副作用控制</strong>：</p>
-<ul>
-<li><strong>Deferred
-Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
-<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
-</ul></li>
-<li><p><strong>实体创建与销毁</strong></p>
-<ul>
-<li>销毁推迟到帧末端安全</li>
-<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
-</ul></li>
-</ul>
+<h2 id="泛函与欧拉-拉格朗日方程">泛函与欧拉-拉格朗日方程</h2>
+<p>泛函定义：</p>
+<p><span class="math display">\[
+I[y] = \int_{x_1}^{x_2} f(x, y, y&#39;) \, dx
+\]</span></p>
+<p>对泛函进行微扰：</p>
+<p><span class="math display">\[
+Y = y + \epsilon \delta(x), \quad \delta(x_1) = \delta(x_2) = 0
+\]</span></p>
+<p><span class="math display">\[
+I[y + \epsilon \delta(x)] = \int_{x_1}^{x_2} f(x, Y, Y&#39;) \, dx
+\]</span></p>
+<p>取极值的必要条件：</p>
+<p><span class="math display">\[
+\left. \frac{d}{d\epsilon} I[y+\epsilon \delta(x)] \right|_{\epsilon=0}
+= 0
+\]</span></p>
+<p><span class="math display">\[
+\frac{dF(\epsilon)}{d\epsilon} = \int_{x_1}^{x_2} \left[ \frac{\partial
+f}{\partial Y} - \frac{d}{dx} \left( \frac{\partial f}{\partial Y&#39;}
+\right) \right] \delta(x) \, dx = 0
+\]</span></p>
+<p>对任意 <span
+class="math inline">\(\delta(x)\)</span>，得到欧拉-拉格朗日方程：</p>
+<p><span class="math display">\[
+\frac{\partial f}{\partial y} - \frac{d}{dx} \left( \frac{\partial
+f}{\partial y&#39;} \right) = 0
+\]</span></p>
 <hr />
-<h3 id="网络同步-netcode">网络同步 / Netcode</h3>
-<h4 id="预测与回滚prediction-reconciliation">1. 预测与回滚（Prediction
-&amp; Reconciliation）</h4>
-<ul>
-<li>客户端响应用户输入立即做预测，不等服务器确认</li>
-<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
-<li>客户端保存输入历史和移动状态历史</li>
-<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
-</ul>
-<h4 id="输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h4>
-<ul>
-<li>每个发送包包含自上次确认以来的所有输入帧</li>
-<li>服务器缓冲区接收输入并补偿丢失帧</li>
-</ul>
-<h4 id="延迟-缓冲-时间膨胀buffering-time-dilation">3. 延迟 / 缓冲 /
-时间膨胀（Buffering / Time Dilation）</h4>
-<ul>
-<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
-<li>网络恢复稳定后，缩小缓冲区</li>
-</ul>
-<h4 id="命中判定hit-registration">4. 命中判定（Hit Registration）</h4>
-<ul>
-<li>客户端可能预测子弹命中，但服务器是最终权威</li>
-<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
-<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
-</ul>
+<h2 id="贝尔特拉米积分beltrami-identity">贝尔特拉米积分（Beltrami
+Identity）</h2>
+<p>如果 <span class="math inline">\(F(y, y&#39;)\)</span> 不显含 <span
+class="math inline">\(x\)</span>，满足欧拉-拉格朗日方程：</p>
+<p><span class="math display">\[
+\frac{d}{dx} \left( \frac{\partial F}{\partial y&#39;} \right) =
+\frac{\partial F}{\partial y}
+\]</span></p>
+<p>定义：</p>
+<p><span class="math display">\[
+E = F - y&#39; \frac{\partial F}{\partial y&#39;}
+\]</span></p>
+<p>得：</p>
+<p><span class="math display">\[
+F - y&#39; \frac{\partial F}{\partial y&#39;} = C
+\]</span></p>
 <hr />
-<h3 id="设计原则总结">设计原则总结</h3>
-<ol type="1">
-<li>架构为 <strong>可维护性与可扩展性服务</strong>
+<h2 id="最速降线求解">最速降线求解</h2>
+<p>泛函：</p>
+<p><span class="math display">\[
+L(y, y&#39;) = \frac{\sqrt{1 + y&#39;^2}}{\sqrt{2g(y_A - y)}}
+\]</span></p>
+<p>由于不显含 <span
+class="math inline">\(x\)</span>，使用贝尔特拉米积分：</p>
+<p><span class="math display">\[
+\frac{\partial L}{\partial y&#39;} = \frac{y&#39;}{\sqrt{2g(y_A - y)}
+\sqrt{1 + y&#39;^2}}
+\]</span></p>
+<p>解得：</p>
+<p><span class="math display">\[
+1 + y&#39;^2 = \frac{1}{2gC^2 (y_A - y)}
+\]</span></p>
+<p>令 <span class="math inline">\(y = y_A - u\)</span>：</p>
+<p><span class="math display">\[
+\sqrt{\frac{u}{\frac{1}{2gC^2} - u}} \, du = dx
+\]</span></p>
+<p>令 <span class="math inline">\(v = 2gC^2 u\)</span>：</p>
+<p><span class="math display">\[
+dx = \frac{1}{2gC^2} \sqrt{\frac{v}{1 - v}} \, dv
+\]</span></p>
+<p>令 <span class="math inline">\(v = \sin^2 \theta\)</span>
+并积分：</p>
+<p><span class="math display">\[
+x = \frac{1}{2gC^2} \int 2 \sin^2 \theta \, d\theta = \frac{1}{2gC^2}
+\left( \theta - \frac{\sin 2\theta}{2} \right) + D
+\]</span></p>
+<p><span class="math display">\[
+y = y_A - \frac{\sin^2 \theta}{2gC^2}
+\]</span></p>
+<p>最终可写成摆线方程：</p>
+<p><span class="math display">\[
+x = a (\theta - \sin \theta) + x_A
+\]</span></p>
+<p><span class="math display">\[
+y = -a (1 - \cos \theta) + y_A
+\]</span></p>
+<p><span class="math display">\[
+a = \frac{1}{4 g C^2}
+\]</span></p>
+<p>其中 <span class="math inline">\(a\)</span> 为滚动圆半径<a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>。</p>
+<hr />
+<h2 id="参考">参考</h2>
 <ul>
-<li>ECS + 严格准则（组件无行为，System 少状态）</li>
-</ul></li>
-<li>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</li>
-<li>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</li>
+<li><a
+target="_blank" rel="noopener" href="https://www.jianshu.com/p/961e890e88b2">最速降线的数学模型—变分法
+- 简书</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/126421949">摆线的那些事儿——数学界的大型装逼事件
+- 知乎</a></li>
+</ul>
+<aside id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>半径就是直径的一半<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-<hr />
-<p>参考资料： <a
-target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
+</aside>
 
       
     </div>

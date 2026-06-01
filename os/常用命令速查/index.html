@@ -28,7 +28,7 @@
 <meta property="og:description" content="U-Boot  pri # 查看环境变量 setenv &lt;var&gt; &lt;value&gt; # 设置环境变量 bdinfo # 显示板级信息 dhcp # 获取 IP 地址（DHCP） mii # MII（Media Independent Interface）相关 load &lt;dev_type&gt; &lt;bus&gt;:&lt;dev&gt; &lt;file&gt;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-17T12:16:54.000Z">
+<meta property="article:modified_time" content="2026-06-01T06:27:29.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="os">
 <meta property="article:tag" content="shell">
@@ -166,7 +166,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot"><span class="nav-number">1.</span> <span class="nav-text">U-Boot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E4%B8%8E%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">系统信息与日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%8A%E6%96%AD"><span class="nav-number">3.</span> <span class="nav-text">网络诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vlan-%E9%93%BE%E8%B7%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">VLAN &#x2F; 链路配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">ip 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6-%E5%A4%96%E8%AE%BE"><span class="nav-number">6.</span> <span class="nav-text">硬件 &#x2F; 外设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git"><span class="nav-number">7.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-make-cmake"><span class="nav-number">8.</span> <span class="nav-text">编译 &#x2F; Make &#x2F; CMake</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot"><span class="nav-number">1.</span> <span class="nav-text">U-Boot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E4%B8%8E%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">系统信息与日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%8A%E6%96%AD"><span class="nav-number">4.</span> <span class="nav-text">网络诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vlan-%E9%93%BE%E8%B7%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">VLAN &#x2F; 链路配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">ip 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6-%E5%A4%96%E8%AE%BE"><span class="nav-number">7.</span> <span class="nav-text">硬件 &#x2F; 外设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git"><span class="nav-number">8.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-make-cmake"><span class="nav-number">9.</span> <span class="nav-text">编译 &#x2F; Make &#x2F; CMake</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -263,7 +263,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-17 20:16:54" itemprop="dateModified" datetime="2026-04-17T20:16:54+08:00">2026-04-17</time>
+      <time title="修改时间：2026-06-01 14:27:29" itemprop="dateModified" datetime="2026-06-01T14:27:29+08:00">2026-06-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,14 +289,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.5k</span>
+      <span>3.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -324,9 +324,12 @@
 </ul>
 <h2 id="系统信息与日志">系统信息与日志</h2>
 <ul>
+<li><code>printenv</code> # 环境变量</li>
 <li><code>man</code> # 指令信息</li>
 <li><code>uname -a</code> # 内核版本</li>
 <li><code>lscpu</code> # CPU 信息</li>
+<li><code>lsusb -t</code> # USB 信息</li>
+<li><code>lspci -k</code> # 查看 pci 内核驱动信息</li>
 <li><code>dmesg</code> # 内核日志</li>
 <li><code>getconf -a</code> # 系统参数（只读）</li>
 <li><code>sysctl</code> # 内核参数相关</li>
@@ -353,13 +356,32 @@
 <li><code>/proc/iomem</code> # 查看物理内存映射</li>
 <li><code>/proc/meminfo</code> # 内存状态</li>
 <li><code>/sys/kernel/debug/gpio</code> # 查看 GPIO 状态</li>
+<li><code>/sys/kernel/debug/usb/usbmon/5u</code> # 查看 usb 输出</li>
 </ul></li>
 <li><code>zcat /proc/config.gz | less | grep -i &lt;term&gt;</code> #
 查看内核配置</li>
+<li><code>echo ${USER}/$(nproc)</code> # 变量展开/命令替换</li>
+</ul>
+<h2 id="指令">指令</h2>
+<ul>
+<li><code>tar -xzvf file.tar.gz -C /target/path</code> # 解压</li>
+<li><code>tar -czvf file.tar.gz dir/</code> # 压缩</li>
+<li><code>strace -e write ./eserial /dev/ttyUSB2 ATI</code> #
+跟踪应用过程</li>
+<li><code>find / -name xxxx 2 &gt; /dev/null</code> #
+全盘找一个文件(丢弃错误文件)</li>
+<li><code>truncate -s 0 /etc/machine-id</code> # 清空文件内容</li>
+<li><code>dd if=/dev/zero of=/dev/mmcblk0 count=1</code> # 清空 mmc
+分区信息</li>
+<li><code>fdisk /dev/mmcblk0</code> # 对 mmc 进行分区</li>
+<li><code>stty cols 200</code> # 修改终端宽度</li>
+<li><code>df -h</code> # 查看分区剩余空间</li>
+<li><code>history -n</code> # 查看历史指令</li>
 </ul>
 <h2 id="网络诊断">网络诊断</h2>
 <ul>
 <li><code>networkctl</code> # 显示网络状态（systemd）</li>
+<li><code>curl -v xxx.com</code> # 命令行发 HTTP / TCP / FTP 请求</li>
 <li><code>dhclient &lt;iface&gt;</code> # 请求 DHCP</li>
 <li><code>ethtool &lt;iface&gt;</code> # 网口工具</li>
 <li><code>dig</code> # 查 DNS 解析（定位域名 -&gt; IP 问题）</li>
@@ -369,7 +391,8 @@
 <li><code>ss -lntup</code> # 查看套接字状态</li>
 <li><code>nc -u -v 192.168.13.1 53</code> # 用 UDP 向 192.168.13.1:53
 发送数据（DNS 端口）</li>
-<li><code>tcpdump -i &lt;iface&gt;</code> # 抓包相关</li>
+<li><code>tcpdump -i &lt;iface&gt; [icmp/arp]</code> # 抓包相关</li>
+<li><code>tcpdump -i usbmon5 -w em05.pcap</code> # 抓 usb 的包</li>
 </ul>
 <h2 id="vlan-链路配置">VLAN / 链路配置</h2>
 <ul>
@@ -428,10 +451,13 @@ push</li>
 <li><code>make modules_prepare</code> # 准备模块编译</li>
 <li><code>make -j&lt;cores&gt; Image modules</code> # 生成 Image
 和模块，并记录编译信息</li>
-<li><code>make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C &lt;kernel-src&gt; M=$PWD -j$(nproc)</code>
+<li><code>make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C &lt;kernel-src&gt; M=$PWD -j$(nproc) [LDFLAGS=-static]</code>
 # 单目录模块编译</li>
 <li><code>cmake -B &lt;build-dir&gt; -S . -DCMAKE_TOOLCHAIN_FILE=&lt;file&gt; -DCMAKE_BUILD_TYPE=&lt;type&gt; -DCMAKE_EXPORT_COMPILE_COMMANDS=1</code>
 # CMake 构建</li>
+<li><code>meson configure</code> # 查看编译参数</li>
+<li><code>meson setup build -D</code> # 设置编译参数需带上 -D</li>
+<li><code>meson [setup] -h</code> # 查看 【setup】参数</li>
 </ul>
 
     </div>
@@ -467,13 +493,13 @@ push</li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" rel="prev" title="系统基础">
+                <a href="/os/%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3/" rel="prev" title="系统基础">
                   <i class="fa fa-angle-left"></i> 系统基础
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/os/%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3/" rel="next" title="系统基础">
-                  系统基础 <i class="fa fa-angle-right"></i>
+                <a href="/net/NAT%20%E4%B8%8E%E6%89%93%E6%B4%9E%E6%8A%80%E6%9C%AF/" rel="next" title="NAT 与打洞技术">
+                  NAT 与打洞技术 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
