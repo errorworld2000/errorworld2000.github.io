@@ -20,24 +20,26 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="压力来自避而不赴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="a Blog">
-<meta property="og:url" content="https://errorworld2000.github.io/tags/gc/index.html">
+    <meta name="description" content="📌 bRPC 无锁 MPSC 写入机制技术笔记 🎯 核心设计思想：极致缩小同步区间 传统方案的性能瓶颈在于“临界区过大”：互斥锁的临界区包含了耗时的系统调用（Socket I&#x2F;O）。 bRPC 机制的核心在于将网络 I&#x2F;O 剥离出同步区间，将线程间的竞争极度压缩为一条 CPU 原子指令（指针交换）。 ⚙️ 写入提交流程（无锁链表构建） 1. 节点初始化 新请求构建为 Node，next 指针置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mpsc">
+<meta property="og:url" content="https://errorworld2000.github.io/mpsc/index.html">
 <meta property="og:site_name" content="a Blog">
-<meta property="og:description" content="压力来自避而不赴">
+<meta property="og:description" content="📌 bRPC 无锁 MPSC 写入机制技术笔记 🎯 核心设计思想：极致缩小同步区间 传统方案的性能瓶颈在于“临界区过大”：互斥锁的临界区包含了耗时的系统调用（Socket I&#x2F;O）。 bRPC 机制的核心在于将网络 I&#x2F;O 剥离出同步区间，将线程间的竞争极度压缩为一条 CPU 原子指令（指针交换）。 ⚙️ 写入提交流程（无锁链表构建） 1. 节点初始化 新请求构建为 Node，next 指针置">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-11T11:10:42.000Z">
+<meta property="article:modified_time" content="2026-06-25T02:41:20.000Z">
 <meta property="article:author" content="jungle">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://errorworld2000.github.io/tags/gc/">
+<link rel="canonical" href="https://errorworld2000.github.io/mpsc/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"tags/gc/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/mpsc/","path":"mpsc/","title":"mpsc"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>标签: gc | a Blog</title>
+<title>mpsc | a Blog</title>
   
 
 
@@ -149,7 +151,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -162,6 +164,10 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#brpc-%E6%97%A0%E9%94%81-mpsc-%E5%86%99%E5%85%A5%E6%9C%BA%E5%88%B6%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">📌 bRPC 无锁 MPSC
+写入机制技术笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E6%9E%81%E8%87%B4%E7%BC%A9%E5%B0%8F%E5%90%8C%E6%AD%A5%E5%8C%BA%E9%97%B4"><span class="nav-number">1.1.</span> <span class="nav-text">🎯
+核心设计思想：极致缩小同步区间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%85%A5%E6%8F%90%E4%BA%A4%E6%B5%81%E7%A8%8B%E6%97%A0%E9%94%81%E9%93%BE%E8%A1%A8%E6%9E%84%E5%BB%BA"><span class="nav-number">1.2.</span> <span class="nav-text">⚙️ 写入提交流程（无锁链表构建）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6race-condition%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">🛡️ 竞态条件（Race
+Condition）处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%9C%AC%E8%B4%A8%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">💡 性能本质总结</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -211,51 +217,204 @@
 
     </div>
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">gc
-          <small>标签</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/mpsc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jungle">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a Blog">
+      <meta itemprop="description" content="压力来自避而不赴">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="mpsc | a Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mpsc
         </h1>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2025</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-06-11 19:10:42" itemprop="dateCreated datePublished" datetime="2026-06-11T19:10:42+08:00">2026-06-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="brpc-无锁-mpsc-写入机制技术笔记">📌 bRPC 无锁 MPSC
+写入机制技术笔记</h1>
+<h3 id="核心设计思想极致缩小同步区间">🎯
+核心设计思想：极致缩小同步区间</h3>
+<p>传统方案的性能瓶颈在于<strong>“临界区过大”</strong>：互斥锁的临界区包含了耗时的系统调用（Socket
+I/O）。 bRPC 机制的核心在于<strong>将网络 I/O
+剥离出同步区间</strong>，将线程间的竞争极度压缩为<strong>一条 CPU
+原子指令（指针交换）</strong>。</p>
+<h3 id="写入提交流程无锁链表构建">⚙️ 写入提交流程（无锁链表构建）</h3>
+<p><strong>1. 节点初始化</strong> 新请求构建为 Node，<code>next</code>
+指针置为特殊状态宏 <code>UNCONNECTED</code>，避免与常规的
+<code>NULL</code> 混淆。</p>
+<p><strong>2. 极小临界区：Atomic Exchange</strong> 线程通过
+<code>std::atomic_exchange</code> 竞争全局 <code>Tail</code> 指针，将
+<code>Tail</code> 指向自身，并获取 <code>Tail</code> 的旧值。
+<em>这是整个写入流程中唯一的同步点，耗时仅需几个纳秒的 CPU
+时钟周期。</em></p>
+<p><strong>3. 角色分化与无阻塞提交</strong> 根据
+<code>atomic_exchange</code> 的返回值分化线程职责：</p>
+<ul>
+<li><strong>Producer（旧值 != NULL）</strong>：说明链表已有头部。执行
+<code>old_tail-&gt;next = current_node</code>
+完成指针链接。此操作纯内存赋值，完成后线程立刻返回，<strong>完全避开 I/O
+阻塞</strong>。</li>
+<li><strong>Consumer（旧值 ==
+NULL）</strong>：说明当前节点是链表首节点。该线程承担 Consumer
+职责，负责后续的 I/O 写入。</li>
+</ul>
+<p><strong>4. 批量 I/O（Batching）</strong> Consumer 顺着链表收集多个
+Producer 提交的 Node，在<strong>无锁状态</strong>下调用一次
+<code>writev</code> 集中进行系统调用，大幅降低上下文切换开销。</p>
+<hr />
+<h3 id="竞态条件race-condition处理">🛡️ 竞态条件（Race
+Condition）处理</h3>
+<p><strong>隐患：时间差导致断链</strong> Producer 执行完
+<code>atomic_exchange</code> 后，尚未执行
+<code>old_tail-&gt;next = current_node</code> 发生线程调度，导致
+Consumer 读到 <code>UNCONNECTED</code> 提前截断链表。</p>
+<p><strong>解决方案：</strong></p>
+<ol type="1">
+<li><strong>状态校验与自旋（Spin-wait）</strong>： Consumer
+处理完当前节点后，对比全局 <code>Tail</code>。若 <code>Tail</code>
+已改变，但当前节点的 <code>next == UNCONNECTED</code>，说明有 Producer
+正在链接。Consumer 会执行极短的 <strong>CPU
+自旋等待（yield/pause）</strong>，直到 <code>next</code> 被赋值。</li>
+<li><strong>后台线程兜底（KeepWrite）</strong>： 若 Consumer
+达到单次写入上限，或自旋超时必须返回业务逻辑，会将尚未发送的链表指针原子性地移交给后台专用的
+<code>KeepWrite</code> 线程继续处理，确保数据不丢失且 Consumer
+不被长期阻塞。</li>
+</ol>
+<hr />
+<h3 id="性能本质总结">💡 性能本质总结</h3>
+<ol type="1">
+<li><strong>缩小临界区</strong>：将同步范围从
+<code>[加锁 -&gt; I/O -&gt; 解锁]</code> 压缩至
+<code>[原子指令]</code>。</li>
+<li><strong>消除系统调用阻塞</strong>：99%
+的线程只做内存级别的链表追加，耗时趋近于 0。</li>
+<li><strong>负反馈优化</strong>：并发度越高，MPSC 链表积压越长，单次
+<code>writev</code>
+聚集写的数据量越大，<strong>化高并发冲突为高吞吐量契机</strong>。</li>
+</ol>
+<p>参考：</p>
+<p>1.<a
+target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">没啃透无锁队列，高并发底层你只懂了皮毛！</a></p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2025-09-16T00:00:00+08:00"
-              content="2025-09-16">
-          09-16
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/other/gc/" itemprop="url">
-            <span itemprop="name">gc</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          
 
-      
-    </header>
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/mpsc/" title="mpsc">https://errorworld2000.github.io/mpsc/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/sing-box/%E6%80%BB%E8%A7%88/" rel="prev" title="总览">
+                  <i class="fa fa-angle-left"></i> 总览
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
   </div>
   
   
-  
-
 </div>
   </main>
 

@@ -28,7 +28,7 @@
 <meta property="og:description" content="U-Boot  pri # 查看环境变量 setenv &lt;var&gt; &lt;value&gt; # 设置环境变量 bdinfo # 显示板级信息 dhcp # 获取 IP 地址（DHCP） mii # MII（Media Independent Interface）相关 load &lt;dev_type&gt; &lt;bus&gt;:&lt;dev&gt; &lt;file&gt;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-01T06:27:29.000Z">
+<meta property="article:modified_time" content="2026-06-25T02:41:20.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="os">
 <meta property="article:tag" content="shell">
@@ -166,7 +166,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot"><span class="nav-number">1.</span> <span class="nav-text">U-Boot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E4%B8%8E%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">系统信息与日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%8A%E6%96%AD"><span class="nav-number">4.</span> <span class="nav-text">网络诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vlan-%E9%93%BE%E8%B7%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">VLAN &#x2F; 链路配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">ip 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6-%E5%A4%96%E8%AE%BE"><span class="nav-number">7.</span> <span class="nav-text">硬件 &#x2F; 外设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git"><span class="nav-number">8.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-make-cmake"><span class="nav-number">9.</span> <span class="nav-text">编译 &#x2F; Make &#x2F; CMake</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot"><span class="nav-number">1.</span> <span class="nav-text">U-Boot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E4%B8%8E%E6%97%A5%E5%BF%97"><span class="nav-number">2.</span> <span class="nav-text">系统信息与日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%8A%E6%96%AD"><span class="nav-number">4.</span> <span class="nav-text">网络诊断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vlan-%E9%93%BE%E8%B7%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">VLAN &#x2F; 链路配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">ip 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6-%E5%A4%96%E8%AE%BE"><span class="nav-number">7.</span> <span class="nav-text">硬件 &#x2F; 外设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git"><span class="nav-number">8.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-make-cmake"><span class="nav-number">9.</span> <span class="nav-text">编译 &#x2F; Make &#x2F; CMake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#window"><span class="nav-number">10.</span> <span class="nav-text">window</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -181,7 +181,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -263,7 +263,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-01 14:27:29" itemprop="dateModified" datetime="2026-06-01T14:27:29+08:00">2026-06-01</time>
+      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,7 +289,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.1k</span>
+      <span>3.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -376,6 +376,7 @@
 <li><code>fdisk /dev/mmcblk0</code> # 对 mmc 进行分区</li>
 <li><code>stty cols 200</code> # 修改终端宽度</li>
 <li><code>df -h</code> # 查看分区剩余空间</li>
+<li><code>du -h --max-depth=1</code> # 查看存储占用</li>
 <li><code>history -n</code> # 查看历史指令</li>
 </ul>
 <h2 id="网络诊断">网络诊断</h2>
@@ -459,6 +460,15 @@ push</li>
 <li><code>meson setup build -D</code> # 设置编译参数需带上 -D</li>
 <li><code>meson [setup] -h</code> # 查看 【setup】参数</li>
 </ul>
+<h2 id="window">window</h2>
+<ul>
+<li><code>scp -r jzw@xspeed-ubuntu18:/home/jzw/dpaa .\Desktop\</code> #
+从远程 Linux 递归拷贝 dpaa 目录到 Windows 桌面</li>
+<li><code>Get-FileHash *.img -Algorithm SHA256</code> # 计算 img 文件的
+SHA256 校验值</li>
+<li><code>git\usr\bin\strings.exe img | findstr aaa</code> #
+从二进制文件中提取字符串并过滤包含 aaa 的内容</li>
+</ul>
 
     </div>
 
@@ -538,14 +548,14 @@ push</li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">47k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">43 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

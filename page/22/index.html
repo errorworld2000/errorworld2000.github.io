@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Spring%E5%9F%BA%E7%A1%80/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/Pimpl%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/Spring%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">Spring基础</a>
+          <a href="/other/Pimpl%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">Pimpl模式</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-01 14:27:29" itemprop="dateModified" datetime="2026-06-01T14:27:29+08:00">2026-06-01</time>
+      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1k</span>
+      <span>653</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,161 +294,71 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="一spring-xml-配置与注解">一、Spring XML 配置与注解</h2>
-<h3 id="自动扫描-bean-beans.xml">1. 自动扫描 Bean
-(<code>beans.xml</code>)</h3>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.example&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>作用</strong>：扫描指定包及子包，将标注了以下注解的类注册为
-Spring Bean：
-<ul>
-<li><code>@Component</code>（普通组件）</li>
-<li><code>@Service</code>（业务逻辑层）</li>
-<li><code>@Repository</code>（DAO 层，支持异常转换）</li>
-<li><code>@Controller</code>（Web 控制层）</li>
-</ul></li>
-</ul>
-<h3 id="常见注解说明">2. 常见注解说明</h3>
-<table>
-<thead>
-<tr class="header">
-<th>注解</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>@Component</code></td>
-<td>普通组件，交给 Spring 管理</td>
-</tr>
-<tr class="even">
-<td><code>@Service</code></td>
-<td>业务逻辑组件，语义清晰</td>
-</tr>
-<tr class="odd">
-<td><code>@Repository</code></td>
-<td>DAO 层组件，支持异常转换</td>
-</tr>
-<tr class="even">
-<td><code>@Controller</code></td>
-<td>控制层组件，处理 Web 请求</td>
-</tr>
-<tr class="odd">
-<td><code>@Autowired</code></td>
-<td>按类型自动注入依赖</td>
-</tr>
-<tr class="even">
-<td><code>@Qualifier("beanName")</code></td>
-<td>与 <code>@Autowired</code> 配合，按名称注入</td>
-</tr>
-<tr class="odd">
-<td><code>@PostConstruct</code></td>
-<td>初始化方法（容器加载后执行）</td>
-</tr>
-<tr class="even">
-<td><code>@PreDestroy</code></td>
-<td>销毁方法（容器关闭前执行）</td>
-</tr>
-<tr class="odd">
-<td><code>@Scope("singleton")</code></td>
-<td>单例（默认）</td>
-</tr>
-<tr class="even">
-<td><code>@Scope("prototype")</code></td>
-<td>多例，每次获取新对象</td>
-</tr>
-</tbody>
-</table>
+          <h2 id="核心思想">核心思想</h2>
+<p>Pimpl
+模式的主要目标是<strong>分离接口与实现</strong>，通过将类的实现细节封装在私有的实现类中，减少编译依赖并提高二进制兼容性。</p>
 <hr />
-<h2 id="二spring-aop-与-aspectj-区别">二、Spring AOP 与 AspectJ
-区别</h2>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// my_class.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span> &#123;</span><br><span class="line">   <span class="comment">// 公共接口与保护成员</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   <span class="keyword">class</span> <span class="title class_">impl</span>;                 <span class="comment">// 不完整类型声明</span></span><br><span class="line">   std::unique_ptr&lt;impl&gt; pimpl; <span class="comment">// 指向私有实现类</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// my_class.cpp</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">my_class</span>::impl &#123;</span><br><span class="line">   <span class="comment">// 私有数据和方法</span></span><br><span class="line">   <span class="comment">// 可以随意修改而无需重新编译客户端</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">my_class::<span class="built_in">my_class</span>() : <span class="built_in">pimpl</span>(<span class="keyword">new</span> impl) &#123;</span><br><span class="line">   <span class="comment">// 初始化 impl 的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr />
+<h3 id="优点">优点</h3>
+<ol type="1">
+<li><strong>减少编译依赖</strong>
+<ul>
+<li>客户端只依赖类的接口（头文件），实现细节变化无需重新编译。</li>
+</ul></li>
+<li><strong>分离接口和实现</strong>
+<ul>
+<li>将类的私有数据和方法封装在 <code>impl</code> 中，接口保持不变。</li>
+</ul></li>
+<li><strong>提高可移植性和二进制兼容性</strong>
+<ul>
+<li>修改实现类不会破坏已经编译好的客户端代码。</li>
+</ul></li>
+<li><strong>隐藏实现细节</strong>
+<ul>
+<li>客户端无法直接访问实现类，保证封装性。</li>
+</ul></li>
+</ol>
+<hr />
+<h3 id="pimpl-vs-虚函数接口">Pimpl vs 虚函数接口</h3>
 <table>
 <colgroup>
-<col style="width: 14%" />
-<col style="width: 46%" />
-<col style="width: 39%" />
+<col style="width: 20%" />
+<col style="width: 41%" />
+<col style="width: 38%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th>特性</th>
-<th>Spring AOP</th>
-<th>AspectJ</th>
+<th>虚函数接口</th>
+<th>Pimpl</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>实现方式</strong></td>
-<td>JDK 或 CGLIB 动态代理</td>
-<td>编译时织入 / 类加载时织入</td>
+<td><strong>二进制兼容性</strong></td>
+<td>修改虚函数表会破坏兼容性</td>
+<td>修改 impl 不影响接口和客户端</td>
 </tr>
 <tr class="even">
-<td><strong>原理</strong></td>
-<td>运行时生成代理类，拦截方法调用插入增强</td>
-<td>修改字节码，将切面代码插入目标类</td>
+<td><strong>封装性</strong></td>
+<td>公开继承，接口暴露实现</td>
+<td>完全隐藏实现细节</td>
 </tr>
 <tr class="odd">
-<td><strong>优点</strong></td>
-<td>简单易用，非侵入式</td>
-<td>性能高，控制精细</td>
-</tr>
-<tr class="even">
-<td><strong>缺点</strong></td>
-<td>存在性能开销</td>
-<td>配置复杂，侵入性强</td>
+<td><strong>编译依赖</strong></td>
+<td>接口和实现耦合，修改需要重新编译</td>
+<td>客户端仅依赖头文件，不依赖实现</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2
-id="三项目结构分层经典三层架构">三、项目结构分层（经典三层架构）</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">controller --&gt; service --&gt; dao</span><br><span class="line">     |            |          |</span><br><span class="line">   Web层       业务逻辑层   数据访问层</span><br></pre></td></tr></table></figure>
+<h3 id="总结">总结</h3>
 <ul>
-<li><strong>POJO</strong>：简单 Java 对象，表示数据结构</li>
-<li><strong>Controller</strong>：接收请求、返回响应</li>
-<li><strong>Service</strong>：封装业务逻辑</li>
-<li><strong>DAO</strong>：操作数据库 CRUD</li>
-</ul>
-<hr />
-<h2 id="四mysql-数据库设计范式">四、MySQL 数据库设计范式</h2>
-<table>
-<colgroup>
-<col style="width: 13%" />
-<col style="width: 38%" />
-<col style="width: 47%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>范式</th>
-<th>核心要求</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1NF（第一范式）</td>
-<td>字段原子性，每列不可拆分</td>
-<td><code>姓名</code> 不能为 <code>"张三,李四"</code></td>
-</tr>
-<tr class="even">
-<td>2NF（第二范式）</td>
-<td>消除部分依赖，非主键字段完全依赖主键</td>
-<td>复合主键 <code>学生ID+课程ID</code>，姓名只依赖 <code>学生ID</code>
-应拆表</td>
-</tr>
-<tr class="odd">
-<td>3NF（第三范式）</td>
-<td>消除传递依赖，非主键字段不依赖其他非主键字段</td>
-<td><code>班级编号 → 班主任 → 电话号</code>，电话号依赖班主任，应拆表</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="五总结">五、总结</h2>
-<ul>
-<li>Spring 支持 XML + 注解混合配置，提高开发灵活性</li>
-<li>Spring AOP 简单易用；AspectJ 适合高性能场景</li>
-<li>三层架构利于职责分离与项目维护</li>
-<li>数据库设计应遵循范式，避免冗余和异常依赖</li>
+<li>Pimpl 模式是一种经典的 <strong>信息隐藏与接口分离</strong> 技术</li>
+<li>适合库开发或需要保持二进制兼容性的场景</li>
+<li>结合智能指针（如 <code>unique_ptr</code>）可安全管理资源</li>
 </ul>
 <hr />
 
@@ -470,7 +380,7 @@ id="三项目结构分层经典三层架构">三、项目结构分层（经典�
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/23/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/21/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/23/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -493,14 +403,14 @@ id="三项目结构分层经典三层架构">三、项目结构分层（经典�
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">47k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">43 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E5%8D%8F%E7%A8%8B%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/os/%E5%8D%8F%E7%A8%8B%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">协程深入分析</a>
+          <a href="/os/%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">系统基础</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2026-02-28 00:00:00" itemprop="dateCreated datePublished" datetime="2026-02-28T00:00:00+08:00">2026-02-28</time>
+      <time title="创建时间：2026-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-01 14:27:29" itemprop="dateModified" datetime="2026-06-01T14:27:29+08:00">2026-06-01</time>
+      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
+      <span>818</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,194 +294,105 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="为什么需要协程">1.为什么需要协程</h2>
-<p>在游戏开发中，经常需要处理 <strong>需要等待的逻辑</strong>：</p>
-<ul>
-<li>等待网络请求</li>
-<li>等待动画播放</li>
-<li>等待时间延迟</li>
-<li>等待某个条件成立</li>
-</ul>
-<p>最直观的实现方式就是 <strong>Update 轮询</strong>。</p>
-<hr />
-<h1 id="update-轮询-vs-coroutine">2.Update 轮询 vs Coroutine</h1>
-<h2 id="update-轮询">Update 轮询</h2>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UnityWebRequest m_Request;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_Request != <span class="literal">null</span> &amp;&amp; m_Request.isDone)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(m_Request.downloadHandler.text);</span><br><span class="line">        m_Request = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>特点：</p>
-<ul>
-<li>每帧检查状态</li>
-<li>需要自己维护状态</li>
-<li>多任务时逻辑容易混乱</li>
-</ul>
-<hr />
-<h2 id="coroutine">Coroutine</h2>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">RequestCoroutine</span>(<span class="params"><span class="built_in">string</span> url</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span> (<span class="keyword">var</span> request = UnityWebRequest.Get(url))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> request.SendWebRequest();</span><br><span class="line">        Debug.Log(request.downloadHandler.text);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>特点：</p>
-<ul>
-<li><code>yield return</code> 自动挂起</li>
-<li>Unity 在条件满足时恢复执行</li>
-<li>代码逻辑像同步代码一样</li>
-</ul>
-<hr />
-<h2 id="对比">对比</h2>
-<table>
-<thead>
-<tr class="header">
-<th>对比项</th>
-<th>Update轮询</th>
-<th>Coroutine</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>状态管理</td>
-<td>手动维护</td>
-<td>Unity自动管理</td>
-</tr>
-<tr class="even">
-<td>CPU开销</td>
-<td>每帧检测</td>
-<td>事件触发</td>
-</tr>
-<tr class="odd">
-<td>代码复杂度</td>
-<td>高</td>
-<td>低</td>
-</tr>
-<tr class="even">
-<td>可读性</td>
-<td>差</td>
-<td>高</td>
-</tr>
-</tbody>
-</table>
+          <h2 id="启动过程简要">启动过程（简要）</h2>
+<ol type="1">
+<li>上电 → BootROM（SoC 固件）：读取 RCW、初始化最小硬件、加载 BL2 到
+SRAM</li>
+<li>BL2（ATF early）：初始化 DDR，加载 BL31（ATF runtime）和
+BL33（通常为 U‑Boot）</li>
+<li>BL31（ATF runtime）：设置安全环境后跳转 U‑Boot</li>
+<li>U‑Boot：初始化外设，加载 Linux 内核与设备树</li>
+</ol>
 <blockquote>
-<p>Coroutine 本质是把“等待逻辑”从 Update 中抽离出来。</p>
+<p>此流程适用于常见 Arm SoC 的多阶段引导；具体实现随平台而异。</p>
 </blockquote>
-<hr />
-<h1 id="stackless-coroutine">3.Stackless Coroutine</h1>
-<p>Unity Coroutine 属于 <strong>Stackless Coroutine</strong>。</p>
-<p>特点：</p>
-<table>
-<thead>
-<tr class="header">
-<th>特性</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>无独立栈</td>
-<td>不保存函数调用栈</td>
-</tr>
-<tr class="even">
-<td>状态机实现</td>
-<td>通过 switch 恢复执行</td>
-</tr>
-<tr class="odd">
-<td>内存占用小</td>
-<td>只有状态对象</td>
-</tr>
-<tr class="even">
-<td>调用限制</td>
-<td>只能在 yield 函数内</td>
-</tr>
-</tbody>
-</table>
-<p>Unity 协程本质依赖 <strong>C# 的 IEnumerator</strong>。</p>
-<p>示例：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">Example</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">1</span></span>)</span>;</span><br><span class="line">    Debug.Log(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译器会把它转换成 <strong>状态机</strong>。</p>
-<hr />
-<h2 id="编译后逻辑简化">编译后逻辑（简化）</h2>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">ExampleCoroutine</span> : <span class="title">IEnumerator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> state;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">MoveNext</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span>(state)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                Debug.Log(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">                state = <span class="number">1</span>;</span><br><span class="line">                current = <span class="keyword">new</span> WaitForSeconds(<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                Debug.Log(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到：</p>
-<p><strong>yield return 实际是一个状态切换。</strong></p>
-<hr />
-<h1 id="stackful-coroutine">4.Stackful Coroutine</h1>
-<p>另一类协程叫 <strong>Stackful Coroutine</strong>。</p>
-<p>代表语言：</p>
+<h2 id="文件加载路径">文件加载路径</h2>
+<p>传统路径：磁盘 → DMA → 内核页缓存（page cache）→ copy_to_user →
+用户缓冲区</p>
+<p>零拷贝优化：磁盘文件 → 页缓存 →
+直接映射到用户虚拟地址（避免额外内存拷贝）。</p>
+<p>原因与优点：</p>
 <ul>
-<li>Go</li>
-<li>Lua</li>
-<li>Boost Coroutine</li>
+<li>零拷贝：减少一次内存复制，提升性能</li>
+<li>按需分页：只在访问时加载页面，节省内存</li>
+<li>虚拟地址映射：允许映射超大文件以便用户态直接访问</li>
 </ul>
-<p>特点：</p>
+<h2 id="kdump核心转储">kdump（核心转储）</h2>
+<p>kdump 使用 <code>kexec</code> 启动一个最小化内核（crash
+kernel），并通过 ELF 等描述将崩溃内核的物理内存映射成
+<code>/proc/vmcore</code>。用户态工具可像读文件一样转储系统内存用于分析。</p>
+<h2 id="uio-vs-vfio">UIO vs VFIO</h2>
 <table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 40%" />
+<col style="width: 54%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th>特性</th>
-<th>描述</th>
+<th>方案</th>
+<th>作用</th>
+<th>优缺点</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>有独立栈</td>
-<td>每个协程拥有自己的栈</td>
+<td>UIO</td>
+<td>用户态访问设备寄存器</td>
+<td>简单、适合调试；不提供安全 DMA/隔离，风险较高</td>
 </tr>
 <tr class="even">
-<td>保存寄存器</td>
-<td>切换时保存CPU上下文</td>
-</tr>
-<tr class="odd">
-<td>可在任意函数 yield</td>
-<td>不需要编译器生成状态机</td>
+<td>VFIO</td>
+<td>通过 IOMMU 提供安全 DMA 与设备直通</td>
+<td>安全、支持高性能网卡与 DPDK；适合生产和虚拟化</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="栈帧结构">栈帧结构</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">![函数堆栈](函数堆栈.png)</span><br><span class="line">PS:最后一个划分有点问题</span><br><span class="line"></span><br><span class="line">![调用协程时的堆栈](调用协程时的堆栈.png)</span><br><span class="line">PS:esp执行return（第一个红框），esp+4指向变量1（第二个红框）</span><br><span class="line"></span><br><span class="line">&gt; 协程主要是创建新的堆栈空间并切换，其他没啥差别</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">## 协程上下文保存</span><br><span class="line"></span><br><span class="line">切换协程时需要保存：</span><br><span class="line"></span><br><span class="line">- 寄存器</span><br><span class="line">- 栈指针</span><br><span class="line">- 返回地址</span><br><span class="line"></span><br><span class="line">示例：</span><br><span class="line"></span><br><span class="line">```asm</span><br><span class="line">movl (%esp), %ecx</span><br><span class="line">movl %ecx, -4(%eax)</span><br></pre></td></tr></table></figure>
-<p>含义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">栈顶</span><br><span class="line">│ return address</span><br><span class="line">│ 参数1</span><br><span class="line">│ 参数2</span><br></pre></td></tr></table></figure>
-<p>保存 return address 后：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">恢复时 ret</span><br><span class="line">直接跳回 yield 之后</span><br></pre></td></tr></table></figure>
-<hr />
-<h1 id="stackful-vs-stackless">5.Stackful vs Stackless</h1>
+<h2 id="页表与多级页表的由来">页表与多级页表的由来</h2>
+<p>CPU 的 MMU 要求一级页表是可直接索引的连续数组；单级页表对 64
+位地址空间过大，多级页表通过分层索引实现稀疏映射，节省内存并支持按需分配。</p>
+<h2 id="系统硬件">系统硬件</h2>
 <table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 42%" />
+<col style="width: 43%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>特性</th>
-<th>Stackful</th>
-<th>Stackless</th>
+<th>ARM/嵌入式</th>
+<th>x86/PCIe</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>栈</td>
-<td>独立栈</td>
-<td>无</td>
+<td>硬件发现</td>
+<td>写死，需 DT 或 platform_data</td>
+<td>自描述，扫描 PCI 配置空间</td>
 </tr>
 <tr class="even">
-<td>实现</td>
-<td>保存CPU上下文</td>
-<td>编译器状态机</td>
+<td>驱动匹配</td>
+<td><code>compatible</code> / platform_device</td>
+<td>VendorID/DeviceID</td>
 </tr>
 <tr class="odd">
-<td>切换成本</td>
-<td>高</td>
-<td>低</td>
+<td>硬件信息</td>
+<td>DT 或手工提供地址、中断、时钟</td>
+<td>PCI 配置空间提供资源和中断</td>
 </tr>
 <tr class="even">
-<td>灵活性</td>
-<td>高</td>
-<td>低</td>
+<td>驱动初始化</td>
+<td><code>probe()</code> 读取资源</td>
+<td><code>probe()</code> 读取 PCI 配置空间资源</td>
 </tr>
 <tr class="odd">
-<td>语言</td>
-<td>Go / Lua</td>
-<td>C# / JS / Python</td>
+<td>可移植性</td>
+<td>需修改 DT</td>
+<td>基本通用</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h1 id="参考">参考</h1>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="https://mthli.xyz/stackful-stackless/">有栈协程与无栈协程</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2382694">深入理解函数栈帧的创建和销毁</a></li>
-</ul>
 <hr />
 
       
@@ -502,7 +413,7 @@ target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/9/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -525,14 +436,14 @@ target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">47k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">43 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
