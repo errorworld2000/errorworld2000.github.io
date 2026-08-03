@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration (总体配置): 512Mb × 8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ddr">
+<meta property="og:url" content="https://errorworld2000.github.io/ddr/index.html">
+<meta property="og:site_name" content="a Blog">
+<meta property="og:description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration (总体配置): 512Mb × 8">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://errorworld2000.github.io/ddr/image.png">
+<meta property="article:published_time" content="2026-07-28T08:13:56.000Z">
+<meta property="article:modified_time" content="2026-08-03T02:48:06.000Z">
+<meta property="article:author" content="jungle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://errorworld2000.github.io/ddr/image.png">
+
+
+<link rel="canonical" href="https://errorworld2000.github.io/ddr/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/ddr/","path":"ddr/","title":"ddr"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ddr | a Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#configuration-%E6%80%BB%E4%BD%93%E9%85%8D%E7%BD%AE-512mb-8"><span class="nav-number">1.</span> <span class="nav-text">1. Configuration (总体配置):
+512Mb × 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bank-address-%E9%80%BB%E8%BE%91%E5%BA%93%E5%9C%B0%E5%9D%80%E5%88%92%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">2. Bank Address
+(逻辑库地址划分)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#row-address-%E8%A1%8C%E5%9C%B0%E5%9D%80-a0a14"><span class="nav-number">3.</span> <span class="nav-text">3. Row Address (行地址):
+A0~A14</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column-address-%E5%88%97%E5%9C%B0%E5%9D%80-a0a9"><span class="nav-number">4.</span> <span class="nav-text">4. Column Address (列地址):
+A0~A9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#page-size-%E9%A1%B5%E5%A4%A7%E5%B0%8F%E8%A1%8C%E7%BC%93%E5%86%B2%E5%A4%A7%E5%B0%8F-1kb"><span class="nav-number">5.</span> <span class="nav-text">5. Page Size
+(页大小&#x2F;行缓冲大小): 1KB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E6%9E%81%E9%AA%8C%E8%AF%81%E6%8A%8A%E6%89%80%E6%9C%89%E5%8F%82%E6%95%B0%E4%B9%98%E8%B5%B7%E6%9D%A5%E7%AE%97%E6%80%BB%E5%AE%B9%E9%87%8F"><span class="nav-number">6.</span> <span class="nav-text">💡
+终极验证：把所有参数乘起来算总容量</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jungle</p>
+  <div class="site-description" itemprop="description">压力来自避而不赴</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/ddr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jungle">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a Blog">
+      <meta itemprop="description" content="压力来自避而不赴">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ddr | a Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ddr
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-07-28 16:13:56" itemprop="dateCreated datePublished" datetime="2026-07-28T16:13:56+08:00">2026-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><img src="image.png" alt="alt text" /> 这张图片是典型的 <strong>DDR4
+内存颗粒（Chip）的硬件物理结构参数表</strong>。</p>
+<p>简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。</p>
+<p>结合你上一题的代码，<strong>注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。</strong>
+这颗芯片的总容量是 <strong>4Gb（即 512MB）</strong>。</p>
+<p>下面为你逐行详细解释：</p>
+<h3 id="configuration-总体配置-512mb-8">1. Configuration (总体配置):
+<code>512Mb × 8</code></h3>
+<ul>
+<li>这是该颗粒最核心的规格描述。</li>
+<li><strong><code>×8</code> (读作 by
+8)</strong>：表示这个颗粒的<strong>数据位宽是
+8-bit</strong>（即每次读写操作，芯片会吐出或吃进 8 个比特的数据）。</li>
+<li><strong><code>512Mb</code> (Mega-words)</strong>：表示这个芯片内部有
+5.12 亿个寻址位置（words）。</li>
+<li><strong>总容量计算</strong>：<span class="math inline">\(512\text{M}
+\times 8\text{ bit} = 4096\text{ Mbit}\)</span> = <strong>4 Gb
+(千兆位)</strong>。换算成字节（Byte）就是 <span
+class="math inline">\(4\text{Gb} / 8 =\)</span> <strong>512
+MB</strong>。</li>
+</ul>
+<hr />
+<h3 id="bank-address-逻辑库地址划分">2. Bank Address
+(逻辑库地址划分)</h3>
+<p>DDR4
+内部就像一个大的立体仓库，为了提高并行读写效率，它被划分成了多个大区（Bank
+Group）和小区（Bank）。</p>
+<ul>
+<li><strong><code># of bank groups: 4</code></strong>
+<ul>
+<li>芯片内部分为 <strong>4 个 Bank Group (大区)</strong>。</li>
+</ul></li>
+<li><strong><code>BG Address: BG0~BG1</code></strong>
+<ul>
+<li>因为有 4 个大区，所以需要用到 <strong>2 根地址线</strong>（<span
+class="math inline">\(2^2 =
+4\)</span>）来选择到底是哪一个大区。这两根线在引脚上叫 BG0 和 BG1。</li>
+</ul></li>
+<li><strong><code>Bank Address in BG: BA0~BA1</code></strong>
+<ul>
+<li>在每一个大区（Bank Group）内部，又细分了小区（Bank）。用到 <strong>2
+根地址线</strong>（BA0 和 BA1），说明每个大区里有 <span
+class="math inline">\(2^2 = 4\)</span> 个 Bank。</li>
+<li><strong>总结</strong>：这颗芯片一共有 <span class="math inline">\(4
+\times 4 =\)</span> <strong>16 个 Bank</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="row-address-行地址-a0a14">3. Row Address (行地址):
+<code>A0~A14</code></h3>
+<ul>
+<li>在选定了一个具体的 Bank（小区）之后，数据是存在二维矩阵里的。</li>
+<li><code>A0~A14</code> 意味着有 <strong>15 根行地址线</strong>。</li>
+<li>说明每个 Bank 内部有 <span class="math inline">\(2^{15} =\)</span>
+<strong>32,768 行</strong> (Rows)。</li>
+<li><em>(注：你上一题的代码里 <code>n_row_addr = 16</code>，也就是 <span
+class="math inline">\(2^{16}=65536\)</span>
+行，行数多了一倍，所以上题容量是 1GB，而这题是 512MB)</em>。</li>
+</ul>
+<hr />
+<h3 id="column-address-列地址-a0a9">4. Column Address (列地址):
+<code>A0~A9</code></h3>
+<ul>
+<li>二维矩阵的列数。</li>
+<li><code>A0~A9</code> 意味着有 <strong>10 根列地址线</strong>。</li>
+<li>说明每行有 <span class="math inline">\(2^{10} =\)</span>
+<strong>1,024 列</strong> (Columns)。</li>
+</ul>
+<hr />
+<h3 id="page-size-页大小行缓冲大小-1kb">5. Page Size
+(页大小/行缓冲大小): <code>1KB</code></h3>
+<ul>
+<li><strong>含义</strong>：当 CPU 要读取数据时，DDR
+会把一整行（Row）的数据一次性全部读到一个缓存区（Sense
+Amplifier）中，这个缓存区的大小就是 Page Size。</li>
+<li><strong>是怎么算出来的？</strong>
+<ul>
+<li>刚刚算出每行有 <strong>1024 列</strong>。</li>
+<li>最上面我们知道这个芯片是 <strong>×8</strong> 的（每个列交叉点存 8个
+bit，也就是 1个 Byte）。</li>
+<li>所以一行的总数据量 = <span class="math inline">\(1024 \times 1\text{
+Byte} = \mathbf{1024 \text{ Bytes} = 1 \text{ KB}}\)</span>。</li>
+<li>表格写的完全正确。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="终极验证把所有参数乘起来算总容量">💡
+终极验证：把所有参数乘起来算总容量</h3>
+<p>通过这张表，我们可以从最底层的晶体管物理结构，算出芯片的总容量：</p>
+<p><span class="math display">\[\text{总容量} = \text{行数} \times
+\text{列数} \times \text{大区数} \times \text{大区内小区数} \times
+\text{数据位宽}\]</span></p>
+<ul>
+<li>容量(bit) = <span class="math inline">\(2^{15} \text{ (行)} \times
+2^{10} \text{ (列)} \times 4 \text{ (BG)} \times 4 \text{ (Bank)} \times
+8 \text{ (bit)}\)</span></li>
+<li>容量(bit) = <span class="math inline">\(32768 \times 1024 \times 16
+\times 8\)</span></li>
+<li>容量(bit) = <strong>4,294,967,296 bits (即 4 Gb)</strong></li>
+<li>换算为字节： <span class="math inline">\(4\text{ Gb} \div 8
+=\)</span> <strong>512 MB</strong></li>
+</ul>
+<p>这就是这张图表完整的意思。它是硬件工程师用来配置设备树（Device
+Tree）或内存控制器（如 U-Boot 里的 DDR 初始化代码）的直接依据。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/ddr/" title="ddr">https://errorworld2000.github.io/ddr/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/openwrt/" rel="prev" title="openwrt">
+                  <i class="fa fa-angle-left"></i> openwrt
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">jungle</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">52k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">47 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>

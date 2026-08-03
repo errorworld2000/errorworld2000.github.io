@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/sing-box/%E6%80%BB%E8%A7%88/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/openwrt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/sing-box/%E6%80%BB%E8%A7%88/" class="post-title-link" itemprop="url">总览</a>
+          <a href="/openwrt/" class="post-title-link" itemprop="url">openwrt</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,23 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2026-03-13 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-13T00:00:00+08:00">2026-03-13</time>
+      <time title="创建时间：2026-07-28 14:25:25" itemprop="dateCreated datePublished" datetime="2026-07-28T14:25:25+08:00">2026-07-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/sing-box/" itemprop="url" rel="index"><span itemprop="name">sing-box</span></a>
-        </span>
+      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
     </span>
 
   
@@ -276,14 +267,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>537</span>
+      <span>3.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -294,11 +285,79 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="原理">原理</h2>
-<p>singbox通过监听入站tun（就是代理服务器）并指定出站位置实现代理，直接更改路由表强制所有流量全走tun虚拟网卡实现全局的代理</p>
-<p>curl.exe –socks5-hostname 127.0.0.1:1080 https://google.com -v</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="string">&quot;trace&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;socks&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen_port&quot;</span><span class="punctuation">:</span> <span class="number">1080</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>主机-&gt;wsl(singbox-debug，监听127.0.0.1:1080并直接转发)-&gt;tun(singbox-systemctl对连接进行封装)-&gt;主机(clash代理端口)</p>
+          <hr />
+<h2 id="ls1043a-开发板-openwrt-极简复盘笔记">LS1043A 开发板 OpenWrt
+极简复盘笔记</h2>
+<h2 id="编译与固件提取">编译与固件提取</h2>
+<ul>
+<li>menuconfig：Target: NXP Layerscape -&gt; Subtarget: ARMv8… -&gt;
+Profile: SD Card Boot</li>
+<li>镜像选择：仅勾选 [*] ext4，其余全取消。</li>
+<li>LuCI/中文：勾选 luci 与 luci-i18n-base-zh-cn。</li>
+<li>提取产物：缓存目录捞出 Image、fsl-nh03-sdk.dtb、root.ext4。</li>
+</ul>
+<h2 id="tinylinux-刷写-emmc">TinyLinux 刷写 eMMC</h2>
+<h3 id="刷写根系统">刷写根系统</h3>
+<ul>
+<li><code>dd if=/media/openwrt/root.ext4 of=/dev/mmcblk0p2 bs=4M status=progress &amp;&amp; sync</code>#
+拷贝内核与设备树</li>
+<li><code>mkdir -p /mnt/mmc1 &amp;&amp; mount /dev/mmcblk0p1 /mnt/mmc1/</code></li>
+<li><code>cp /media/openwrt/Image /media/openwrt/fsl-nh03-sdk.dtb /mnt/mmc1/</code></li>
+<li><code>sync &amp;&amp; umount /mnt/mmc1/</code></li>
+</ul>
+<h2 id="u-boot-固化启动参数">U-Boot 固化启动参数</h2>
+<h3 id="拦截启动进入-u-boot-执行">拦截启动进入 U-Boot 执行：</h3>
+<ul>
+<li><code>setenv bootcmd "mmc dev 0; ext4load mmc 0:1 0xa0000000 Image; ext4load mmc 0:1 0xb0000000 fsl-nh03-sdk.dtb; booti 0xa0000000 - 0xb0000000"</code></li>
+<li><code>setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/mmcblk0p2 rw rootwait"</code></li>
+<li><code>saveenv &amp;&amp; boot</code></li>
+</ul>
+<h2 id="基础网络与-ttyd-配置主路由模式">基础网络与 ttyd
+配置（主路由模式）</h2>
+<h3 id="配置-lan-口静态-ip">配置 LAN 口静态 IP</h3>
+<ul>
+<li><code>uci set network.lan.proto='static'</code></li>
+<li><code>uci set network.lan.ipaddr='192.168.2.1'</code></li>
+<li><code>uci set network.lan.netmask='255.255.255.0'</code></li>
+<li><code>uci delete dhcp.lan.ignore</code> # 开启 DHCP</li>
+<li><code>uci commit network &amp;&amp; uci commit dhcp# ttyd</code>
+允许 WAN 口访问</li>
+<li><code>uci set ttyd.@ttyd[0].interface=''</code></li>
+<li><code>uci set ttyd.@ttyd[0].listen='0.0.0.0'</code></li>
+<li><code>uci commit ttyd</code># 重启服务</li>
+<li><code>/etc/init.d/network restart &amp;&amp; /etc/init.d/ttyd restart</code></li>
+</ul>
+<h3 id="面板口配置">面板口配置</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:~# <span class="built_in">cat</span> /etc/board.json</span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;model&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;id&quot;</span>: <span class="string">&quot;fsl,ls1043a-sdboot&quot;</span>,</span><br><span class="line">                <span class="string">&quot;name&quot;</span>: <span class="string">&quot;NH03&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;network&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;lan&quot;</span>: &#123;</span><br><span class="line">                        <span class="string">&quot;device&quot;</span>: <span class="string">&quot;br-lan&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;protocol&quot;</span>: <span class="string">&quot;static&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;wan&quot;</span>: &#123;</span><br><span class="line">                        <span class="string">&quot;device&quot;</span>: <span class="string">&quot;eth2&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;protocol&quot;</span>: <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">root@OpenWrt:~# <span class="built_in">cat</span> /etc/config/network</span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;loopback&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;lo&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;static&#x27;</span></span><br><span class="line">        list ipaddr <span class="string">&#x27;127.0.0.1/8&#x27;</span></span><br><span class="line"></span><br><span class="line">config globals <span class="string">&#x27;globals&#x27;</span></span><br><span class="line">        option dhcp_default_duid <span class="string">&#x27;00049e7cb3c0895642958376c30f479dcb24&#x27;</span></span><br><span class="line">        option ula_prefix <span class="string">&#x27;fdc2:858b:bbd::/48&#x27;</span></span><br><span class="line"></span><br><span class="line">config device</span><br><span class="line">        option name <span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">        option <span class="built_in">type</span> <span class="string">&#x27;bridge&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth3&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth0&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth1&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth4&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth5&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;lan&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;static&#x27;</span></span><br><span class="line">        option ip6assign <span class="string">&#x27;60&#x27;</span></span><br><span class="line">        option ipaddr <span class="string">&#x27;192.168.2.1&#x27;</span></span><br><span class="line">        option netmask <span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;wan&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;dhcp&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;wan6&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;dhcpv6&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;tun0&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;unmanaged&#x27;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>/etc/init.d/rpcd restart</code></li>
+</ul>
+<h2 id="sing-box-代理与-tun-转发">Sing-Box 代理与 TUN 转发</h2>
+<h3 id="基础运行配置">基础运行配置</h3>
+<ul>
+<li><code>uci set sing-box.main.enabled='1'</code></li>
+<li><code>uci set sing-box.main.user='root'</code></li>
+<li><code>uci commit sing-box</code># 创建并放行 TUN 接口</li>
+<li><code>uci set network.singbox_tun=interface</code></li>
+<li><code>uci set network.singbox_tun.device='tun0'</code></li>
+<li><code>uci set network.singbox_tun.proto='unmanaged'</code></li>
+<li><code>uci add_list firewall.@zone[0].network='singbox_tun'</code></li>
+<li><code>uci set firewall.@zone[0].forward='ACCEPT'</code># 关闭 DNS
+重绑定保护 (对接 5353 转发)</li>
+<li><code>uci set dhcp.@dnsmasq[0].rebind_protection='0'</code>#
+提交并重启</li>
+<li><code>uci commit network &amp;&amp; uci commit firewall &amp;&amp; uci commit dhcp</code></li>
+<li><code>sysctl -w net.ipv4.conf.all.rp_filter=0</code></li>
+<li><code>iptables -I FORWARD -j ACCEPT</code></li>
+<li><code>/etc/init.d/network restart &amp;&amp; /etc/init.d/firewall restart &amp;&amp; /etc/init.d/dnsmasq restart &amp;&amp; /etc/init.d/sing-box restart</code></li>
+</ul>
+<h2 id="设备树-dtsdtb-互转命令">设备树 (DTS/DTB) 互转命令</h2>
+<h3 id="反编译-dtb---dts">反编译 DTB -&gt; DTS</h3>
+<ul>
+<li><code>dtc -I dtb -O dts -o /tmp/myboard.dts /mnt/fsl-nh03-sdk.dtb</code>#
+编译 DTS -&gt; DTB</li>
+<li><code>dtc -I dts -O dtb -o /mnt/fsl-nh03-sdk.dtb /tmp/myboard.dts</code></li>
+</ul>
 
       
     </div>
@@ -318,7 +377,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -341,14 +400,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">47k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">47 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

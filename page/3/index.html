@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/net/%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/mpsc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/net/%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B/" class="post-title-link" itemprop="url">网络传输过程</a>
+          <a href="/mpsc/" class="post-title-link" itemprop="url">mpsc</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,23 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2026-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-11T00:00:00+08:00">2026-03-11</time>
+      <time title="创建时间：2026-06-11 19:10:42" itemprop="dateCreated datePublished" datetime="2026-06-11T19:10:42+08:00">2026-06-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/net/" itemprop="url" rel="index"><span itemprop="name">net</span></a>
-        </span>
+      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
     </span>
 
   
@@ -276,7 +267,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>755</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,92 +285,71 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="数据包处理流程接收路径">数据包处理流程（接收路径）</h2>
-<p>假设一个 IP 包到达网卡：</p>
+          <h1 id="brpc-无锁-mpsc-写入机制技术笔记">📌 bRPC 无锁 MPSC
+写入机制技术笔记</h1>
+<h3 id="核心设计思想极致缩小同步区间">🎯
+核心设计思想：极致缩小同步区间</h3>
+<p>传统方案的性能瓶颈在于<strong>“临界区过大”</strong>：互斥锁的临界区包含了耗时的系统调用（Socket
+I/O）。 bRPC 机制的核心在于<strong>将网络 I/O
+剥离出同步区间</strong>，将线程间的竞争极度压缩为<strong>一条 CPU
+原子指令（指针交换）</strong>。</p>
+<h3 id="写入提交流程无锁链表构建">⚙️ 写入提交流程（无锁链表构建）</h3>
+<p><strong>1. 节点初始化</strong> 新请求构建为 Node，<code>next</code>
+指针置为特殊状态宏 <code>UNCONNECTED</code>，避免与常规的
+<code>NULL</code> 混淆。</p>
+<p><strong>2. 极小临界区：Atomic Exchange</strong> 线程通过
+<code>std::atomic_exchange</code> 竞争全局 <code>Tail</code> 指针，将
+<code>Tail</code> 指向自身，并获取 <code>Tail</code> 的旧值。
+<em>这是整个写入流程中唯一的同步点，耗时仅需几个纳秒的 CPU
+时钟周期。</em></p>
+<p><strong>3. 角色分化与无阻塞提交</strong> 根据
+<code>atomic_exchange</code> 的返回值分化线程职责：</p>
+<ul>
+<li><strong>Producer（旧值 != NULL）</strong>：说明链表已有头部。执行
+<code>old_tail-&gt;next = current_node</code>
+完成指针链接。此操作纯内存赋值，完成后线程立刻返回，<strong>完全避开 I/O
+阻塞</strong>。</li>
+<li><strong>Consumer（旧值 ==
+NULL）</strong>：说明当前节点是链表首节点。该线程承担 Consumer
+职责，负责后续的 I/O 写入。</li>
+</ul>
+<p><strong>4. 批量 I/O（Batching）</strong> Consumer 顺着链表收集多个
+Producer 提交的 Node，在<strong>无锁状态</strong>下调用一次
+<code>writev</code> 集中进行系统调用，大幅降低上下文切换开销。</p>
+<hr />
+<h3 id="竞态条件race-condition处理">🛡️ 竞态条件（Race
+Condition）处理</h3>
+<p><strong>隐患：时间差导致断链</strong> Producer 执行完
+<code>atomic_exchange</code> 后，尚未执行
+<code>old_tail-&gt;next = current_node</code> 发生线程调度，导致
+Consumer 读到 <code>UNCONNECTED</code> 提前截断链表。</p>
+<p><strong>解决方案：</strong></p>
 <ol type="1">
-<li><strong>网卡驱动接收包</strong>
-<ul>
-<li>DMA buffer → skb</li>
-<li>调用 <code>napi_schedule()</code>
-安排软中断处理(发送也是发接收软中断)</li>
-</ul></li>
-<li><strong>软中断上下文执行</strong>
-<ul>
-<li><code>NET_RX_SOFTIRQ</code> → <code>net_rx_action()</code></li>
-<li>遍历 per-CPU <code>softnet_data-&gt;poll_list</code></li>
-<li>调用 <code>napi_poll()</code> → 驱动的 poll 函数处理包</li>
-<li>skb 被交给协议栈 (<code>__netif_receive_skb_core()</code>)</li>
-</ul></li>
-<li><strong>分发到协议处理器</strong>
-<ul>
-<li><strong>先通过 <code>ptype_base</code></strong> 找到 IP 层处理函数
-<code>ip_rcv()</code></li>
-<li><code>ip_rcv()</code> 根据 IP 协议号（TCP/UDP/ICMP）去
-<code>inet_protos</code> 找对应处理函数
-<ul>
-<li>TCP → <code>tcp_v4_rcv()</code></li>
-<li>UDP → <code>udp_rcv()</code></li>
-</ul></li>
-</ul></li>
-<li><strong>广播给抓包工具</strong>
-<ul>
-<li>遍历 <code>ptype_all</code> 链表</li>
-<li>调用 <code>deliver_skb()</code> 给每个注册的 packet_type</li>
-<li>tcpdump 注册的 AF_PACKET socket 就在这里获取 skb</li>
-</ul></li>
-<li><strong>递交到socket</strong>
-<ul>
-<li><code>ip_rcv_finish()</code> →
-<code>ip_local_deliver_finish()</code></li>
-<li>根据协议调用 <code>tcp_v4_rcv()</code> / <code>udp_rcv()</code></li>
-<li>找到对应 socket，将 skb 放入 <strong>socket 接收队列</strong></li>
-</ul></li>
-<li><strong>用户态读取</strong>
-<ul>
-<li>用户调用 <code>recvfrom()</code>（glibc）</li>
-<li>触发系统调用 <code>sys_recvfrom()</code> →
-<code>sock_recvmsg()</code></li>
-<li>从 <strong>socket 接收队列</strong> 取出数据返回给用户程序</li>
-</ul></li>
+<li><strong>状态校验与自旋（Spin-wait）</strong>： Consumer
+处理完当前节点后，对比全局 <code>Tail</code>。若 <code>Tail</code>
+已改变，但当前节点的 <code>next == UNCONNECTED</code>，说明有 Producer
+正在链接。Consumer 会执行极短的 <strong>CPU
+自旋等待（yield/pause）</strong>，直到 <code>next</code> 被赋值。</li>
+<li><strong>后台线程兜底（KeepWrite）</strong>： 若 Consumer
+达到单次写入上限，或自旋超时必须返回业务逻辑，会将尚未发送的链表指针原子性地移交给后台专用的
+<code>KeepWrite</code> 线程继续处理，确保数据不丢失且 Consumer
+不被长期阻塞。</li>
 </ol>
 <hr />
-<table>
-<thead>
-<tr class="header">
-<th>次数</th>
-<th>位置</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>第一次</td>
-<td>用户态 → 内核</td>
-<td><strong>深拷贝</strong></td>
-</tr>
-<tr class="even">
-<td>第二次</td>
-<td>TCP → IP</td>
-<td><strong>浅拷贝（skb_clone）</strong></td>
-</tr>
-<tr class="odd">
-<td>第三次</td>
-<td>IP 分片</td>
-<td><strong>深拷贝（fragmentation）</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="参考">参考</h2>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/GoYDsfy9m0wRoXi_NCfCmg">图解Linux网络包接收过程</a></li>
-<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/wThfD9th9e_-YGHJJ3HXNQ">25
-张图，一万字，拆解 Linux 网络包发送过程</a></li>
-<li><a target="_blank" rel="noopener" href="https://arthurchiao.art/blog/tuning-stack-tx-zh/">[译]
-Linux 网络栈监控和调优：发送数据（2017）</a></li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1671568">eBPF
-在网易轻舟云原生的应用实践</a></li>
-</ul>
+<h3 id="性能本质总结">💡 性能本质总结</h3>
+<ol type="1">
+<li><strong>缩小临界区</strong>：将同步范围从
+<code>[加锁 -&gt; I/O -&gt; 解锁]</code> 压缩至
+<code>[原子指令]</code>。</li>
+<li><strong>消除系统调用阻塞</strong>：99%
+的线程只做内存级别的链表追加，耗时趋近于 0。</li>
+<li><strong>负反馈优化</strong>：并发度越高，MPSC 链表积压越长，单次
+<code>writev</code>
+聚集写的数据量越大，<strong>化高并发冲突为高吞吐量契机</strong>。</li>
+</ol>
+<p>参考：</p>
+<p>1.<a
+target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">没啃透无锁队列，高并发底层你只懂了皮毛！</a></p>
 
       
     </div>
@@ -399,7 +369,7 @@ Linux 网络栈监控和调优：发送数据（2017）</a></li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -422,14 +392,14 @@ Linux 网络栈监控和调优：发送数据（2017）</a></li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">47k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">47 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

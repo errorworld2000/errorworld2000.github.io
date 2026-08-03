@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/neuronNet/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E9%A1%B9%E7%9B%AE%E8%A7%84%E8%8C%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/neuronNet/" class="post-title-link" itemprop="url">neuronNet</a>
+          <a href="/other/%E9%A1%B9%E7%9B%AE%E8%A7%84%E8%8C%83/" class="post-title-link" itemprop="url">项目规范</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
+      <time title="创建时间：2026-02-09 00:00:00" itemprop="dateCreated datePublished" datetime="2026-02-09T00:00:00+08:00">2026-02-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
+      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.1k</span>
+      <span>59</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,139 +294,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3
-id="python神经网络代码总结-python-neural-network-code-summary"><strong>Python神经网络代码总结
-(Python Neural Network Code Summary)</strong></h3>
-<p>这份代码是一个从零开始实现的、基础的前馈神经网络（Feedforward Neural
-Network）。它不依赖任何外部机器学习库，清晰地展示了神经网络的核心工作原理。</p>
-<hr />
-<h3 id="核心概述-core-overview"><strong>1. 核心概述 (Core
-Overview)</strong> 🧠</h3>
-<p>该代码通过三个核心类构建了一个简单的神经网络：</p>
-<ul>
-<li><strong><code>Neuron</code></strong>: 网络的基本计算单元。</li>
-<li><strong><code>NeuronLayer</code></strong>:
-由多个神经元组成的层。</li>
-<li><strong><code>NeuronNet</code></strong>:
-整合输入层、隐藏层和输出层，并负责网络的训练和预测。</li>
-</ul>
-<p>其关键功能包括：</p>
-<ul>
-<li><strong>前向传播 (Feed Forward)</strong>:
-将输入数据从输入层传到输出层，得到预测结果。</li>
-<li><strong>反向传播 (Backpropagation)</strong>:
-计算预测误差，并将误差从输出层反向传播，用于更新神经元的权重（weights）和偏置（bias）。</li>
-</ul>
-<hr />
-<h3 id="类结构与功能-class-structure-functionality"><strong>2.
-类结构与功能 (Class Structure &amp; Functionality)</strong></h3>
-<h4 id="neuron-类"><strong><code>Neuron</code> 类</strong></h4>
-<p>这是最基础的构建模块。</p>
-<ul>
-<li><strong>功能 (Functionality)</strong>:
-模拟单个神经元，负责接收输入、计算加权和、通过激活函数输出结果，并计算用于反向传播的梯度。</li>
-<li><strong>关键属性 (Key Attributes)</strong>:
-<ul>
-<li><code>weights</code>: 权重列表，决定了每个输入信号的重要性。</li>
-<li><code>bias</code>: 偏置项，用于调整神经元的激活阈值。</li>
-</ul></li>
-<li><strong>关键方法 (Key Methods)</strong>:
-<ul>
-<li><code>calculate_output(inputs)</code>: 接收输入，计算加权和
-(<code>calculate_total_net_input</code>)，并通过
-<strong>Sigmoid</strong> 激活函数 (<code>squash</code>) 得到输出。</li>
-<li><code>squash(total_net_input)</code>: 激活函数，公式为
-f(x)=frac11+e−x。它将任意输入值压缩到 (0, 1) 区间。</li>
-<li><code>pd_...</code> <strong>方法</strong>: “pd” 代表 “Partial
-Derivative”
-(偏导数)。这些方法是<strong>反向传播算法的核心</strong>，用于计算误差对网络中各个参数（权重、偏置）的梯度。例如
-<code>pd_error_wrt_total_net_output</code>
-计算的是误差对神经元输出值的偏导数。</li>
-</ul></li>
-</ul>
-<h4 id="neuronlayer-类"><strong><code>NeuronLayer</code>
-类</strong></h4>
-<p>神经元的集合。</p>
-<ul>
-<li><strong>功能 (Functionality)</strong>:
-管理一层中的所有神经元，并将输入数据传递给该层的所有神经元进行处理。</li>
-<li><strong>关键属性 (Key Attributes)</strong>:
-<ul>
-<li><code>neurons</code>: 一个包含多个 <code>Neuron</code>
-对象的列表。</li>
-</ul></li>
-<li><strong>关键方法 (Key Methods)</strong>:
-<ul>
-<li><code>feed_forward(inputs)</code>:
-遍历层内所有神经元，收集它们的输出，并将输出列表作为该层的最终输出。</li>
-</ul></li>
-</ul>
-<h4 id="neuronnet-类"><strong><code>NeuronNet</code> 类</strong></h4>
-<p>完整的神经网络。</p>
-<ul>
-<li><strong>功能 (Functionality)</strong>:
-构建并管理整个网络（包含一个隐藏层和一个输出层）。它负责初始化权重、执行完整的前向传播，并通过训练数据来更新整个网络的参数。</li>
-<li><strong>关键属性 (Key Attributes)</strong>:
-<ul>
-<li><code>hidden_layer</code>: 隐藏层 (<code>NeuronLayer</code>
-对象)。</li>
-<li><code>output_layer</code>: 输出层 (<code>NeuronLayer</code>
-对象)。</li>
-<li><code>learning_rate</code>:
-学习率，控制每次训练时权重和偏置的更新幅度。</li>
-</ul></li>
-<li><strong>关键方法 (Key Methods)</strong>:
-<ul>
-<li><code>feed_forward(inputs)</code>:
-驱动数据流过整个网络，从隐藏层到输出层。</li>
-<li><code>train(training_inputs, training_outputs)</code>:
-<strong>最核心的方法</strong>。它实现了完整的<strong>反向传播和梯度下降</strong>算法来学习。</li>
-</ul></li>
-</ul>
-<hr />
-<h3
-id="关键算法train-方法解析-key-algorithm-train-method-explained"><strong>3.
-关键算法：<code>train</code> 方法解析 (Key Algorithm: <code>train</code>
-Method Explained)</strong></h3>
-<p><code>train</code>
-方法是网络学习的关键，它严格遵循反向传播的步骤：</p>
-<ol type="1">
-<li><strong>前向传播 (Forward Pass)</strong>: 首先调用
-<code>feed_forward</code> 计算当前网络对输入数据的预测输出。</li>
-<li><strong>计算输出层误差 (Calculate Output Layer Error)</strong>:
-<ul>
-<li>计算每个输出层神经元的误差对“加权输入总和”的偏导数
-(<code>pd_error_wrt_output_neurons_total_net_input</code>)。这是链式法则的第一步。</li>
-</ul></li>
-<li><strong>计算隐藏层误差 (Calculate Hidden Layer Error)</strong>:
-<ul>
-<li>将输出层的误差<strong>反向传播</strong>回隐藏层。</li>
-<li>对于每个隐藏层神经元，其误差是所有与之相连的输出层神经元误差的<strong>加权和</strong>。</li>
-</ul></li>
-<li><strong>更新权重和偏置 (Update Weights and Biases)</strong>:
-<ul>
-<li><strong>输出层更新</strong>:
-利用步骤2计算的梯度，结合学习率，更新输出层中每个神经元的权重和偏置。</li>
-<li><strong>隐藏层更新</strong>:
-利用步骤3计算的梯度，结合学习率，更新隐藏层中每个神经元的权重和偏置。</li>
-<li>更新公式为：<code>新权重 = 旧权重 - 学习率 * 误差梯度</code>。</li>
-</ul></li>
-</ol>
-<p>Python</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码：train方法的核心逻辑</span><br><span class="line"># Pseudocode: Core logic of the train method</span><br><span class="line"></span><br><span class="line"># 1. 计算输出层误差梯度</span><br><span class="line">output_layer_gradients = []</span><br><span class="line">for each neuron in output_layer:</span><br><span class="line">    gradient = calculate_error_gradient(target_output, neuron_output)</span><br><span class="line">    output_layer_gradients.append(gradient)</span><br><span class="line"></span><br><span class="line"># 2. 计算隐藏层误差梯度（反向传播）</span><br><span class="line">hidden_layer_gradients = []</span><br><span class="line">for each neuron in hidden_layer:</span><br><span class="line">    error = sum(output_layer_gradients * weights_connecting_to_it)</span><br><span class="line">    gradient = error * neuron_output * (1 - neuron_output) # Sigmoid导数</span><br><span class="line">    hidden_layer_gradients.append(gradient)</span><br><span class="line"></span><br><span class="line"># 3. 更新所有权重和偏置</span><br><span class="line">for each neuron in output_layer:</span><br><span class="line">    neuron.weights -= learning_rate * output_layer_gradient * hidden_layer_output</span><br><span class="line">    neuron.bias -= learning_rate * output_layer_gradient</span><br><span class="line"></span><br><span class="line">for each neuron in hidden_layer:</span><br><span class="line">    neuron.weights -= learning_rate * hidden_layer_gradient * network_input</span><br><span class="line">    neuron.bias -= learning_rate * hidden_layer_gradient</span><br></pre></td></tr></table></figure>
-<p>1.先定义网络:写网络Net的Class，声明网络的实例net=Net()，</p>
-<p>2.定义优化器optimizer=optim.xxx(net.parameters()，lr=xxx)，</p>
-<p>3.再定义损失函数（自己写class或者直接用官方的，compute_loss=nn.MSELoss()或者其他。</p>
-<p>4.在定义完之后，开始一次一次的循环：</p>
-<pre><code>①先清空优化器里的梯度信息，optimizer.zero_grad();
-
-②再将input传入，output=net(input) ，正向传播
-
-③算损失，loss=compute_loss(target,output)   ##这里target就是参考标准值GT，需要自己准备，和之前传入的input一一对应
-
-④误差反向传播，loss.backward()
-
-⑤更新参数，optimizer.step()[参考](https://wanghao15536870732.github.io/2019/08/07/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/)</code></pre>
+          <p>本地开发：LSP + 保存格式化 + 静态检查（可选） → 实时提示 +
+自动排版</p>
+<p>CI / PR：静态检查 + 格式化 → 保证代码质量 + 风格一致</p>
 
       
     </div>
@@ -446,7 +316,7 @@ Method Explained)</strong></h3>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/18/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/16/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/18/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -469,14 +339,14 @@ Method Explained)</strong></h3>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">47k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">47 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

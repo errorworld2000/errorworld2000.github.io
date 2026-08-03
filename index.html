@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/mpsc/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/ddr/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/mpsc/" class="post-title-link" itemprop="url">mpsc</a>
+          <a href="/ddr/" class="post-title-link" itemprop="url">ddr</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2026-06-11 19:10:42" itemprop="dateCreated datePublished" datetime="2026-06-11T19:10:42+08:00">2026-06-11</time>
+      <time title="创建时间：2026-07-28 16:13:56" itemprop="dateCreated datePublished" datetime="2026-07-28T16:13:56+08:00">2026-07-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-25 10:41:20" itemprop="dateModified" datetime="2026-06-25T10:41:20+08:00">2026-06-25</time>
+      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
     </span>
 
   
@@ -267,14 +267,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>1.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -285,71 +285,110 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="brpc-无锁-mpsc-写入机制技术笔记">📌 bRPC 无锁 MPSC
-写入机制技术笔记</h1>
-<h3 id="核心设计思想极致缩小同步区间">🎯
-核心设计思想：极致缩小同步区间</h3>
-<p>传统方案的性能瓶颈在于<strong>“临界区过大”</strong>：互斥锁的临界区包含了耗时的系统调用（Socket
-I/O）。 bRPC 机制的核心在于<strong>将网络 I/O
-剥离出同步区间</strong>，将线程间的竞争极度压缩为<strong>一条 CPU
-原子指令（指针交换）</strong>。</p>
-<h3 id="写入提交流程无锁链表构建">⚙️ 写入提交流程（无锁链表构建）</h3>
-<p><strong>1. 节点初始化</strong> 新请求构建为 Node，<code>next</code>
-指针置为特殊状态宏 <code>UNCONNECTED</code>，避免与常规的
-<code>NULL</code> 混淆。</p>
-<p><strong>2. 极小临界区：Atomic Exchange</strong> 线程通过
-<code>std::atomic_exchange</code> 竞争全局 <code>Tail</code> 指针，将
-<code>Tail</code> 指向自身，并获取 <code>Tail</code> 的旧值。
-<em>这是整个写入流程中唯一的同步点，耗时仅需几个纳秒的 CPU
-时钟周期。</em></p>
-<p><strong>3. 角色分化与无阻塞提交</strong> 根据
-<code>atomic_exchange</code> 的返回值分化线程职责：</p>
+          <p><img src="image.png" alt="alt text" /> 这张图片是典型的 <strong>DDR4
+内存颗粒（Chip）的硬件物理结构参数表</strong>。</p>
+<p>简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。</p>
+<p>结合你上一题的代码，<strong>注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。</strong>
+这颗芯片的总容量是 <strong>4Gb（即 512MB）</strong>。</p>
+<p>下面为你逐行详细解释：</p>
+<h3 id="configuration-总体配置-512mb-8">1. Configuration (总体配置):
+<code>512Mb × 8</code></h3>
 <ul>
-<li><strong>Producer（旧值 != NULL）</strong>：说明链表已有头部。执行
-<code>old_tail-&gt;next = current_node</code>
-完成指针链接。此操作纯内存赋值，完成后线程立刻返回，<strong>完全避开 I/O
-阻塞</strong>。</li>
-<li><strong>Consumer（旧值 ==
-NULL）</strong>：说明当前节点是链表首节点。该线程承担 Consumer
-职责，负责后续的 I/O 写入。</li>
+<li>这是该颗粒最核心的规格描述。</li>
+<li><strong><code>×8</code> (读作 by
+8)</strong>：表示这个颗粒的<strong>数据位宽是
+8-bit</strong>（即每次读写操作，芯片会吐出或吃进 8 个比特的数据）。</li>
+<li><strong><code>512Mb</code> (Mega-words)</strong>：表示这个芯片内部有
+5.12 亿个寻址位置（words）。</li>
+<li><strong>总容量计算</strong>：<span class="math inline">\(512\text{M}
+\times 8\text{ bit} = 4096\text{ Mbit}\)</span> = <strong>4 Gb
+(千兆位)</strong>。换算成字节（Byte）就是 <span
+class="math inline">\(4\text{Gb} / 8 =\)</span> <strong>512
+MB</strong>。</li>
 </ul>
-<p><strong>4. 批量 I/O（Batching）</strong> Consumer 顺着链表收集多个
-Producer 提交的 Node，在<strong>无锁状态</strong>下调用一次
-<code>writev</code> 集中进行系统调用，大幅降低上下文切换开销。</p>
 <hr />
-<h3 id="竞态条件race-condition处理">🛡️ 竞态条件（Race
-Condition）处理</h3>
-<p><strong>隐患：时间差导致断链</strong> Producer 执行完
-<code>atomic_exchange</code> 后，尚未执行
-<code>old_tail-&gt;next = current_node</code> 发生线程调度，导致
-Consumer 读到 <code>UNCONNECTED</code> 提前截断链表。</p>
-<p><strong>解决方案：</strong></p>
-<ol type="1">
-<li><strong>状态校验与自旋（Spin-wait）</strong>： Consumer
-处理完当前节点后，对比全局 <code>Tail</code>。若 <code>Tail</code>
-已改变，但当前节点的 <code>next == UNCONNECTED</code>，说明有 Producer
-正在链接。Consumer 会执行极短的 <strong>CPU
-自旋等待（yield/pause）</strong>，直到 <code>next</code> 被赋值。</li>
-<li><strong>后台线程兜底（KeepWrite）</strong>： 若 Consumer
-达到单次写入上限，或自旋超时必须返回业务逻辑，会将尚未发送的链表指针原子性地移交给后台专用的
-<code>KeepWrite</code> 线程继续处理，确保数据不丢失且 Consumer
-不被长期阻塞。</li>
-</ol>
+<h3 id="bank-address-逻辑库地址划分">2. Bank Address
+(逻辑库地址划分)</h3>
+<p>DDR4
+内部就像一个大的立体仓库，为了提高并行读写效率，它被划分成了多个大区（Bank
+Group）和小区（Bank）。</p>
+<ul>
+<li><strong><code># of bank groups: 4</code></strong>
+<ul>
+<li>芯片内部分为 <strong>4 个 Bank Group (大区)</strong>。</li>
+</ul></li>
+<li><strong><code>BG Address: BG0~BG1</code></strong>
+<ul>
+<li>因为有 4 个大区，所以需要用到 <strong>2 根地址线</strong>（<span
+class="math inline">\(2^2 =
+4\)</span>）来选择到底是哪一个大区。这两根线在引脚上叫 BG0 和 BG1。</li>
+</ul></li>
+<li><strong><code>Bank Address in BG: BA0~BA1</code></strong>
+<ul>
+<li>在每一个大区（Bank Group）内部，又细分了小区（Bank）。用到 <strong>2
+根地址线</strong>（BA0 和 BA1），说明每个大区里有 <span
+class="math inline">\(2^2 = 4\)</span> 个 Bank。</li>
+<li><strong>总结</strong>：这颗芯片一共有 <span class="math inline">\(4
+\times 4 =\)</span> <strong>16 个 Bank</strong>。</li>
+</ul></li>
+</ul>
 <hr />
-<h3 id="性能本质总结">💡 性能本质总结</h3>
-<ol type="1">
-<li><strong>缩小临界区</strong>：将同步范围从
-<code>[加锁 -&gt; I/O -&gt; 解锁]</code> 压缩至
-<code>[原子指令]</code>。</li>
-<li><strong>消除系统调用阻塞</strong>：99%
-的线程只做内存级别的链表追加，耗时趋近于 0。</li>
-<li><strong>负反馈优化</strong>：并发度越高，MPSC 链表积压越长，单次
-<code>writev</code>
-聚集写的数据量越大，<strong>化高并发冲突为高吞吐量契机</strong>。</li>
-</ol>
-<p>参考：</p>
-<p>1.<a
-target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">没啃透无锁队列，高并发底层你只懂了皮毛！</a></p>
+<h3 id="row-address-行地址-a0a14">3. Row Address (行地址):
+<code>A0~A14</code></h3>
+<ul>
+<li>在选定了一个具体的 Bank（小区）之后，数据是存在二维矩阵里的。</li>
+<li><code>A0~A14</code> 意味着有 <strong>15 根行地址线</strong>。</li>
+<li>说明每个 Bank 内部有 <span class="math inline">\(2^{15} =\)</span>
+<strong>32,768 行</strong> (Rows)。</li>
+<li><em>(注：你上一题的代码里 <code>n_row_addr = 16</code>，也就是 <span
+class="math inline">\(2^{16}=65536\)</span>
+行，行数多了一倍，所以上题容量是 1GB，而这题是 512MB)</em>。</li>
+</ul>
+<hr />
+<h3 id="column-address-列地址-a0a9">4. Column Address (列地址):
+<code>A0~A9</code></h3>
+<ul>
+<li>二维矩阵的列数。</li>
+<li><code>A0~A9</code> 意味着有 <strong>10 根列地址线</strong>。</li>
+<li>说明每行有 <span class="math inline">\(2^{10} =\)</span>
+<strong>1,024 列</strong> (Columns)。</li>
+</ul>
+<hr />
+<h3 id="page-size-页大小行缓冲大小-1kb">5. Page Size
+(页大小/行缓冲大小): <code>1KB</code></h3>
+<ul>
+<li><strong>含义</strong>：当 CPU 要读取数据时，DDR
+会把一整行（Row）的数据一次性全部读到一个缓存区（Sense
+Amplifier）中，这个缓存区的大小就是 Page Size。</li>
+<li><strong>是怎么算出来的？</strong>
+<ul>
+<li>刚刚算出每行有 <strong>1024 列</strong>。</li>
+<li>最上面我们知道这个芯片是 <strong>×8</strong> 的（每个列交叉点存 8个
+bit，也就是 1个 Byte）。</li>
+<li>所以一行的总数据量 = <span class="math inline">\(1024 \times 1\text{
+Byte} = \mathbf{1024 \text{ Bytes} = 1 \text{ KB}}\)</span>。</li>
+<li>表格写的完全正确。</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="终极验证把所有参数乘起来算总容量">💡
+终极验证：把所有参数乘起来算总容量</h3>
+<p>通过这张表，我们可以从最底层的晶体管物理结构，算出芯片的总容量：</p>
+<p><span class="math display">\[\text{总容量} = \text{行数} \times
+\text{列数} \times \text{大区数} \times \text{大区内小区数} \times
+\text{数据位宽}\]</span></p>
+<ul>
+<li>容量(bit) = <span class="math inline">\(2^{15} \text{ (行)} \times
+2^{10} \text{ (列)} \times 4 \text{ (BG)} \times 4 \text{ (Bank)} \times
+8 \text{ (bit)}\)</span></li>
+<li>容量(bit) = <span class="math inline">\(32768 \times 1024 \times 16
+\times 8\)</span></li>
+<li>容量(bit) = <strong>4,294,967,296 bits (即 4 Gb)</strong></li>
+<li>换算为字节： <span class="math inline">\(4\text{ Gb} \div 8
+=\)</span> <strong>512 MB</strong></li>
+</ul>
+<p>这就是这张图表完整的意思。它是硬件工程师用来配置设备树（Device
+Tree）或内存控制器（如 U-Boot 里的 DDR 初始化代码）的直接依据。</p>
 
       
     </div>
@@ -369,7 +408,7 @@ target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">
 
 
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -392,14 +431,14 @@ target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">47k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">47 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
