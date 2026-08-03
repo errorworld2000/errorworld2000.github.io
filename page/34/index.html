@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/log/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/sstable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/log/" class="post-title-link" itemprop="url">日志</a>
+          <a href="/leveldb/sstable/" class="post-title-link" itemprop="url">排序字符串表</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-03 10:48:06" itemprop="dateModified" datetime="2026-08-03T10:48:06+08:00">2026-08-03</time>
+      <time title="修改时间：2026-08-03 10:54:29" itemprop="dateModified" datetime="2026-08-03T10:54:29+08:00">2026-08-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>953</span>
+      <span>816</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,80 +294,63 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="日志结构">日志结构</h3>
-<style>.sxxwkknosmrq{zoom:67%;}</style>
-<img src="/leveldb/log/log-format.png" class="sxxwkknosmrq" alt="log-format">
-<blockquote>
-<p>static const int kBlockSize = 32768;</p>
-<p>// Header is checksum (4 bytes), length (2 bytes), type (1 byte).</p>
-<p>static const int kHeaderSize = 4 + 2 + 1</p>
-</blockquote>
-<h3 id="日志写入流程">日志写入流程</h3>
+          <hr />
+<h2 id="sstable">SSTable</h2>
+<h3 id="物理结构">物理结构</h3>
+<p>SSTable 按块划分，默认数据块大小为
+4KiB。每个数据块除了存储数据外，还包括两个辅助字段：压缩类型和 CRC
+校验码。</p>
+<h3 id="逻辑结构">逻辑结构</h3>
+<figure>
+<img src="sst-format.png" alt="SSTable 逻辑结构" />
+<figcaption aria-hidden="true">SSTable 逻辑结构</figcaption>
+</figure>
 <ol type="1">
-<li><strong>初始化写入器</strong> 调用 <code>Next</code> 函数获取
-<code>singleWriter</code>，用于处理单条日志记录的写入。</li>
-<li><strong>分块（Chunk）管理</strong>
-<ul>
-<li><strong>开始首个 Chunk</strong>：<code>singleWriter</code>
-初始化后，启动第一个 Chunk 的写入。</li>
-<li><strong>数据缓冲</strong>：将日志记录数据按顺序写入内存缓冲区。</li>
-<li><strong>缓冲区阈值检测</strong>：持续监测缓冲区大小，当数据部分（不含
-Header）达到 <strong>32 KiB - 7 字节</strong>（预留 7 字节 Header
-空间）时，触发分块操作。</li>
-</ul></li>
-<li><strong>构建并写入 Chunk</strong>
-<ul>
-<li><strong>生成 Header</strong>：为当前 Chunk
-计算校验和，并确定类型（如跨块时的
-<code>First</code>/<code>Middle</code>，或结尾的
-<code>Last</code>）。</li>
-<li><strong>完整 Chunk 写入</strong>：将 <strong>Header（7 字节） +
-数据（≤32 KiB -7 字节）</strong> 组合成完整
-Chunk，一次性写入日志文件。</li>
-<li><strong>重置缓冲区</strong>：清空当前缓冲区，准备接收后续数据。</li>
-</ul></li>
-<li><strong>循环处理与结束标记</strong>
-<ul>
-<li>重复上述过程，直至日志记录所有数据写入完成。</li>
-<li>最后一个 Chunk 标记为 <code>Last</code>
-类型，表示记录结束。若数据恰好填满 Chunk，则前一个 Chunk 标记为
-<code>Last</code>。</li>
-</ul></li>
+<li><strong>Data Block</strong>：存储键值对。</li>
+<li><strong>Filter Block</strong>：存储过滤器相关数据，采用专门的
+FilterBlock。</li>
+<li><strong>Meta Index Block</strong>：存储 Filter Block 在 SSTable
+文件中的位置和长度。</li>
+<li><strong>Index Block</strong>：存储每个 Data Block 的索引信息。</li>
+<li><strong>Footer</strong>：存储 Meta Index Block 和 Index Block
+的索引信息。</li>
+</ol>
+<h3 id="读写过程">读写过程</h3>
+<h4 id="写过程">写过程</h4>
+<figure>
+<img src="table-builder.png" alt="写过程" />
+<figcaption aria-hidden="true">写过程</figcaption>
+</figure>
+<h4 id="读过程">读过程</h4>
+<figure>
+<img src="sst-read.png" alt="读过程" />
+<figcaption aria-hidden="true">读过程</figcaption>
+</figure>
+<p>SSTable 使用两种缓存机制：</p>
+<ol type="1">
+<li><strong>Table Cache</strong>：存储已打开的 SSTable 文件。</li>
+<li><strong>Block Cache</strong>：存储已读取的数据块。</li>
+</ol>
+<p>Table Cache 的结构如下：</p>
+<figure>
+<img src="table-cache.png" alt="Table Cache 结构" />
+<figcaption aria-hidden="true">Table Cache 结构</figcaption>
+</figure>
+<h3 id="table-的迭代器">Table 的迭代器</h3>
+<h4 id="twoleveliterator">TwoLevelIterator</h4>
+<p><code>TwoLevelIterator</code>
+用于高效处理两层索引结构。它结合索引块和数据块，提供了一种高效的访问机制。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> BlockFunction = Iterator* (*)(<span class="type">void</span>*, <span class="type">const</span> ReadOptions&amp;, <span class="type">const</span> Slice&amp;);</span><br><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="title">TwoLevelIterator</span><span class="params">(Iterator* index_iter, BlockFunction block_function,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="type">void</span>* arg, <span class="type">const</span> ReadOptions&amp; options)</span></span>;</span><br><span class="line"><span class="comment">//使用 arg 而不是直接传递 Table* 主要是为了设计的灵活性和接口的一致性。</span></span><br></pre></td></tr></table></figure>
+<h4 id="实现思路">实现思路</h4>
+<ol type="1">
+<li><strong>索引块迭代器</strong>：遍历索引块的迭代器，用来获取每个数据块的元信息。</li>
+<li><strong>数据块读取函数</strong>：提供读取数据块的函数，该函数由
+<code>TwoLevelIterator</code> 调用以加载具体的数据块。</li>
+<li><strong>封装
+<code>TwoLevelIterator</code></strong>：结合索引块迭代器和数据块读取函数，创建
+<code>TwoLevelIterator</code>。</li>
 </ol>
 <hr />
-<h3 id="日志读取流程">日志读取流程</h3>
-<ol type="1">
-<li><strong>按块读取数据</strong> 每次从日志文件读取 <strong>32 KiB 的
-Block</strong>，作为基础处理单元。</li>
-<li><strong>初始化读取器</strong> 调用 <code>Next</code> 函数获取
-<code>singleReader</code>，用于逐条解析日志记录。</li>
-<li><strong>解析 Chunk</strong>
-<ul>
-<li><strong>读取 Header</strong>：从 Block 头部提取
-<strong>校验和、数据长度、类型</strong>（如
-<code>Full</code>/<code>First</code>/<code>Middle</code>/<code>Last</code>）。</li>
-<li><strong>数据提取</strong>：根据 Header 中的数据长度，从 Block
-中读取对应字节的数据内容。</li>
-</ul></li>
-<li><strong>校验与错误处理</strong>
-<ul>
-<li><strong>校验和验证</strong>：计算数据部分的校验和，与 Header
-中的值比对。</li>
-<li><strong>错误处理</strong>：
-<ul>
-<li><strong>校验失败</strong>：若用户启用严格模式，返回错误；否则丢弃当前
-Chunk，继续读取后续 Block。</li>
-<li><strong>校验成功</strong>：保留数据，准备拼接。</li>
-</ul></li>
-</ul></li>
-<li><strong>数据拼接与终止条件</strong>
-<ul>
-<li><strong>中间 Chunk</strong>：若类型为 <code>First</code> 或
-<code>Middle</code>，将数据暂存，继续读取下一 Block。</li>
-<li><strong>终止 Chunk</strong>：遇到 <code>Last</code> 类型时，将当前
-Chunk 数据与前序数据合并，返回完整日志记录。</li>
-</ul></li>
-</ol>
 
       
     </div>
