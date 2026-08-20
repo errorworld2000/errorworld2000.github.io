@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/log/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/leveldb/dbiter/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/leveldb/log/" class="post-title-link" itemprop="url">日志</a>
+          <a href="/leveldb/dbiter/" class="post-title-link" itemprop="url">迭代器</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-03 10:54:44" itemprop="dateModified" datetime="2026-08-03T10:54:44+08:00">2026-08-03</time>
+      <time title="修改时间：2026-08-20 15:40:30" itemprop="dateModified" datetime="2026-08-20T15:40:30+08:00">2026-08-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>953</span>
+      <span>4.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -294,80 +294,73 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="日志结构">日志结构</h3>
-<style>.vxxrjhllmpuz{zoom:67%;}</style>
-<img src="/leveldb/log/log-format.png" class="vxxrjhllmpuz" alt="log-format">
-<blockquote>
-<p>static const int kBlockSize = 32768;</p>
-<p>// Header is checksum (4 bytes), length (2 bytes), type (1 byte).</p>
-<p>static const int kHeaderSize = 4 + 2 + 1</p>
-</blockquote>
-<h3 id="日志写入流程">日志写入流程</h3>
+          <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator* <span class="title">DBImpl::NewIterator</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options)</span> </span>&#123;</span><br><span class="line">  SequenceNumber latest_snapshot;</span><br><span class="line">  <span class="type">uint32_t</span> seed;</span><br><span class="line">  Iterator* iter = <span class="built_in">NewInternalIterator</span>(options, &amp;latest_snapshot, &amp;seed);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">NewDBIterator</span>(<span class="keyword">this</span>, <span class="built_in">user_comparator</span>(), iter,</span><br><span class="line">                       (options.snapshot != <span class="literal">nullptr</span></span><br><span class="line">                            ? <span class="built_in">static_cast</span>&lt;<span class="type">const</span> SnapshotImpl*&gt;(options.snapshot)</span><br><span class="line">                                  -&gt;<span class="built_in">sequence_number</span>()</span><br><span class="line">                            : latest_snapshot),</span><br><span class="line">                       seed);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Iterator* <span class="title">DBImpl::NewInternalIterator</span><span class="params">(<span class="type">const</span> ReadOptions&amp; options,</span></span></span><br><span class="line"><span class="params"><span class="function">                                      SequenceNumber* latest_snapshot,</span></span></span><br><span class="line"><span class="params"><span class="function">                                      <span class="type">uint32_t</span>* seed)</span> </span>&#123;</span><br><span class="line">  mutex_.<span class="built_in">Lock</span>();</span><br><span class="line">  *latest_snapshot = versions_-&gt;<span class="built_in">LastSequence</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Collect together all needed child iterators</span></span><br><span class="line">  std::vector&lt;Iterator*&gt; list;</span><br><span class="line">  list.<span class="built_in">push_back</span>(mem_-&gt;<span class="built_in">NewIterator</span>());</span><br><span class="line">  mem_-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  <span class="keyword">if</span> (imm_ != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    list.<span class="built_in">push_back</span>(imm_-&gt;<span class="built_in">NewIterator</span>());</span><br><span class="line">    imm_-&gt;<span class="built_in">Ref</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  versions_-&gt;<span class="built_in">current</span>()-&gt;<span class="built_in">AddIterators</span>(options, &amp;list);</span><br><span class="line">  Iterator* internal_iter = <span class="built_in">NewMergingIterator</span>(&amp;internal_comparator_, &amp;list[<span class="number">0</span>],</span><br><span class="line">                                               <span class="built_in">static_cast</span>&lt;<span class="type">int</span>&gt;(list.<span class="built_in">size</span>()));</span><br><span class="line">  versions_-&gt;<span class="built_in">current</span>()-&gt;<span class="built_in">Ref</span>();</span><br><span class="line"></span><br><span class="line">  IterState* cleanup = <span class="keyword">new</span> <span class="built_in">IterState</span>(&amp;mutex_, mem_, imm_, versions_-&gt;<span class="built_in">current</span>());</span><br><span class="line">  internal_iter-&gt;<span class="built_in">RegisterCleanup</span>(CleanupIteratorState, cleanup, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">  *seed = ++seed_;</span><br><span class="line">  mutex_.<span class="built_in">Unlock</span>();</span><br><span class="line">  <span class="keyword">return</span> internal_iter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体代码解释如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">DBIter::Next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">assert</span>(valid_);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (direction_ == kReverse) &#123;  <span class="comment">// Switch directions?</span></span><br><span class="line">    direction_ = kForward;</span><br><span class="line">    <span class="comment">// iter_ is pointing just before the entries for this-&gt;key(),</span></span><br><span class="line">    <span class="comment">// so advance into the range of entries for this-&gt;key() and then</span></span><br><span class="line">    <span class="comment">// use the normal skipping code below.</span></span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      iter_-&gt;<span class="built_in">SeekToFirst</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      iter_-&gt;<span class="built_in">Next</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      valid_ = <span class="literal">false</span>;</span><br><span class="line">      saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// saved_key_ already contains the key to skip past.</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Store in saved_key_ the current key so we skip it below.</span></span><br><span class="line">    <span class="built_in">SaveKey</span>(<span class="built_in">ExtractUserKey</span>(iter_-&gt;<span class="built_in">key</span>()), &amp;saved_key_);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// iter_ is pointing to current key. We can now safely move to the next to</span></span><br><span class="line">    <span class="comment">// avoid checking current key.</span></span><br><span class="line">    iter_-&gt;<span class="built_in">Next</span>();</span><br><span class="line">    <span class="keyword">if</span> (!iter_-&gt;<span class="built_in">Valid</span>()) &#123;</span><br><span class="line">      valid_ = <span class="literal">false</span>;</span><br><span class="line">      saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">FindNextUserEntry</span>(<span class="literal">true</span>, &amp;saved_key_);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">DBIter::FindNextUserEntry</span><span class="params">(<span class="type">bool</span> skipping, std::string* skip)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Loop until we hit an acceptable entry to yield</span></span><br><span class="line">  <span class="built_in">assert</span>(iter_-&gt;<span class="built_in">Valid</span>());</span><br><span class="line">  <span class="built_in">assert</span>(direction_ == kForward);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    ParsedInternalKey ikey;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">ParseKey</span>(&amp;ikey) &amp;&amp; ikey.sequence &lt;= sequence_) &#123;	<span class="comment">// 根据当前iter_的key封装成一个新ikey，同时要求ikey的序列号小于创建DBIter时传入的序列号</span></span><br><span class="line">      <span class="keyword">switch</span> (ikey.type) &#123;</span><br><span class="line">        <span class="keyword">case</span> kTypeDeletion:</span><br><span class="line">          <span class="comment">// Arrange to skip all upcoming entries for this key since</span></span><br><span class="line">          <span class="comment">// they are hidden by this deletion.</span></span><br><span class="line">          <span class="built_in">SaveKey</span>(ikey.user_key, skip);</span><br><span class="line">          skipping = <span class="literal">true</span>;		<span class="comment">// 如果当前ikey的类型是删除，将跳过整个 user_key = ikey.user_key()的nodes</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> kTypeValue:</span><br><span class="line">          <span class="keyword">if</span> (skipping &amp;&amp;	<span class="comment">// 跳过</span></span><br><span class="line">              user_comparator_-&gt;<span class="built_in">Compare</span>(ikey.user_key, *skip) &lt;= <span class="number">0</span>) &#123;	<span class="comment">// 旧条目不再需要</span></span><br><span class="line">            <span class="comment">// Entry hidden</span></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;	<span class="comment">// 否则就是本 user_key 所在nodes中的最新节点</span></span><br><span class="line">            valid_ = <span class="literal">true</span>;</span><br><span class="line">            saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    iter_-&gt;<span class="built_in">Next</span>();	<span class="comment">// 定位到下一个</span></span><br><span class="line">  &#125; <span class="keyword">while</span> (iter_-&gt;<span class="built_in">Valid</span>());</span><br><span class="line">  saved_key_.<span class="built_in">clear</span>();</span><br><span class="line">  valid_ = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="dbiternext">1. <code>DBIter::Next()</code></h4>
+<ul>
+<li><strong>作用：</strong> 实现迭代器前进到下一个用户可见的条目。</li>
+<li><strong>核心逻辑：</strong>
 <ol type="1">
-<li><strong>初始化写入器</strong> 调用 <code>Next</code> 函数获取
-<code>singleWriter</code>，用于处理单条日志记录的写入。</li>
-<li><strong>分块（Chunk）管理</strong>
+<li><strong>断言当前状态有效：</strong> <code>assert(valid_);</code>
+确保调用 <code>Next()</code> 时，迭代器处于有效状态。</li>
+<li><strong>处理不同方向：</strong>
 <ul>
-<li><strong>开始首个 Chunk</strong>：<code>singleWriter</code>
-初始化后，启动第一个 Chunk 的写入。</li>
-<li><strong>数据缓冲</strong>：将日志记录数据按顺序写入内存缓冲区。</li>
-<li><strong>缓冲区阈值检测</strong>：持续监测缓冲区大小，当数据部分（不含
-Header）达到 <strong>32 KiB - 7 字节</strong>（预留 7 字节 Header
-空间）时，触发分块操作。</li>
+<li><p>如果当前迭代方向为
+<code>kReverse</code>，说明之前的操作是反向遍历：</p>
+<p>切换方向为 <code>kForward</code>。因为反向遍历时迭代器指向当前 key
+之前的位置，所以需要先移动一步使其进入当前 key
+的区间：若当前迭代器无效，则调用 <code>SeekToFirst()</code>
+重置到首元素。否则调用
+<code>iter_-&gt;Next()</code>。若移动后迭代器变为无效，则标记迭代器为无效并清空
+<code>saved_key_</code>，返回。此时，<code>saved_key_</code>
+内保存了需要跳过的 key。</p></li>
+<li><p>当方向已经是 <code>kForward</code>时：</p>
+<p>首先将当前 key 提取后保存到
+<code>saved_key_</code>，用于后续跳过同一用户键的所有条目（防止重复返回）。调用
+<code>iter_-&gt;Next()</code>
+移动到下一个内部条目。同样，若移动后无效，则更新状态并返回。</p></li>
 </ul></li>
-<li><strong>构建并写入 Chunk</strong>
-<ul>
-<li><strong>生成 Header</strong>：为当前 Chunk
-计算校验和，并确定类型（如跨块时的
-<code>First</code>/<code>Middle</code>，或结尾的
-<code>Last</code>）。</li>
-<li><strong>完整 Chunk 写入</strong>：将 <strong>Header（7 字节） +
-数据（≤32 KiB -7 字节）</strong> 组合成完整
-Chunk，一次性写入日志文件。</li>
-<li><strong>重置缓冲区</strong>：清空当前缓冲区，准备接收后续数据。</li>
-</ul></li>
-<li><strong>循环处理与结束标记</strong>
-<ul>
-<li>重复上述过程，直至日志记录所有数据写入完成。</li>
-<li>最后一个 Chunk 标记为 <code>Last</code>
-类型，表示记录结束。若数据恰好填满 Chunk，则前一个 Chunk 标记为
-<code>Last</code>。</li>
-</ul></li>
-</ol>
+<li><strong>寻找下一个用户条目：</strong> 最后调用
+<code>FindNextUserEntry(true, &amp;saved_key_)</code>，从当前位置继续寻找一个用户可见的有效条目。</li>
+</ol></li>
+</ul>
 <hr />
-<h3 id="日志读取流程">日志读取流程</h3>
+<h4 id="dbiterfindnextuserentrybool-skipping-stdstring-skip">2.
+<code>DBIter::FindNextUserEntry(bool skipping, std::string* skip)</code></h4>
+<ul>
+<li><strong>作用：</strong>
+在内部迭代器当前位置开始，寻找下一个用户层面上“有效”（即未被删除、未被隐藏）的条目。</li>
+<li><strong>核心逻辑：</strong>
 <ol type="1">
-<li><strong>按块读取数据</strong> 每次从日志文件读取 <strong>32 KiB 的
-Block</strong>，作为基础处理单元。</li>
-<li><strong>初始化读取器</strong> 调用 <code>Next</code> 函数获取
-<code>singleReader</code>，用于逐条解析日志记录。</li>
-<li><strong>解析 Chunk</strong>
+<li><strong>循环遍历：</strong>
+循环直到找到一个符合条件的用户条目，或者迭代器到达末尾。</li>
+<li><strong>解析内部键：</strong> 每次循环调用
+<code>ParseKey(&amp;ikey)</code> 解析当前内部键
+<code>iter_-&gt;key()</code>，同时检查 <code>ikey.sequence</code>
+是否在允许的序列号范围内（<code>&lt;= sequence_</code>）。</li>
+<li><strong>根据操作类型处理：</strong>
 <ul>
-<li><strong>读取 Header</strong>：从 Block 头部提取
-<strong>校验和、数据长度、类型</strong>（如
-<code>Full</code>/<code>First</code>/<code>Middle</code>/<code>Last</code>）。</li>
-<li><strong>数据提取</strong>：根据 Header 中的数据长度，从 Block
-中读取对应字节的数据内容。</li>
+<li><p>删除类型（<code>kTypeDeletion</code>）：</p>
+<p>将当前 <code>ikey.user_key</code> 保存到 <code>skip</code>（即
+<code>saved_key_</code>），并设置 <code>skipping</code> 为
+<code>true</code>，表示后续相同用户键的条目应当被跳过（删除操作“屏蔽”了旧值）。</p></li>
+<li><p>值类型（<code>kTypeValue</code>）：</p>
+<p>如果处于跳过状态（<code>skipping</code> 为 true），并且当前
+<code>ikey.user_key</code> 与 <code>*skip</code>
+比较小于等于（即还处于需要跳过的范围内），则认为该条目被删除或隐藏，不予返回。否则，找到了一个有效的用户条目，将
+<code>valid_</code> 标记为 <code>true</code>，清空
+<code>saved_key_</code>（因为找到有效数据后，不需要再跳过）。返回，结束循环。</p></li>
 </ul></li>
-<li><strong>校验与错误处理</strong>
+<li><strong>结束条件：</strong>
 <ul>
-<li><strong>校验和验证</strong>：计算数据部分的校验和，与 Header
-中的值比对。</li>
-<li><strong>错误处理</strong>：
-<ul>
-<li><strong>校验失败</strong>：若用户启用严格模式，返回错误；否则丢弃当前
-Chunk，继续读取后续 Block。</li>
-<li><strong>校验成功</strong>：保留数据，准备拼接。</li>
+<li>如果循环结束时 <code>iter_-&gt;Valid()</code> 为
+false，则表示已经遍历完所有条目，</li>
+<li>清空 <code>saved_key_</code>，并将 <code>valid_</code> 标记为
+false。</li>
 </ul></li>
-</ul></li>
-<li><strong>数据拼接与终止条件</strong>
-<ul>
-<li><strong>中间 Chunk</strong>：若类型为 <code>First</code> 或
-<code>Middle</code>，将数据暂存，继续读取下一 Block。</li>
-<li><strong>终止 Chunk</strong>：遇到 <code>Last</code> 类型时，将当前
-Chunk 数据与前序数据合并，返回完整日志记录。</li>
-</ul></li>
-</ol>
+</ol></li>
+</ul>
 
       
     </div>
@@ -417,7 +410,7 @@ Chunk 数据与前序数据合并，返回完整日志记录。</li>
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">47 分钟</span>
+    <span title="站点阅读时长">48 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
