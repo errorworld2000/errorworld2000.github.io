@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 15:39:37" itemprop="dateModified" datetime="2026-08-26T15:39:37+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-26 16:26:25" itemprop="dateModified" datetime="2026-08-26T16:26:25+08:00">2026-08-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -306,11 +306,11 @@
 <p>负责把 <strong>0 / 1 比特流在物理媒介上传输</strong></p>
 </blockquote>
 <hr />
-<h1 id="二mac-子层数据链路层">二、MAC 子层（数据链路层）</h1>
+<h2 id="二mac-子层数据链路层">二、MAC 子层（数据链路层）</h2>
 <p>在以太网中通常 <strong>只实现 MAC 子层</strong>，不使用 LLC
 子层（Ethernet II）。</p>
-<h2 id="mac-的主要功能">1 MAC 的主要功能</h2>
-<h3 id="数据封装">（1）数据封装</h3>
+<h3 id="mac-的主要功能">1. MAC 的主要功能</h3>
+<h4 id="数据封装">（1）数据封装</h4>
 <ul>
 <li><strong>成帧</strong>
 <ul>
@@ -327,8 +327,8 @@
 </ul></li>
 </ul>
 <hr />
-<h3 id="媒体访问控制media-access-control">（2）媒体访问控制（Media
-Access Control）</h3>
+<h4 id="媒体访问控制media-access-control">（2）媒体访问控制（Media
+Access Control）</h4>
 <p>用于解决多个设备共享介质的问题：</p>
 <ul>
 <li><strong>媒质分配</strong>
@@ -342,10 +342,10 @@ Access Control）</h3>
 <li>CSMA/CD（早期共享以太网）</li>
 </ul>
 <hr />
-<h1 id="三ethernet-ii-帧结构">三、Ethernet II 帧结构</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">| 目的MAC | 源MAC | Type | Data | FCS（Frame Check Sequence） |</span><br><span class="line">|  6B    |  6B   | 2B   |46~1500B|4B|</span><br></pre></td></tr></table></figure>
+<h2 id="三ethernet-ii-帧结构">三、Ethernet II 帧结构</h2>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">| 目的MAC | 源MAC | Type | Data | FCS（Frame Check Sequence） |</span><br><span class="line">|  6B    |  6B   | 2B   |46~1500B|4B|</span><br></pre></td></tr></table></figure>
 <hr />
-<h1 id="四常见-ethertype">四、常见 EtherType</h1>
+<h2 id="四常见-ethertype">四、常见 EtherType</h2>
 <table>
 <thead>
 <tr class="header">
@@ -373,11 +373,11 @@ Access Control）</h3>
 </tbody>
 </table>
 <hr />
-<h1 id="五二层与三层转发">五、二层与三层转发</h1>
-<h2 id="二层交换机">二层交换机</h2>
+<h2 id="五二层与三层转发">五、二层与三层转发</h2>
+<h3 id="二层交换机">二层交换机</h3>
 <p>使用 <strong>MAC 地址表</strong></p>
 <p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MAC地址  →  端口</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MAC地址  →  端口</span><br></pre></td></tr></table></figure>
 <p>作用：</p>
 <blockquote>
 <p>根据目的 MAC 地址转发帧</p>
@@ -392,10 +392,10 @@ MAC 地址和接入端口 到 MAC 地址表，以便以后快速找到发送端�
 IP 或路由信息。</p>
 </blockquote>
 <hr />
-<h2 id="三层设备路由器">三层设备（路由器）</h2>
+<h3 id="三层设备路由器">三层设备（路由器）</h3>
 <p>使用 <strong>路由表</strong></p>
 <p>记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目的网络 → 下一跳 / 出口接口</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目的网络 → 下一跳 / 出口接口</span><br></pre></td></tr></table></figure>
 <p>作用：</p>
 <blockquote>
 <p>根据 <strong>IP 地址</strong> 转发数据包</p>
@@ -410,8 +410,8 @@ MAC），最后从对应端口发送出去，实现跨网段通信。与二层�
 IP 层信息，并可能改变 MAC 地址，但不改变 IP 地址。</p>
 </blockquote>
 <hr />
-<h1 id="六传输层常见协议号ip-protocol">六、传输层常见协议号（IP
-Protocol）</h1>
+<h2 id="六传输层常见协议号ip-protocol">六、传输层常见协议号（IP
+Protocol）</h2>
 <table>
 <thead>
 <tr class="header">
@@ -435,13 +435,13 @@ Protocol）</h1>
 </tbody>
 </table>
 <hr />
-<h1 id="七以太网流量控制flow-control">七、以太网流量控制（Flow
-Control）</h1>
+<h2 id="七以太网流量控制flow-control">七、以太网流量控制（Flow
+Control）</h2>
 <p><strong>作用：</strong></p>
 <p>防止接收方缓存溢出导致丢包。</p>
 <p><strong>机制：</strong></p>
 <p>发送 <strong>PAUSE 控制帧</strong> 通知对端：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">暂停发送一段时间</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">暂停发送一段时间</span><br></pre></td></tr></table></figure>
 <p>特点：</p>
 <ul>
 <li>属于 <strong>链路层机制</strong></li>
@@ -489,7 +489,7 @@ Control）</h1>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">

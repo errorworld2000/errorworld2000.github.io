@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 15:39:37" itemprop="dateModified" datetime="2026-08-26T15:39:37+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-26 16:26:25" itemprop="dateModified" datetime="2026-08-26T16:26:25+08:00">2026-08-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>1.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,15 +294,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="brpc-无锁-mpsc-写入机制技术笔记">📌 bRPC 无锁 MPSC
-写入机制技术笔记</h1>
-<h3 id="核心设计思想极致缩小同步区间">🎯
-核心设计思想：极致缩小同步区间</h3>
+          <h2 id="核心设计思想缩小同步区间">核心设计思想：缩小同步区间</h2>
 <p>传统方案的性能瓶颈在于<strong>“临界区过大”</strong>：互斥锁的临界区包含了耗时的系统调用（Socket
 I/O）。 bRPC 机制的核心在于<strong>将网络 I/O
 剥离出同步区间</strong>，将线程间的竞争极度压缩为<strong>一条 CPU
 原子指令（指针交换）</strong>。</p>
-<h3 id="写入提交流程无锁链表构建">⚙️ 写入提交流程（无锁链表构建）</h3>
+<h2 id="写入提交流程无锁链表构建">写入提交流程（无锁链表构建）</h2>
 <p><strong>1. 节点初始化</strong> 新请求构建为 Node，<code>next</code>
 指针置为特殊状态宏 <code>UNCONNECTED</code>，避免与常规的
 <code>NULL</code> 混淆。</p>
@@ -326,8 +323,7 @@ NULL）</strong>：说明当前节点是链表首节点。该线程承担 Consum
 Producer 提交的 Node，在<strong>无锁状态</strong>下调用一次
 <code>writev</code> 集中进行系统调用，大幅降低上下文切换开销。</p>
 <hr />
-<h3 id="竞态条件race-condition处理">🛡️ 竞态条件（Race
-Condition）处理</h3>
+<h2 id="竞态条件race-condition处理">竞态条件（Race Condition）处理</h2>
 <p><strong>隐患：时间差导致断链</strong> Producer 执行完
 <code>atomic_exchange</code> 后，尚未执行
 <code>old_tail-&gt;next = current_node</code> 发生线程调度，导致
@@ -345,7 +341,7 @@ Consumer 读到 <code>UNCONNECTED</code> 提前截断链表。</p>
 不被长期阻塞。</li>
 </ol>
 <hr />
-<h3 id="性能本质总结">💡 性能本质总结</h3>
+<h2 id="性能本质总结">性能本质总结</h2>
 <ol type="1">
 <li><strong>缩小临界区</strong>：将同步范围从
 <code>[加锁 -&gt; I/O -&gt; 解锁]</code> 压缩至
@@ -357,8 +353,10 @@ Consumer 读到 <code>UNCONNECTED</code> 提前截断链表。</p>
 聚集写的数据量越大，<strong>化高并发冲突为高吞吐量契机</strong>。</li>
 </ol>
 <p>参考：</p>
-<p>1.<a
-target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">没啃透无锁队列，高并发底层你只懂了皮毛！</a></p>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">没啃透无锁队列，高并发底层你只懂了皮毛！</a></li>
+</ol>
 
       
     </div>
@@ -401,7 +399,7 @@ target="_blank" rel="noopener" href="https://www.51cto.com/article/845280.html">
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">

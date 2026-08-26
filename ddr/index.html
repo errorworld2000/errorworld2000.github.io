@@ -20,16 +20,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration (总体配置): 512Mb × 8">
+    <meta name="description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration（总体配置）：512 Mb × 8  这">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DDR4 内存颗粒结构">
 <meta property="og:url" content="https://errorworld2000.github.io/ddr/index.html">
 <meta property="og:site_name" content="a Blog">
-<meta property="og:description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration (总体配置): 512Mb × 8">
+<meta property="og:description" content="这张图片是典型的 DDR4 内存颗粒（Chip）的硬件物理结构参数表。 简单来说，这张表告诉你：这颗内存芯片内部的“房子”是怎么划分的，地址线有多少根，以及它能存多少数据。 结合你上一题的代码，注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。 这颗芯片的总容量是 4Gb（即 512MB）。 下面为你逐行详细解释： 1. Configuration（总体配置）：512 Mb × 8  这">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://errorworld2000.github.io/ddr/image.png">
 <meta property="article:published_time" content="2026-07-28T08:13:56.000Z">
-<meta property="article:modified_time" content="2026-08-26T07:39:37.000Z">
+<meta property="article:modified_time" content="2026-08-26T08:26:25.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="ddr4">
 <meta property="article:tag" content="hardware">
@@ -168,13 +168,12 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#configuration-%E6%80%BB%E4%BD%93%E9%85%8D%E7%BD%AE-512mb-8"><span class="nav-number">1.</span> <span class="nav-text">1. Configuration (总体配置):
-512Mb × 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bank-address-%E9%80%BB%E8%BE%91%E5%BA%93%E5%9C%B0%E5%9D%80%E5%88%92%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">2. Bank Address
-(逻辑库地址划分)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#row-address-%E8%A1%8C%E5%9C%B0%E5%9D%80-a0a14"><span class="nav-number">3.</span> <span class="nav-text">3. Row Address (行地址):
-A0~A14</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column-address-%E5%88%97%E5%9C%B0%E5%9D%80-a0a9"><span class="nav-number">4.</span> <span class="nav-text">4. Column Address (列地址):
-A0~A9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#page-size-%E9%A1%B5%E5%A4%A7%E5%B0%8F%E8%A1%8C%E7%BC%93%E5%86%B2%E5%A4%A7%E5%B0%8F-1kb"><span class="nav-number">5.</span> <span class="nav-text">5. Page Size
-(页大小&#x2F;行缓冲大小): 1KB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E6%9E%81%E9%AA%8C%E8%AF%81%E6%8A%8A%E6%89%80%E6%9C%89%E5%8F%82%E6%95%B0%E4%B9%98%E8%B5%B7%E6%9D%A5%E7%AE%97%E6%80%BB%E5%AE%B9%E9%87%8F"><span class="nav-number">6.</span> <span class="nav-text">💡
-终极验证：把所有参数乘起来算总容量</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#configuration%E6%80%BB%E4%BD%93%E9%85%8D%E7%BD%AE512-mb-8"><span class="nav-number">1.</span> <span class="nav-text">1.
+Configuration（总体配置）：512 Mb × 8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bank-address%E9%80%BB%E8%BE%91%E5%BA%93%E5%9C%B0%E5%9D%80%E5%88%92%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">2. Bank
+Address（逻辑库地址划分）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#row-address%E8%A1%8C%E5%9C%B0%E5%9D%80a0a14"><span class="nav-number">3.</span> <span class="nav-text">3. Row
+Address（行地址）：A0~A14</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#column-address%E5%88%97%E5%9C%B0%E5%9D%80a0a9"><span class="nav-number">4.</span> <span class="nav-text">4. Column
+Address（列地址）：A0~A9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#page-size%E9%A1%B5%E5%A4%A7%E5%B0%8F%E8%A1%8C%E7%BC%93%E5%86%B2%E5%A4%A7%E5%B0%8F1-kb"><span class="nav-number">5.</span> <span class="nav-text">5. Page
+Size（页大小&#x2F;行缓冲大小）：1 KB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E9%87%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">6.</span> <span class="nav-text">6. 容量验证</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -271,7 +270,7 @@ A0~A9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 15:39:37" itemprop="dateModified" datetime="2026-08-26T15:39:37+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-26 16:26:25" itemprop="dateModified" datetime="2026-08-26T16:26:25+08:00">2026-08-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -297,14 +296,14 @@ A0~A9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
+      <span>1.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -320,8 +319,8 @@ A0~A9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="
 <p>结合你上一题的代码，<strong>注意：这张图里的颗粒，比你上一题代码里的颗粒容量小了一半。</strong>
 这颗芯片的总容量是 <strong>4Gb（即 512MB）</strong>。</p>
 <p>下面为你逐行详细解释：</p>
-<h3 id="configuration-总体配置-512mb-8">1. Configuration (总体配置):
-<code>512Mb × 8</code></h3>
+<h2 id="configuration总体配置512-mb-8">1.
+Configuration（总体配置）：<code>512 Mb × 8</code></h2>
 <ul>
 <li>这是该颗粒最核心的规格描述。</li>
 <li><strong><code>×8</code> (读作 by
@@ -336,8 +335,8 @@ class="math inline">\(4\text{Gb} / 8 =\)</span> <strong>512
 MB</strong>。</li>
 </ul>
 <hr />
-<h3 id="bank-address-逻辑库地址划分">2. Bank Address
-(逻辑库地址划分)</h3>
+<h2 id="bank-address逻辑库地址划分">2. Bank
+Address（逻辑库地址划分）</h2>
 <p>DDR4
 内部就像一个大的立体仓库，为了提高并行读写效率，它被划分成了多个大区（Bank
 Group）和小区（Bank）。</p>
@@ -362,8 +361,8 @@ class="math inline">\(2^2 = 4\)</span> 个 Bank。</li>
 </ul></li>
 </ul>
 <hr />
-<h3 id="row-address-行地址-a0a14">3. Row Address (行地址):
-<code>A0~A14</code></h3>
+<h2 id="row-address行地址a0a14">3. Row
+Address（行地址）：<code>A0~A14</code></h2>
 <ul>
 <li>在选定了一个具体的 Bank（小区）之后，数据是存在二维矩阵里的。</li>
 <li><code>A0~A14</code> 意味着有 <strong>15 根行地址线</strong>。</li>
@@ -374,8 +373,8 @@ class="math inline">\(2^{16}=65536\)</span>
 行，行数多了一倍，所以上题容量是 1GB，而这题是 512MB)</em>。</li>
 </ul>
 <hr />
-<h3 id="column-address-列地址-a0a9">4. Column Address (列地址):
-<code>A0~A9</code></h3>
+<h2 id="column-address列地址a0a9">4. Column
+Address（列地址）：<code>A0~A9</code></h2>
 <ul>
 <li>二维矩阵的列数。</li>
 <li><code>A0~A9</code> 意味着有 <strong>10 根列地址线</strong>。</li>
@@ -383,8 +382,8 @@ class="math inline">\(2^{16}=65536\)</span>
 <strong>1,024 列</strong> (Columns)。</li>
 </ul>
 <hr />
-<h3 id="page-size-页大小行缓冲大小-1kb">5. Page Size
-(页大小/行缓冲大小): <code>1KB</code></h3>
+<h2 id="page-size页大小行缓冲大小1-kb">5. Page
+Size（页大小/行缓冲大小）：<code>1 KB</code></h2>
 <ul>
 <li><strong>含义</strong>：当 CPU 要读取数据时，DDR
 会把一整行（Row）的数据一次性全部读到一个缓存区（Sense
@@ -400,8 +399,7 @@ Byte} = \mathbf{1024 \text{ Bytes} = 1 \text{ KB}}\)</span>。</li>
 </ul></li>
 </ul>
 <hr />
-<h3 id="终极验证把所有参数乘起来算总容量">💡
-终极验证：把所有参数乘起来算总容量</h3>
+<h2 id="容量验证">6. 容量验证</h2>
 <p>通过这张表，我们可以从最底层的晶体管物理结构，算出芯片的总容量：</p>
 <p><span class="math display">\[\text{总容量} = \text{行数} \times
 \text{列数} \times \text{大区数} \times \text{大区内小区数} \times
@@ -494,7 +492,7 @@ Tree）或内存控制器（如 U-Boot 里的 DDR 初始化代码）的直接依
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
