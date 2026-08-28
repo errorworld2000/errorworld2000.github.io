@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="编译与固件提取  menuconfig：Target: NXP Layerscape -&gt; Subtarget: ARMv8… -&gt; Profile: SD Card Boot 镜像选择：仅勾选 [*] ext4，其余全取消。 LuCI&#x2F;中文：勾选 luci 与 luci-i18n-base-zh-cn。 提取产物：缓存目录捞出 Image、fsl-nh03-sdk.dtb、root.">
+    <meta name="description" content="当前方案概览  板卡：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。 OpenWrt target：layerscape&#x2F;armv8_64b。 板级 profile：XSPEED NH03。 自用 profile：XSPEED NH03 Jungle。 内核与 DTB 放在 eMMC 第一分区，根系统位于第二分区。 根系统生成 rootfs.tar.gz，解压到">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LS1043A 开发板 OpenWrt 笔记">
+<meta property="og:title" content="LS1043A NH03 OpenWrt 笔记">
 <meta property="og:url" content="https://errorworld2000.github.io/openwrt/index.html">
 <meta property="og:site_name" content="a Blog">
-<meta property="og:description" content="编译与固件提取  menuconfig：Target: NXP Layerscape -&gt; Subtarget: ARMv8… -&gt; Profile: SD Card Boot 镜像选择：仅勾选 [*] ext4，其余全取消。 LuCI&#x2F;中文：勾选 luci 与 luci-i18n-base-zh-cn。 提取产物：缓存目录捞出 Image、fsl-nh03-sdk.dtb、root.">
+<meta property="og:description" content="当前方案概览  板卡：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。 OpenWrt target：layerscape&#x2F;armv8_64b。 板级 profile：XSPEED NH03。 自用 profile：XSPEED NH03 Jungle。 内核与 DTB 放在 eMMC 第一分区，根系统位于第二分区。 根系统生成 rootfs.tar.gz，解压到">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-28T06:25:25.000Z">
-<meta property="article:modified_time" content="2026-08-26T08:26:25.000Z">
+<meta property="article:modified_time" content="2026-08-28T10:49:27.000Z">
 <meta property="article:author" content="jungle">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="net">
@@ -39,10 +39,10 @@
 <link rel="canonical" href="https://errorworld2000.github.io/openwrt/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/openwrt/","path":"/openwrt/","title":"LS1043A 开发板 OpenWrt 笔记"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/openwrt/","path":"/openwrt/","title":"LS1043A NH03 OpenWrt 笔记"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>LS1043A 开发板 OpenWrt 笔记 | a Blog</title>
+<title>LS1043A NH03 OpenWrt 笔记 | a Blog</title>
   
 
 
@@ -167,8 +167,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%B8%8E%E5%9B%BA%E4%BB%B6%E6%8F%90%E5%8F%96"><span class="nav-number">1.</span> <span class="nav-text">编译与固件提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tinylinux-%E5%88%B7%E5%86%99-emmc"><span class="nav-number">2.</span> <span class="nav-text">TinyLinux 刷写 eMMC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B7%E5%86%99%E6%A0%B9%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">刷写根系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot-%E5%9B%BA%E5%8C%96%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">U-Boot 固化启动参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%A6%E6%88%AA%E5%90%AF%E5%8A%A8%E8%BF%9B%E5%85%A5-u-boot-%E6%89%A7%E8%A1%8C"><span class="nav-number">3.1.</span> <span class="nav-text">拦截启动进入 U-Boot 执行：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%BD%91%E7%BB%9C%E4%B8%8E-ttyd-%E9%85%8D%E7%BD%AE%E4%B8%BB%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">基础网络与 ttyd
-配置（主路由模式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-lan-%E5%8F%A3%E9%9D%99%E6%80%81-ip"><span class="nav-number">4.1.</span> <span class="nav-text">配置 LAN 口静态 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%A2%E6%9D%BF%E5%8F%A3%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">面板口配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sing-box-%E4%BB%A3%E7%90%86%E4%B8%8E-tun-%E8%BD%AC%E5%8F%91"><span class="nav-number">5.</span> <span class="nav-text">Sing-Box 代理与 TUN 转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E8%BF%90%E8%A1%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">5.1.</span> <span class="nav-text">基础运行配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E6%A0%91-dtsdtb-%E4%BA%92%E8%BD%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">设备树 (DTS&#x2F;DTB) 互转命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91-dtb---dts"><span class="nav-number">6.1.</span> <span class="nav-text">反编译 DTB -&gt; DTS</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E6%96%B9%E6%A1%88%E6%A6%82%E8%A7%88"><span class="nav-number">1.</span> <span class="nav-text">当前方案概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84%E6%9D%BF%E7%BA%A7%E6%94%AF%E6%8C%81"><span class="nav-number">2.</span> <span class="nav-text">源码中的板级支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%B8%8E-phy-%E6%98%A0%E5%B0%84"><span class="nav-number">2.1.</span> <span class="nav-text">以太网与 PHY 映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile"><span class="nav-number">2.2.</span> <span class="nav-text">Profile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">编译配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u-boot-%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">U-Boot 启动参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E7%B3%BB%E7%BB%9F%E9%A6%96%E6%AC%A1%E5%90%AF%E5%8A%A8"><span class="nav-number">5.</span> <span class="nav-text">新系统首次启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%81%A2%E5%A4%8D%E5%9F%BA%E7%A1%80%E7%BD%91%E7%BB%9C"><span class="nav-number">5.1.</span> <span class="nav-text">手工恢复基础网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%81%A2%E5%A4%8D%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">5.2.</span> <span class="nav-text">手工恢复防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%81%A2%E5%A4%8D-ttyd"><span class="nav-number">5.3.</span> <span class="nav-text">手工恢复 ttyd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">6.</span> <span class="nav-text">进阶操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E6%81%A2%E5%A4%8D-sing-box"><span class="nav-number">6.1.</span> <span class="nav-text">手工恢复 sing-box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%90%8E%E6%A3%80%E6%9F%A5"><span class="nav-number">6.2.</span> <span class="nav-text">恢复后检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dtb-%E8%B0%83%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">DTB 调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wi-fi-ap-%E9%85%8D%E7%BD%AE"><span class="nav-number">8.</span> <span class="nav-text">Wi-Fi AP 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E6%9B%BF%E6%8D%A2"><span class="nav-number">9.</span> <span class="nav-text">主题替换</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -242,12 +241,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="LS1043A 开发板 OpenWrt 笔记 | a Blog">
+      <meta itemprop="name" content="LS1043A NH03 OpenWrt 笔记 | a Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LS1043A 开发板 OpenWrt 笔记
+          LS1043A NH03 OpenWrt 笔记
         </h1>
 
         <div class="post-meta-container">
@@ -265,7 +264,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 16:26:25" itemprop="dateModified" datetime="2026-08-26T16:26:25+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-28 18:49:27" itemprop="dateModified" datetime="2026-08-28T18:49:27+08:00">2026-08-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -291,14 +290,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.4k</span>
+      <span>7.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -308,79 +307,185 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="编译与固件提取">编译与固件提取</h2>
+    <div class="post-body" itemprop="articleBody"><h2 id="当前方案概览">当前方案概览</h2>
 <ul>
-<li>menuconfig：Target: NXP Layerscape -&gt; Subtarget: ARMv8… -&gt;
-Profile: SD Card Boot</li>
-<li>镜像选择：仅勾选 [*] ext4，其余全取消。</li>
-<li>LuCI/中文：勾选 luci 与 luci-i18n-base-zh-cn。</li>
-<li>提取产物：缓存目录捞出 Image、fsl-nh03-sdk.dtb、root.ext4。</li>
+<li>板卡：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。</li>
+<li>OpenWrt target：<code>layerscape/armv8_64b</code>。</li>
+<li>板级 profile：<code>XSPEED NH03</code>。</li>
+<li>自用 profile：<code>XSPEED NH03 Jungle</code>。</li>
+<li>内核与 DTB 放在 eMMC 第一分区，根系统位于第二分区。</li>
+<li>根系统生成 <code>rootfs.tar.gz</code>，解压到已经扩容的 ext4
+分区，避免每次写入 ext4 镜像后重新扩容。</li>
+<li>U-Boot 从第一分区读取 <code>Image</code> 和
+<code>fsl-nh03-sdk.dtb</code>。</li>
 </ul>
-<h2 id="tinylinux-刷写-emmc">TinyLinux 刷写 eMMC</h2>
-<h3 id="刷写根系统">刷写根系统</h3>
-<ul>
-<li><code>dd if=/media/openwrt/root.ext4 of=/dev/mmcblk0p2 bs=4M status=progress &amp;&amp; sync</code>#
-拷贝内核与设备树</li>
-<li><code>mkdir -p /mnt/mmc1 &amp;&amp; mount /dev/mmcblk0p1 /mnt/mmc1/</code></li>
-<li><code>cp /media/openwrt/Image /media/openwrt/fsl-nh03-sdk.dtb /mnt/mmc1/</code></li>
-<li><code>sync &amp;&amp; umount /mnt/mmc1/</code></li>
-</ul>
-<h2 id="u-boot-固化启动参数">U-Boot 固化启动参数</h2>
-<h3 id="拦截启动进入-u-boot-执行">拦截启动进入 U-Boot 执行：</h3>
-<ul>
-<li><code>setenv bootcmd "mmc dev 0; ext4load mmc 0:1 0xa0000000 Image; ext4load mmc 0:1 0xb0000000 fsl-nh03-sdk.dtb; booti 0xa0000000 - 0xb0000000"</code></li>
-<li><code>setenv bootargs "console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/mmcblk0p2 rw rootwait"</code></li>
-<li><code>saveenv &amp;&amp; boot</code></li>
-</ul>
-<h2 id="基础网络与-ttyd-配置主路由模式">基础网络与 ttyd
-配置（主路由模式）</h2>
-<h3 id="配置-lan-口静态-ip">配置 LAN 口静态 IP</h3>
-<ul>
-<li><code>uci set network.lan.proto='static'</code></li>
-<li><code>uci set network.lan.ipaddr='192.168.2.1'</code></li>
-<li><code>uci set network.lan.netmask='255.255.255.0'</code></li>
-<li><code>uci delete dhcp.lan.ignore</code> # 开启 DHCP</li>
-<li><code>uci commit network &amp;&amp; uci commit dhcp# ttyd</code>
-允许 WAN 口访问</li>
-<li><code>uci set ttyd.@ttyd[0].interface=''</code></li>
-<li><code>uci set ttyd.@ttyd[0].listen='0.0.0.0'</code></li>
-<li><code>uci commit ttyd</code># 重启服务</li>
-<li><code>/etc/init.d/network restart &amp;&amp; /etc/init.d/ttyd restart</code></li>
-</ul>
-<h3 id="面板口配置">面板口配置</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:~# <span class="built_in">cat</span> /etc/board.json</span><br><span class="line">&#123;</span><br><span class="line">        <span class="string">&quot;model&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;id&quot;</span>: <span class="string">&quot;fsl,ls1043a-sdboot&quot;</span>,</span><br><span class="line">                <span class="string">&quot;name&quot;</span>: <span class="string">&quot;NH03&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;network&quot;</span>: &#123;</span><br><span class="line">                <span class="string">&quot;lan&quot;</span>: &#123;</span><br><span class="line">                        <span class="string">&quot;device&quot;</span>: <span class="string">&quot;br-lan&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;protocol&quot;</span>: <span class="string">&quot;static&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="string">&quot;wan&quot;</span>: &#123;</span><br><span class="line">                        <span class="string">&quot;device&quot;</span>: <span class="string">&quot;eth2&quot;</span>,</span><br><span class="line">                        <span class="string">&quot;protocol&quot;</span>: <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">root@OpenWrt:~# <span class="built_in">cat</span> /etc/config/network</span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;loopback&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;lo&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;static&#x27;</span></span><br><span class="line">        list ipaddr <span class="string">&#x27;127.0.0.1/8&#x27;</span></span><br><span class="line"></span><br><span class="line">config globals <span class="string">&#x27;globals&#x27;</span></span><br><span class="line">        option dhcp_default_duid <span class="string">&#x27;00049e7cb3c0895642958376c30f479dcb24&#x27;</span></span><br><span class="line">        option ula_prefix <span class="string">&#x27;fdc2:858b:bbd::/48&#x27;</span></span><br><span class="line"></span><br><span class="line">config device</span><br><span class="line">        option name <span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">        option <span class="built_in">type</span> <span class="string">&#x27;bridge&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth3&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth0&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth1&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth4&#x27;</span></span><br><span class="line">        list ports <span class="string">&#x27;eth5&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;lan&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;static&#x27;</span></span><br><span class="line">        option ip6assign <span class="string">&#x27;60&#x27;</span></span><br><span class="line">        option ipaddr <span class="string">&#x27;192.168.2.1&#x27;</span></span><br><span class="line">        option netmask <span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;wan&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;dhcp&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;wan6&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;dhcpv6&#x27;</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">        option device <span class="string">&#x27;tun0&#x27;</span></span><br><span class="line">        option proto <span class="string">&#x27;unmanaged&#x27;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>/etc/init.d/rpcd restart</code></li>
-<li><code>logread | grep sing-box</code></li>
-</ul>
-<h2 id="sing-box-代理与-tun-转发">Sing-Box 代理与 TUN 转发</h2>
-<h3 id="基础运行配置">基础运行配置</h3>
-<ul>
-<li><code>uci set sing-box.main.enabled='1'</code></li>
-<li><code>uci set sing-box.main.user='root'</code></li>
-<li><code>uci commit sing-box</code># 创建并放行 TUN 接口</li>
-<li><code>uci set network.singbox_tun=interface</code></li>
-<li><code>uci set network.singbox_tun.device='tun0'</code></li>
-<li><code>uci set network.singbox_tun.proto='unmanaged'</code></li>
-<li><code>uci add_list firewall.@zone[0].network='singbox_tun'</code></li>
-<li><code>uci set firewall.@zone[0].forward='ACCEPT'</code>#</li>
-<li><code>uci add_list dhcp.@dnsmasq[0].rebind_domain='fzcsxl.com'</code>#
-安全</li>
-<li><code>uci set dhcp.@dnsmasq[0].rebind_protection='0'</code># 关闭
-DNS 重绑定保护 (危险)</li>
-<li><code>uci commit network &amp;&amp; uci commit firewall &amp;&amp; uci commit dhcp</code></li>
-<li><code>sysctl -w net.ipv4.conf.all.rp_filter=0</code></li>
-<li><code>iptables -I FORWARD -j ACCEPT</code></li>
-<li><code>/etc/init.d/network restart &amp;&amp; /etc/init.d/firewall restart &amp;&amp; /etc/init.d/dnsmasq restart &amp;&amp; /etc/init.d/sing-box restart</code></li>
-</ul>
-<h2 id="设备树-dtsdtb-互转命令">设备树 (DTS/DTB) 互转命令</h2>
-<h3 id="反编译-dtb---dts">反编译 DTB -&gt; DTS</h3>
-<ul>
-<li><code>dtc -I dtb -O dts -o /tmp/myboard.dts /mnt/fsl-nh03-sdk.dtb</code></li>
-<li><code>dtc -I dts -O dtb -o /mnt/fsl-nh03-sdk.dtb /tmp/myboard.dts</code>
-<a
-target="_blank" rel="noopener" href="https://qing.shuncs.com/post/tech/singbox_openwrt_configure">在OpenWRT配置SingBox</a></li>
-</ul>
+<h2 id="源码中的板级支持">源码中的板级支持</h2>
+<p>见 target/linux/layerscape</p>
+<h3 id="以太网与-phy-映射">以太网与 PHY 映射</h3>
+<p>NH03 的映射不是标准 LS1043A-RDB 映射：</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 14%" />
+<col style="width: 27%" />
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Linux 接口</th>
+<th>FMan MAC</th>
+<th>PHY</th>
+<th>MDIO</th>
+<th>地址</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eth0</td>
+<td>e0000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>4</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="even">
+<td>eth1</td>
+<td>e2000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>5</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="odd">
+<td>eth2</td>
+<td>e4000</td>
+<td>RTL8211F</td>
+<td>fc000</td>
+<td>1</td>
+<td>WAN/RGMII-ID</td>
+</tr>
+<tr class="even">
+<td>eth3</td>
+<td>e6000</td>
+<td>RTL8211F</td>
+<td>fc000</td>
+<td>3</td>
+<td>LAN/RGMII-ID</td>
+</tr>
+<tr class="odd">
+<td>eth4</td>
+<td>e8000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>6</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="even">
+<td>eth5</td>
+<td>ea000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>7</td>
+<td>LAN/QSGMII</td>
+</tr>
+</tbody>
+</table>
+<h3 id="profile">Profile</h3>
+<p>板级和自用 profile 位于：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target/linux/layerscape/image/armv8_64b.mk</span><br></pre></td></tr></table></figure>
+<p><code>fsl_nh03</code> 只提供板载硬件与可更换 Wi-Fi
+模块所需驱动。<code>fsl_nh03_jungle</code> 继承它，并加入
+LuCI、中文、主题、sing-box 和常用诊断工具。</p>
+<h2 id="编译配置">编译配置</h2>
+<p>执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+<p>选择：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Target System: NXP Layerscape</span><br><span class="line">Subtarget: ARMv8 64-bit</span><br><span class="line">Target Profile: XSPEED NH03 (Jungle)</span><br></pre></td></tr></table></figure>
+<p>根文件系统只选择：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[*] tar.gz</span><br></pre></td></tr></table></figure>
+<p>自定义主题源码目录必须保存在 Git 中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">package/luci-theme/</span><br><span class="line">package/luci-theme-argon/</span><br><span class="line">package/luci-theme-aurora/</span><br><span class="line">package/luci-theme-proton2025/</span><br></pre></td></tr></table></figure>
+<p>选择主题包并不会自动保存这些未跟踪源码。</p>
+<p>编译：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make download -j8</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br></pre></td></tr></table></figure>
+<p>需要保存本次源码版本和精简配置：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git rev-parse HEAD</span><br><span class="line">scripts/diffconfig.sh</span><br></pre></td></tr></table></figure>
+<p>关键产物：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\Image</span><br><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\image-fsl-nh03-sdk.dtb</span><br><span class="line">bin\targets\layerscape\armv8_64b\openwrt-*-rootfs.tar.gz</span><br></pre></td></tr></table></figure>
+<h2 id="u-boot-启动参数">U-Boot 启动参数</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setenv bootcmd <span class="string">&quot;run bootcmd_mmc_manual&quot;</span></span><br><span class="line">setenv bootcmd_mmc_manual <span class="string">&quot;mmc dev 0; ext4load mmc 0:1 0xa0000000 Image; ext4load mmc 0:1 0xb0000000 image-fsl-nh03-sdk.dtb; booti 0xa0000000 - 0xb0000000&quot;</span></span><br><span class="line">setenv bootargs <span class="string">&quot;console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/mmcblk0p2 rw rootwait&quot;</span></span><br><span class="line">saveenv &amp;&amp; reset</span><br></pre></td></tr></table></figure>
+<h2 id="新系统首次启动">新系统首次启动</h2>
+<p>新 DTB 下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/board.json</span><br><span class="line">board_name = xspeed,nh03[sdboot]</span><br><span class="line">LAN = eth3 eth0 eth1 eth4 eth5</span><br><span class="line">WAN = eth2</span><br></pre></td></tr></table></figure>
+<p>首次启动且没有旧 <code>/etc/config/network</code> 时，OpenWrt 会创建
+<code>br-lan</code>，LAN 默认地址通常为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.1.1/24</span><br></pre></td></tr></table></figure>
+<p>首次连接优先使用已经验证可 Link Up 的 <code>eth3</code> 或
+<code>eth0</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.1.1</span><br></pre></td></tr></table></figure>
+<p>若恢复旧网络配置，则地址仍可能是：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.2.1</span><br></pre></td></tr></table></figure>
+<p>首次登录立即设置密码：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复基础网络">手工恢复基础网络</h3>
+<p>以下命令建议通过串口执行。网络重启后，LAN 地址会从默认的
+<code>192.168.1.1</code> 改为 <code>192.168.2.1</code>，原 SSH
+会话会断开。</p>
+<p>如果不采用板级脚本生成的默认网络配置，先显式创建
+<code>br-lan</code>，并把五个 LAN
+口加入网桥。下面第一条命令用于兼容全新系统中已有的匿名
+<code>br-lan</code> 设备；没有该设备时也不会影响后续创建：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">uci -q rename network.@device[0]=<span class="string">&#x27;br_lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan=<span class="string">&#x27;device&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.name=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.type=<span class="string">&#x27;bridge&#x27;</span></span><br><span class="line">uci -q delete network.br_lan.ports</span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth3&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth0&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth1&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth4&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth5&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.proto=<span class="string">&#x27;static&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.device=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ipaddr=<span class="string">&#x27;192.168.2.1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.netmask=<span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ip6assign=<span class="string">&#x27;60&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.proto=<span class="string">&#x27;dhcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.proto=<span class="string">&#x27;dhcpv6&#x27;</span></span><br><span class="line">uci show network</span><br><span class="line">uci commit network</span><br><span class="line">/etc/init.d/network restart</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复防火墙">手工恢复防火墙</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">uci show firewall | grep <span class="string">&quot;\.name=&quot;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_luci</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.name=<span class="string">&#x27;Allow-LuCI-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.dest_port=<span class="string">&#x27;80&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ssh</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.name=<span class="string">&#x27;Allow-SSH-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.dest_port=<span class="string">&#x27;22&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ttyd</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.name=<span class="string">&#x27;Allow-ttyd-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.dest_port=<span class="string">&#x27;7681&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复-ttyd">手工恢复 ttyd</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].<span class="built_in">command</span>=<span class="string">&#x27;/bin/login&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].listen=<span class="string">&#x27;0.0.0.0&#x27;</span></span><br><span class="line">uci commit ttyd</span><br><span class="line">/etc/init.d/ttyd <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/ttyd restart</span><br><span class="line">netstat -lntp | grep <span class="string">&#x27;:7681 &#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="进阶操作">进阶操作</h2>
+<h3 id="手工恢复-sing-box">手工恢复 sing-box</h3>
+<p>先手工创建并检查： 参考hexo_posts代理与 TUN 模式配置.md</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/sing-box/config.json</span><br></pre></td></tr></table></figure>
+<p>不要把包含订阅、密码或密钥的配置提交到公开仓库。然后启用服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> sing-box.main.enabled=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> sing-box.main.user=<span class="string">&#x27;root&#x27;</span></span><br><span class="line">uci commit sing-box</span><br><span class="line">/etc/init.d/sing-box <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/sing-box restart</span><br><span class="line">/etc/init.d/sing-box status</span><br><span class="line"></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun=interface</span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.device=<span class="string">&#x27;tun0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.proto=<span class="string">&#x27;unmanaged&#x27;</span></span><br><span class="line">uci commit network</span><br><span class="line">uci -q del_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci add_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/network reload</span><br><span class="line">/etc/init.d/firewall restart</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>确认 sing-box 已经监听 <code>127.0.0.1:5353</code> 后，再把 dnsmasq
+DNS 转发过去：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">netstat -lnup | grep <span class="string">&#x27;:5353&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete dhcp.@dnsmasq[0].server</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server=<span class="string">&#x27;127.0.0.1#5353&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> dhcp.@dnsmasq[0].noresolv=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci -q del_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci add_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci commit dhcp</span><br><span class="line">/etc/init.d/dnsmasq restart</span><br><span class="line"><span class="comment"># sysctl -w net.ipv4.conf.all.rp_filter=0</span></span><br></pre></td></tr></table></figure>
+<h3 id="恢复后检查">恢复后检查</h3>
+<p>检查：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ubus call system board</span><br><span class="line">ip addr show</span><br><span class="line">ip route</span><br><span class="line">ubus call network.interface dump</span><br><span class="line">ubus call network.interface.wan status</span><br><span class="line">dmesg | grep -E <span class="string">&#x27;fsl_dpaa_mac|PHY|Link is&#x27;</span></span><br><span class="line">uci show firewall | grep -E <span class="string">&quot;name=&#x27;wan&#x27;|input|output|forward|masq&quot;</span></span><br><span class="line">ip rule</span><br><span class="line">ip route show table all</span><br></pre></td></tr></table></figure>
+<h2 id="dtb-调试">DTB 调试</h2>
+<p>反编译仅用于检查生成结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dtc -I dtb -O dts -o /tmp/fsl-nh03-sdk.generated.dts fsl-nh03-sdk.dtb</span><br></pre></td></tr></table></figure>
+<p>正式修改始终编辑源码树中的
+<code>fsl-nh03-sdk.dts</code>。不要再直接反编译、修改并覆盖唯一的
+DTB。</p>
+<h2 id="wi-fi-ap-配置">Wi-Fi AP 配置</h2>
+<p>当前设备的 <code>radio0</code> 是 2.4 GHz 无线网卡，默认 AP
+配置已绑定到 <code>lan</code>，但
+<code>wireless.default_radio0.disabled='1'</code>，因此不会创建无线接口或广播
+SSID。</p>
+<p><code>encryption='psk2'</code> 表示仅使用 WPA2-Personal。更推荐使用
+<code>sae-mixed</code>（WPA2/WPA3-Personal 混合模式）：支持 WPA3
+的设备使用 SAE，旧设备仍可使用 WPA2-PSK。</p>
+<p>设备已有 <code>radio0</code>、2.4 GHz、信道、AP 模式以及
+<code>lan</code> 绑定，无需重复配置。 只需设置
+SSID、加密方式、密码并解除禁用。密码建议使用至少 12 位随机字符：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.ssid=<span class="string">&#x27;替换为SSID&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;sae-mixed&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.key=<span class="string">&#x27;替换为至少8位的密码&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.disabled=<span class="string">&#x27;0&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
+<p>检查无线接口、SSID 和客户端关联状态：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubus call network.wireless status</span><br><span class="line">iwinfo</span><br><span class="line">wifi status</span><br></pre></td></tr></table></figure>
+<p>正常情况下，<code>radio0</code> 应显示
+<code>up: true</code>，<code>interfaces</code> 不再为空，并能看到 AP
+接口和配置的 SSID。 无线客户端会接入 <code>lan</code>，由 LAN DHCP
+服务分配 <code>192.168.2.0/24</code> 网段的地址。</p>
+<p>如果 <code>wifi reload</code> 报 SAE/WPA3 不受支持，说明固件中的
+wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;psk2&#x27;</span></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
+<p>不要使用 <code>encryption='none'</code>，否则会建立无密码热点。</p>
+<h2 id="主题替换">主题替换</h2>
+<p>outline 的登录界面好看，直接改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&#123;% include(&#x27;themes/outline/sysauth&#x27;, &#123;</span><br><span class="line">    media: &#x27;/luci-static/outline&#x27;,</span><br><span class="line">    theme: &#x27;outline&#x27;</span><br><span class="line">&#125;) %&#125;&quot; &gt; /usr/share/ucode/luci/template/themes/proton2025/sysauth.ut</span><br><span class="line"></span><br><span class="line">rm -rf /tmp/luci-indexcache /tmp/luci-modulecache</span><br><span class="line">/etc/init.d/uhttpd restart</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -398,7 +503,7 @@ target="_blank" rel="noopener" href="https://qing.shuncs.com/post/tech/singbox_o
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://errorworld2000.github.io/openwrt/" title="LS1043A 开发板 OpenWrt 笔记">https://errorworld2000.github.io/openwrt/</a>
+      <a href="https://errorworld2000.github.io/openwrt/" title="LS1043A NH03 OpenWrt 笔记">https://errorworld2000.github.io/openwrt/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -461,14 +566,14 @@ target="_blank" rel="noopener" href="https://qing.shuncs.com/post/tech/singbox_o
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">53k</span>
+    <span title="站点总字数">56k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">48 分钟</span>
+    <span title="站点阅读时长">51 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/os/%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/os/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" class="post-title-link" itemprop="url">常用命令速查</a>
+          <a href="/os/%E7%A1%AC%E4%BB%B6%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">硬件相关</a>
         </h2>
 
         <div class="post-meta-container">
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 16:26:25" itemprop="dateModified" datetime="2026-08-26T16:26:25+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-28 18:49:27" itemprop="dateModified" datetime="2026-08-28T18:49:27+08:00">2026-08-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.4k</span>
+      <span>5</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -294,172 +294,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="u-boot">U-Boot</h2>
-<ul>
-<li><code>pri</code> # 查看环境变量</li>
-<li><code>setenv &lt;var&gt; &lt;value&gt;</code> # 设置环境变量</li>
-<li><code>bdinfo</code> # 显示板级信息</li>
-<li><code>dhcp</code> # 获取 IP 地址（DHCP）</li>
-<li><code>mii</code> # MII（Media Independent Interface）相关</li>
-<li><code>load &lt;dev_type&gt; &lt;bus&gt;:&lt;dev&gt; &lt;file&gt;</code>
-# 从设备指定分区加载文件</li>
-<li><code>booti $kernel_addr - $fdt_addr</code> #
-启动内核，加载设备树</li>
-<li><code>iminfo &lt;addr&gt;</code> # 查看镜像</li>
-<li><code>fdt</code> # fdt（Flattened Device Tree）相关</li>
-<li><code>md $addr &lt;len&gt;</code> #
-内存十六进制查看（默认32bit）</li>
-</ul>
-<h2 id="系统信息与日志">系统信息与日志</h2>
-<ul>
-<li><code>printenv</code> # 环境变量</li>
-<li><code>man</code> # 指令信息</li>
-<li><code>uname -a</code> # 内核版本</li>
-<li><code>lscpu</code> # CPU 信息</li>
-<li><code>lsusb -t</code> # USB 信息</li>
-<li><code>lspci -k</code> # 查看 pci 内核驱动信息</li>
-<li><code>dmesg</code> # 内核日志</li>
-<li><code>getconf -a</code> # 系统参数（只读）</li>
-<li><code>sysctl</code> # 内核参数相关</li>
-<li><code>systemctl</code> # 系统 service 相关</li>
-<li><code>free -h</code> # 查看内存使用</li>
-<li><code>ps -ef</code> # 获取进程快照</li>
-<li><code>top</code> # 实时观察系统负载</li>
-<li><code>slabtop</code> # 查看内核对象占用</li>
-<li><code>jobs</code> / <code>bg %&lt;job&gt;</code> /
-<code>fg %&lt;job&gt;</code> # 查看/后台/前台作业</li>
-<li><code>hexdump /dev/ttyS &amp;</code> # 后台查看串口原始数据</li>
-<li><code>journalctl -u service -f</code> # 查看服务日志</li>
-<li><code>cat</code> # 打印文件（可用 batcat 提供高亮）
-<ul>
-<li><code>/etc/os-release</code> # 系统发行信息</li>
-<li><code>/etc/resolv.conf</code> # 查看 DNS 配置</li>
-<li><code>/etc/systemd/resolved.conf</code> # 查看 systemd-resolved
-配置</li>
-<li><code>/proc/interrupts</code> # 中断统计</li>
-<li><code>/proc/softirqs</code> # 软件中断统计</li>
-<li><code>/proc/irq/&lt;irq&gt;/smp_affinity</code> # 中断 CPU
-亲和性</li>
-<li><code>/proc/net/dev</code> # 网络统计</li>
-<li><code>/proc/iomem</code> # 查看物理内存映射</li>
-<li><code>/proc/meminfo</code> # 内存状态</li>
-<li><code>/sys/kernel/debug/gpio</code> # 查看 GPIO 状态</li>
-<li><code>/sys/kernel/debug/usb/usbmon/5u</code> # 查看 usb 输出</li>
-</ul></li>
-<li><code>zcat /proc/config.gz | less | grep -i &lt;term&gt;</code> #
-查看内核配置</li>
-<li><code>echo ${USER}/$(nproc)</code> # 变量展开/命令替换</li>
-</ul>
-<h2 id="指令">指令</h2>
-<ul>
-<li><code>tar -xzvf file.tar.gz -C /target/path</code> # 解压</li>
-<li><code>tar -czvf file.tar.gz dir/</code> # 压缩</li>
-<li><code>strace -e write ./eserial /dev/ttyUSB2 ATI</code> #
-跟踪应用过程</li>
-<li><code>find / -name xxxx 2 &gt; /dev/null</code> #
-全盘找一个文件(丢弃错误文件)</li>
-<li><code>truncate -s 0 /etc/machine-id</code> # 清空文件内容</li>
-<li><code>dd if=/dev/zero of=/dev/mmcblk0 count=1</code> # 清空 mmc
-分区信息</li>
-<li><code>fdisk /dev/mmcblk0</code> # 对 mmc 进行分区</li>
-<li><code>stty cols 200</code> # 修改终端宽度</li>
-<li><code>df -h</code> # 查看分区剩余空间</li>
-<li><code>du -h --max-depth=1</code> # 查看存储占用</li>
-<li><code>history -n</code> # 查看历史指令</li>
-<li><code>du -h --max-depth=1</code> # 查看文件夹占用</li>
-</ul>
-<h2 id="网络诊断">网络诊断</h2>
-<ul>
-<li><code>networkctl</code> # 显示网络状态（systemd）</li>
-<li><code>curl -v xxx.com</code> # 命令行发 HTTP / TCP / FTP 请求</li>
-<li><code>dhclient &lt;iface&gt;</code> # 请求 DHCP</li>
-<li><code>ethtool &lt;iface&gt;</code> # 网口工具</li>
-<li><code>dig</code> # 查 DNS 解析（定位域名 -&gt; IP 问题）</li>
-<li><code>traceroute</code> # 查路径走向（定位卡在哪一跳）</li>
-<li><code>mtr</code> # 查质量问题（定位延迟/丢包最严重的节点）</li>
-<li><code>resolvectl</code> # 显示 systemd-resolved 的状态</li>
-<li><code>ss -lntup</code> # 查看套接字状态</li>
-<li><code>nc -u -v 192.168.13.1 53</code> # 用 UDP 向 192.168.13.1:53
-发送数据（DNS 端口）</li>
-<li><code>tcpdump -i &lt;iface&gt; [icmp/arp]</code> # 抓包相关</li>
-<li><code>tcpdump -i usbmon5 -w em05.pcap</code> # 抓 usb 的包</li>
-</ul>
-<h2 id="vlan-链路配置">VLAN / 链路配置</h2>
-<ul>
-<li><code>bridge link</code> # 显示桥信息</li>
-<li><code>bridge vlan add dev &lt;dev&gt; vid &lt;vid&gt; pvid untagged</code>
-# 添加 VLAN（硬件实现）</li>
-<li><code>ip link add link &lt;dev&gt; name &lt;dev&gt;.&lt;vid&gt; type vlan id &lt;vid&gt;</code>
-# 创建 VLAN 子接口（软件实现）</li>
-</ul>
-<h2 id="ip-常用命令">ip 常用命令</h2>
-<ul>
-<li><code>ip a</code> # 显示所有接口信息</li>
-<li><code>ip -s link</code> # 显示网络统计</li>
-<li><code>ip link set &lt;dev&gt; up</code> # 接口使能</li>
-<li><code>ip link add name &lt;br&gt; type bridge</code> # 创建网桥</li>
-<li><code>ip link set &lt;dev&gt; master &lt;br&gt;</code> #
-添加接口到网桥</li>
-<li><code>ip addr add &lt;ip&gt;/&lt;mask&gt; dev &lt;br&gt;</code> #
-配置 IP</li>
-<li><code>ip route add default via &lt;gw&gt; dev &lt;br&gt;</code> #
-默认路由</li>
-<li><code>ip route get &lt;dst&gt;</code> # 查询路由到目标</li>
-</ul>
-<h2 id="硬件-外设">硬件 / 外设</h2>
-<ul>
-<li><code>dmidecode</code> # 打印所有硬件信息</li>
-<li><code>lsblk -f</code> # 列出块设备及文件系统</li>
-<li><code>blkid</code> # 查看设备 UUID/类型</li>
-<li><code>i2cdetect -a -y &lt;bus&gt;</code> # 扫描 I2C 总线</li>
-<li><code>i2cdump -y &lt;bus&gt; &lt;addr&gt;</code> # 查看 I2C
-设备寄存器</li>
-<li><code>gpioinfo</code> # GPIO 信息</li>
-<li><code>gpioset &lt;chip&gt; &lt;line&gt;=&lt;val&gt;</code> # 设置
-GPIO 输出</li>
-<li><code>echo &lt;num&gt; &gt; /sys/class/gpio/export</code> # 导出
-GPIO</li>
-</ul>
-<h2 id="git">Git</h2>
-<ul>
-<li><code>git config --list --show-origin</code> # 查看配置及来源</li>
-<li><code>git submodule update --init --recursive</code> #
-初始化子模块</li>
-<li><code>git clone --recurse-submodules &lt;repo&gt;</code> #
-克隆包含子模块</li>
-<li><code>git submodule add &lt;url&gt; &lt;path&gt;</code> #
-添加子模块</li>
-<li><code>git remote prune origin</code> # 清理本地缓存</li>
-<li><code>git push --force-with-lease origin</code> # rebase 后强制
-push</li>
-</ul>
-<h2 id="编译-make-cmake">编译 / Make / CMake</h2>
-<ul>
-<li><code>export CROSS_COMPILE=&lt;toolchain&gt; ARCH=&lt;arch&gt;</code>
-# 设置交叉编译工具链</li>
-<li><code>make &lt;defconfig&gt;</code> # 生成配置</li>
-<li><code>make modules_prepare</code> # 准备模块编译</li>
-<li><code>make -j&lt;cores&gt; Image modules</code> # 生成 Image
-和模块，并记录编译信息</li>
-<li><code>make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C &lt;kernel-src&gt; M=$PWD -j$(nproc) [LDFLAGS=-static]</code>
-# 单目录模块编译</li>
-<li><code>cmake -B &lt;build-dir&gt; -S . -DCMAKE_TOOLCHAIN_FILE=&lt;file&gt; -DCMAKE_BUILD_TYPE=&lt;type&gt; -DCMAKE_EXPORT_COMPILE_COMMANDS=1</code>
-# CMake 构建</li>
-<li><code>meson configure</code> # 查看编译参数</li>
-<li><code>meson setup build -D</code> # 设置编译参数需带上 -D</li>
-<li><code>meson [setup] -h</code> # 查看 【setup】参数</li>
-</ul>
-<h2 id="windows">Windows</h2>
-<ul>
-<li><code>scp -r jzw@xspeed-ubuntu18:/home/jzw/dpaa .\Desktop\</code> #
-从远程 Linux 递归拷贝 dpaa 目录到 Windows 桌面</li>
-<li><code>Get-FileHash *.img -Algorithm SHA256</code> # 计算 img 文件的
-SHA256 校验值</li>
-<li><code>git\usr\bin\strings.exe img | findstr aaa</code> #
-从二进制文件中提取字符串并过滤包含 aaa 的内容</li>
-<li><code>Test-NetConnection 192.168.2.1 -Port 7681</code></li>
-<li><code>TRACERT baidu.com</code></li>
-</ul>
+          <p><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/dongxb/p/17365052.html">以太网扫盲</a></p>
 
       
     </div>
@@ -502,14 +338,14 @@ SHA256 校验值</li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">53k</span>
+    <span title="站点总字数">56k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">48 分钟</span>
+    <span title="站点阅读时长">51 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
