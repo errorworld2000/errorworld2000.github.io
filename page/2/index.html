@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-09-08 14:44:03" itemprop="dateModified" datetime="2026-09-08T14:44:03+08:00">2026-09-08</time>
+      <time title="修改时间：2026-09-08 15:19:58" itemprop="dateModified" datetime="2026-09-08T15:19:58+08:00">2026-09-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>8.3k</span>
+      <span>9.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -296,10 +296,11 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="当前方案概览">当前方案概览</h2>
 <ul>
-<li>板卡：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。</li>
-<li>OpenWrt target：<code>layerscape/armv8_64b</code>。</li>
-<li>板级 profile：<code>XSPEED NH03</code>。</li>
-<li>自用 profile：<code>XSPEED NH03 Jungle</code>。</li>
+<li>板级硬件：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。</li>
+<li>板级 target/profile：<code>layerscape/armv8_64b</code> /
+<code>fsl_nh03</code>（显示名称为 <code>XSPEED NH03</code>）。</li>
+<li>个人构建配置：<code>configs/jungle.config</code>（普通版）和
+<code>configs/jungle-debug.config</code>（调试版）。</li>
 <li>当前设备优先从 SATA SSD 启动：内核与 DTB 放在
 <code>sda1</code>，根系统位于 <code>sda2</code>；SATA 读取失败时回退到
 eMMC 的第一、第二分区。</li>
@@ -308,8 +309,41 @@ eMMC 的第一、第二分区。</li>
 <li>U-Boot 从第一分区读取 <code>Image</code> 和
 <code>fsl-nh03-sdk.dtb</code>。</li>
 </ul>
-<h2 id="源码中的板级支持">源码中的板级支持</h2>
-<p>见 target/linux/layerscape</p>
+<p>板级代码负责 NH03 的硬件描述、网口映射、默认 LAN/WAN
+端口和板载驱动；个人配置负责要安装的软件包、调试能力、主题以及每台设备的运行参数。不要把
+COM12/COM14 的地址或 sing-box 等个人设置写进板级 profile。</p>
+<h2 id="板级支持所有-nh03-构建共享">板级支持（所有 NH03 构建共享）</h2>
+<p>见 <code>target/linux/layerscape/</code>。各文件职责如下：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>内容</th>
+<th>文件</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NH03 设备树、I²C/GPIO、存储和 PHY</td>
+<td><code>target/linux/layerscape/files-6.12/arch/arm64/boot/dts/freescale/fsl-nh03-sdk.dts</code></td>
+</tr>
+<tr class="even">
+<td>板级默认 LAN/WAN 端口</td>
+<td><code>target/linux/layerscape/base-files/etc/board.d/02_network</code></td>
+</tr>
+<tr class="odd">
+<td><code>fsl_nh03</code> 镜像 profile 和板载驱动包</td>
+<td><code>target/linux/layerscape/image/armv8_64b.mk</code></td>
+</tr>
+<tr class="even">
+<td>Layerscape 6.12 平台内核选项</td>
+<td><code>target/linux/layerscape/armv8_64b/config-6.12</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="以太网与-phy-映射">以太网与 PHY 映射</h3>
 <p>NH03 的映射不是标准 LS1043A-RDB 映射：</p>
 <table>
@@ -382,18 +416,46 @@ eMMC 的第一、第二分区。</li>
 </tr>
 </tbody>
 </table>
-<h3 id="profile">Profile</h3>
-<p>板级和自用 profile 位于：</p>
+<h3 id="板级-profile">板级 profile</h3>
+<p>板级 profile 位于：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target/linux/layerscape/image/armv8_64b.mk</span><br></pre></td></tr></table></figure>
-<p><code>fsl_nh03</code> 只提供板载硬件与可更换 Wi-Fi 模块所需驱动。
-自定义主题源码目录必须保存在 Git 中：</p>
+<p>文件中只有一个 NH03
+板级设备定义：<code>define Device/fsl_nh03</code>。它只提供 NH03
+板载硬件、设备树和可更换 Wi-Fi 模块所需驱动，不包含 Jungle
+的软件包选择或设备运行参数。</p>
+<h2 id="个人构建配置jungle">个人构建配置（Jungle）</h2>
+<p>个人配置种子位于 <code>configs/</code>，与板级支持分开维护：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 74%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>配置</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>configs/jungle.config</code></td>
+<td>普通版：LuCI、ttyd、sing-box、网络诊断工具和主题包</td>
+</tr>
+<tr class="even">
+<td><code>configs/jungle-debug.config</code></td>
+<td>调试版：包含普通版内容，并额外启用
+perf、BPF/eBPF、BTF、FTrace、Kprobe 和 <code>bpftool</code></td>
+</tr>
+</tbody>
+</table>
+<p>两个种子都选择 <code>layerscape/armv8_64b</code> 下的
+<code>fsl_nh03</code> 目标；选择目标是为了生成 NH03
+镜像，软件包和调试选项才是个人配置的差异。</p>
+<p>自定义主题源码目录也属于个人配置，必须保存在 Git 中：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">package/luci-theme/</span><br><span class="line">package/luci-theme-argon/</span><br><span class="line">package/luci-theme-aurora/</span><br><span class="line">package/luci-theme-proton2025/</span><br></pre></td></tr></table></figure>
 <p>选择主题包并不会自动保存这些未跟踪源码。</p>
-<h2 id="编译配置">编译配置</h2>
-<p>使用调试配置直接生成并编译：</p>
+<h2 id="编译个人配置">编译个人配置</h2>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> configs/jungle-debug.config .config</span><br><span class="line">make defconfig</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br></pre></td></tr></table></figure>
-<p>需要临时调整选项时，在编译前额外运行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
 <p>关键产物：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\Image</span><br><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\image-fsl-nh03-sdk.dtb</span><br><span class="line">bin\targets\layerscape\armv8_64b\openwrt-*-rootfs.tar.gz</span><br></pre></td></tr></table></figure>
 <h2 id="u-boot-启动参数">U-Boot 启动参数</h2>
@@ -405,7 +467,7 @@ eMMC 的第一、第二分区。</li>
 根分区直接使用 <code>/dev/sda2</code>。eMMC 回退分支使用
 <code>/dev/mmcblk0p2</code>。如果以后增加其他 SCSI/SATA
 磁盘，设备枚举顺序可能变化，此时再改用 PARTUUID 更稳妥。</p>
-<h2 id="新系统首次启动">新系统首次启动</h2>
+<h3 id="首次启动">首次启动</h3>
 <p>新 DTB 下：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/board.json</span><br><span class="line">board_name = xspeed,nh03[sdboot]</span><br><span class="line">LAN = eth3 eth0 eth1 eth4 eth5</span><br><span class="line">WAN = eth2</span><br></pre></td></tr></table></figure>
 <p>首次启动且没有旧 <code>/etc/config/network</code> 时，OpenWrt 会创建
@@ -524,14 +586,14 @@ wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal�
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">57k</span>
+    <span title="站点总字数">58k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">52 分钟</span>
+    <span title="站点阅读时长">53 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
