@@ -251,7 +251,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-10-09 00:00:00 / 修改时间：17:20:15" itemprop="dateCreated datePublished" datetime="2026-10-09T00:00:00+08:00">2026-10-09</time>
+      <time title="创建时间：2026-10-09 00:00:00 / 修改时间：18:29:29" itemprop="dateCreated datePublished" datetime="2026-10-09T00:00:00+08:00">2026-10-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -496,7 +496,7 @@ Shader 的公式与数据为准，这些例子不是所有游戏通用的解码�
 RDC，再选择目标绘制。RenderDoc 嵌入式 Python 使用
 <code>ExportGpuCapture.py</code>；请求中的事件编号必须来自当前捕获，不能跨帧复用。输出目录保存中间数据，原始
 RDC 可保留在仓库之外。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 替换为自己的捕获、输出目录和已确认的 Event ID。</span></span><br><span class="line"><span class="variable">$taskRequest</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">    capture = <span class="variable">$capturePath</span></span><br><span class="line">    output = <span class="variable">$rawExportDirectory</span></span><br><span class="line">    events = <span class="variable">$selectedEvents</span></span><br><span class="line">    frame = <span class="variable">$verifiedFrameNumber</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$taskRequest</span> | <span class="built_in">ConvertTo-Json</span> <span class="literal">-Depth</span> <span class="number">4</span> | <span class="built_in">Set-Content</span> <span class="literal">-LiteralPath</span> <span class="variable">$requestPath</span></span><br><span class="line"><span class="variable">$env:ORBIT_CAPTURE_REQUEST</span> = <span class="variable">$requestPath</span></span><br><span class="line">&amp; <span class="variable">$qrenderdocPath</span> <span class="literal">--python</span> <span class="string">&quot;<span class="variable">$PWD</span>\Scripts\Art\ExportGpuCapture.py&quot;</span></span><br><span class="line"><span class="built_in">Get-Content</span> (<span class="built_in">Join-Path</span> <span class="variable">$rawExportDirectory</span> <span class="string">&#x27;export-status.json&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 替换为自己的捕获、输出目录和已确认的 Event ID。</span></span><br><span class="line"><span class="variable">$taskRequest</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">    capture = <span class="variable">$capturePath</span></span><br><span class="line">    output = <span class="variable">$rawExportDirectory</span></span><br><span class="line">    events = <span class="variable">$selectedEvents</span></span><br><span class="line">    frame = <span class="variable">$verifiedFrameNumber</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$taskRequest</span> | <span class="built_in">ConvertTo-Json</span> <span class="literal">-Depth</span> <span class="number">4</span> | <span class="built_in">Set-Content</span> <span class="literal">-LiteralPath</span> <span class="variable">$requestPath</span></span><br><span class="line"><span class="variable">$env:ORBIT_CAPTURE_REQUEST</span> = <span class="variable">$requestPath</span></span><br><span class="line">&amp; <span class="variable">$qrenderdocPath</span> <span class="literal">--python</span> <span class="string">&quot;<span class="variable">$PWD</span>\Scripts\Other\ExportGpuCapture.py&quot;</span></span><br><span class="line"><span class="built_in">Get-Content</span> (<span class="built_in">Join-Path</span> <span class="variable">$rawExportDirectory</span> <span class="string">&#x27;export-status.json&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p><code>export-status.json</code> 必须没有
 <code>error</code>。补充已确认的纹理输入时，同一入口可使用
 <code>mode: textures</code>、<code>event</code> 与资源 ID 列表
@@ -559,7 +559,7 @@ Event ID、资源槽或 Shader
 同机位画面，按几何、UV/色彩空间、材质、光照、后处理逐项定位差异，每次只验证一个因素。</p>
 </blockquote>
 <p>当前项目使用
-ExportGpuCapture.py（本地文件：<code>Scripts/Art/ExportGpuCapture.py</code>）
+ExportGpuCapture.py（本地文件：<code>Scripts/Other/ExportGpuCapture.py</code>）
 从选定 RDC 批次导出数据，在 Blender 中整理现有研究源，使用
 ImportArtRevision.py（本地文件：<code>Scripts/Art/ImportArtRevision.py</code>）
 批量导入，以及
