@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/openwrt/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E8%A7%92%E8%89%B2%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%8A%A8%E7%94%BB%E7%A0%94%E7%A9%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/openwrt/" class="post-title-link" itemprop="url">LS1043A NH03 OpenWrt 笔记</a>
+          <a href="/other/%E8%A7%92%E8%89%B2%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%8A%A8%E7%94%BB%E7%A0%94%E7%A9%B6/" class="post-title-link" itemprop="url">角色材质与动画研究</a>
         </h2>
 
         <div class="post-meta-container">
@@ -249,15 +249,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2026-07-28 14:25:25" itemprop="dateCreated datePublished" datetime="2026-07-28T14:25:25+08:00">2026-07-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-09-29 11:35:07" itemprop="dateModified" datetime="2026-09-29T11:35:07+08:00">2026-09-29</time>
+      <time title="创建时间：2026-10-09 00:00:00 / 修改时间：17:20:15" itemprop="dateCreated datePublished" datetime="2026-10-09T00:00:00+08:00">2026-10-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +259,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/net/" itemprop="url" rel="index"><span itemprop="name">net</span></a>
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
         </span>
     </span>
 
@@ -276,14 +270,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>10k</span>
+      <span>18k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>16 分钟</span>
     </span>
 </div>
 
@@ -294,256 +288,604 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="当前方案概览">当前方案概览</h2>
-<ul>
-<li>板级硬件：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。</li>
-<li>板级 target/profile：<code>layerscape/armv8_64b</code> /
-<code>fsl_nh03</code>（显示名称为 <code>XSPEED NH03</code>）。</li>
-<li>个人构建配置：<code>configs/jungle.config</code>（普通版）和
-<code>configs/jungle-debug.config</code>（调试版）。</li>
-<li>当前设备优先从 SATA SSD 启动：内核与 DTB 放在
-<code>sda1</code>，根系统位于 <code>sda2</code>；SATA 读取失败时回退到
-eMMC 的第一、第二分区。</li>
-<li>根系统生成 <code>rootfs.tar.gz</code>，解压到已经扩容的 ext4
-分区，避免每次写入 ext4 镜像后重新扩容。</li>
-<li>U-Boot 从第一分区读取 <code>Image</code> 和
-<code>fsl-nh03-sdk.dtb</code>。</li>
-</ul>
-<p>板级代码负责 NH03 的硬件描述、网口映射、默认 LAN/WAN
-端口和板载驱动；个人配置负责要安装的软件包、调试能力、主题以及每台设备的运行参数。不要把
-COM12/COM14 的地址或 sing-box 等个人设置写进板级 profile。</p>
-<h2 id="板级支持所有-nh03-构建共享">板级支持（所有 NH03 构建共享）</h2>
-<p>见 <code>target/linux/layerscape/</code>。各文件职责如下：</p>
+          <p>本文整理 Orbit
+的本地学习记录。案例结论限于记录中的游戏版本、捕获和研究样板，不代表完整原作实现。文中的
+ArtSource 路径是本地证据索引；工程当前约束与验收要求由 Orbit
+项目文档维护。</p>
+<h2 id="可复用角色着色">可复用角色着色</h2>
+<p>先打开
+<code>/Game/Orbit/Maps/Tests/L_CharacterShadingLab</code>，选中人物按 F
+框显，按 Alt+S 模拟以查看原装动作，Esc 停止。选中网格后从 Details 的
+Materials 打开实例，观察底色、法线与遮罩怎样影响效果，再打开关联的 Toon
+Profile
+调整明暗、高光曲线。给自己的角色创建实例并分配到对应材质槽，沿用共享材质；主光与头部方向由角色着色组件配置，不需要为每个角色复制
+Shader。</p>
+<p>原创角色着色集中在
+<code>Content/Orbit/Characters/Shading</code>，可编辑 Shader 源在
+<code>../ArtSource/Orbit/Characters/Shading</code>。身体与衣料共用表面函数，实例通过
+<code>UsePBRSurface</code> 选择官方 Toon 或原生 Slab PBR：Toon Profile
+控制绘制的明暗色阶与高光形状，PBR
+保留连续表面光泽。两条路径共用底色、法线、粗糙度、金属度与镜面遮罩；PBR
+将遮蔽送入材质根节点，研究实例关闭底色预乘遮蔽，避免重复变暗。可选打包遮罩默认
+R 遮蔽、G 粗糙度、B
+金属度，实例可选择各项通道、将光滑度反转为粗糙度，或关闭未确认的项；研究纹理不猜测通道。佩丽卡已确认衣料的
+R 控制金属度、G 缩放介电 F0、B 控制遮蔽、A 控制光滑度，使用线性 RGBA
+副本保留 Alpha。法线按输入格式整理为 UE
+切线法线，颜色贴图与数值数据分别使用 sRGB 与线性采样；浮点控制贴图保留
+EXR 与 HDR 精度，不能用已夹取的 PNG 替代。未指定法线时使用引擎的
+<code>FlatNormal</code>，<code>DefaultNormal</code>
+含砖石凹凸，不能用作平坦默认值。仅保存 RG 的抓帧法线由采样器重建
+Z，不能把占位或复用的 B 通道当作 Z 做 XYZ mip
+归一化，所需压缩设置使用独立研究副本。</p>
+<p>脸部材质使用角色主光及头部坐标基底，支持明确指定的线性 SDF 贴图、独立
+UV
+通道、左右镜像、数值反转与独立阴影颜色贴图；光方向投影到头部的正面/右方平面，避免头顶来光改变脸影形状。SDF
+通道须依据原材质或制作约定确认，不能沿用底色图集的 UV；Cici
+原工程使用通道索引 3，千夏捕获 Shader 使用脸部光照贴图的 R 通道及底色
+UV，并根据来光镜像。佩丽卡已捕获的脸部 GBuffer
+绘制绑定底色和法线，尚无独立 SDF
+的证据；共享材质用面部法线响应主光，可混合头部正面轴减弱碎阴影，这仍是可调近似。给角色添加
+<code>CharacterShadingComponent</code>，指定主光、面部网格及头骨，按绑定姿势配置脸的正面和右方轴，参数随动画更新。</p>
+<p>头发的 Matcap 使用视线与法线生成
+UV，可选择顶点法线或贴图法线，以及世界上方向或相机坐标基底。实例控制颜色、覆盖遮罩及
+RGBA 通道，静态开关区分 sRGB
+绘制数据与线性数值数据。单张模式从红通道取高光形状，独立颜色相加；Cici
+原材质使用 <code>T_OMR.G</code> 的 sRGB 绘制强度，不能当作通用 ORM
+粗糙度。彩色数组模式保留 Matcap 的 RGB 和
+Alpha，由绘制的材质区域选择层、颜色、增益、覆盖强度及相加或替换；可作用于光照前底色或自发光。区域设置仍由实例控制，不在共享
+Shader 中写死游戏判断。</p>
+<p>千夏已确认的表面绘制使用 <code>M.R</code>
+量化选择区域、<code>M.G</code> 金属度、<code>A.G</code> 光滑度和
+<code>A.B</code> Matcap
+覆盖；头发绘制的金属度全零，衣料和配件另有非零金属区域。两组控制贴图保留线性浮点数据，静态选择金属度来源，光滑度转为感知粗糙度，未确认的
+AO 保持中性。六层 Matcap 使用 sRGB
+彩色采样，区域的越界层号表示禁用，不采样最后一层代替；颜色混合发生在
+Toon 光照之前。这仅恢复已确认的材质控制与 Matcap
+模块，后续光照和高光仍由官方 Toon Profile
+调整，不代表完整原作管线。Matcap 不能替代头发贴图与法线的制作。描边使用
+Custom
+Depth/Stencil，只对选定标记扩张轮廓，并排除被场景遮挡的部分；采样坐标取自深度缓冲区，避免后处理输入尺寸不同造成轮廓偏移。</p>
+<p>表面函数另提供可选线性镜面遮罩，由实例指定 RGBA 通道，控制官方 Toon
+的镜面反射强度，不改变粗糙度或产生自发光。可选发束方向从独立法线的指定通道重建方向，按遮罩混合角色局部轴与网格切线，保留切线手性，并提供方向偏移及旋转；关闭时使用网格切线。佩丽卡头发使用
+G 通道缩放介电 F0、法线纹理的 BA 重建辅助法线、遮罩 R 混合方向，RGBA
+原始数据使用线性副本，不能用会丢弃 BA 的普通法线压缩。</p>
+<p>共享表面的覆盖纹理可选择 RGBA 通道，默认取
+R。实心和裁切实例保留原来的覆盖规则；连续透明实例通过 Substrate Coverage
+Weight 使用软覆盖，同时配置透明混合，不能只连接传统
+Opacity。佩丽卡原作先在 GBuffer 用独立遮罩排除刘海，再通过底色 Alpha
+的后续混合绘制补回；仅复制第一阶段的裁切会使额头缺发。框架研究实例使用底色的线性
+Alpha
+副本恢复完整覆盖和连续边缘，并通过原生逐像素排序处理重叠发片。原作的两阶段深度与光照组合仍未完整恢复，不能把某个
+Pass 的可见范围当成角色最终可见范围。</p>
+<p>薄发片的自投影可产生细碎黑点。共享表面提供默认关闭的阴影投射偏移，只在阴影绘制中沿主光方向调整投射位置，保留可见几何和正常投影。佩丽卡研究实例启用小幅偏移；残余自投影、其他光源和景深下的表现仍需后续精修。</p>
+<p>可选头发函数使用未投影到表面法线的发束方向，计算与半角向量垂直时最强的亮带，支持指数、偏移、遮罩、视线门控及二维线性查找表。方向保留原始长度，加入各瓣偏移后再归一化；次瓣独立配置颜色、指数、遮罩及强度，按主瓣的查找表响应减弱。佩丽卡主瓣按
+G 缩放介电镜面强度，次瓣使用原材质的颜色和 A 遮罩，不重复乘
+G。主光方向由同一个角色着色组件更新；可将视线方向与角色局部上轴混入艺术化的高光来光。</p>
+<p>头发函数提供两种输出：单表面的亮度响应通过 Profile UV 送入官方 Toon
+光照，使用线性浮点 EXR 响应表保留弱高光；需要保留两瓣和查找表 RGB
+时，使用单独的前向叠加材质。后者以 RGB 控制原生 Toon
+镜面颜色，由引擎继续计算灯光颜色、衰减与投影，关闭重复的间接光，不使用自发光。启用彩色层时主表面关闭原亮度高光，避免计算两次。UE
+5.8 不允许通过 Substrate Add 组合 Toon
+BSDF，因此彩色层需要额外绘制；研究角色使用同一网格与 Leader
+Pose，共享原装姿势、变换和着色组件的主光参数。角色着色组件可指定附加网格及其可见材质槽，注册和动画更新时按配置限制所有
+LOD
+的绘制；只保留高光所需的槽，避免透明为零的身体、衣料仍提交绘制，不修改主网格。透明底色在景深前使用
+OIT，彩色层在景深后按 Custom Depth
+排除被遮挡的表面，并保留可配置的视线偏移与深度容差。本机 Substrate OIT
+的带光照加法层会衰减背景，故项目只在景深前启用 OIT；彩色层要求主体写入
+Custom
+Depth。该模块针对配置的方向主光，辅助灯复用相同亮带形状；透明表面的细碎黑点、景深合成、额外绘制与
+OIT 的性能及原作间接光仍须核对，不能称为逐像素复刻。</p>
+<p>表面函数的可选漫反射 Ramp 模块以主光和视线分别采样线性 RGBA
+数据：Alpha 与独立遮罩控制亮暗底色混合，RGB
+按色差强度修色并补偿亮度。暗部底色的强度、饱和度和过渡均由实例配置。佩丽卡使用捕获的
+Ramp、B 通道遮罩及材质参数；数值纹理保留无压缩 RGBA 和固定
+mip，不能直接将 Ramp RGB
+当作明暗倍率。该模块恢复未受投影遮挡时的底色处理，场景投影与间接光继续由
+UE 计算；原作的阴影耦合、环境光和光照合成尚未完整恢复。</p>
+<p>研究实例可通过 UE Toon Profile
+覆盖配置对应光照。编辑器制作函数补足原生 Python
+未开放的引用设置，并触发材质更新。佩丽卡头发的 Profile
+为底色模块提供中性直接光响应，并使用原生投影衰减，避免重复修色；原始
+Ramp 和捕获关联留在研究源中，共享主材质继续使用通用风格预设。</p>
+<p><code>Character Toon BSDF</code> 材质节点补齐 UE 5.8 原生 Toon 未登记
+Tangent 的方向基底，光照计算和 Toon Profile
+继续使用引擎实现。共享主材质使用标准材质编译器；5.8 的实验 MIR
+编译路径也缺少这些输入，不能启用后静默丢失方向。<a
+target="_blank" rel="noopener" href="https://forums.unrealengine.com/t/substrate-feedback-thread/691314?page=41">Epic
+对该缺口的说明</a>。描边、脸影、Matcap 和发束控制保持为独立模块。</p>
+<p>新角色没有辅助法线时，保持 <code>UseFiberDirection</code> 关闭，用
+<code>Anisotropy</code>、<code>Roughness</code> 与以度计的
+<code>FiberRotation</code> 调整网格方向上的高光，再用 Profile 的
+Specular Ramp 控制亮带范围。Soft
+预设使用较宽的高光曲线；方向对照须先让高光可见，不能在只剩极小光点时判断方向输入无效。</p>
+<p>眉眼、腮红等细节层与脸部共用阴影函数，实例分别选择实心、裁切或透明混合，保留双面与裁切阈值。透明度由底色
+Alpha、可指定 RGBA
+通道的线性遮罩和强度相乘；透明混合可启用静态深度淡出开关，距离以厘米计。细节层还可沿视线朝相机偏移，避免近乎重合的表面使深度淡出抹掉眉眼，须结合角色尺度与遮挡调节；它不改变整个角色的透视。明部和暗部各自提供去饱和参数。Cici
+原材质的颜色参数 Alpha 用于去饱和，透明度另由
+<code>BaseTex.A × T_OMR.B × Opacity</code> 控制，不能把其 OMR
+当作身体的通用
+ORM；眼部高光为裁切，眉眼遮罩与腮红为透明混合，眼白和虹膜为实心。原装表情由
+Morph 动画驱动，这些材质不生成表情或骨骼动作。</p>
+<p><code>L_CharacterShadingLab</code> 用原装千夏、佩丽卡和 Cici
+几何对照三组起始风格。它属于框架的独立学习关卡，研究网格及原装动作仍引用
+<code>Reference</code>，不修改原始网格或原材质。Cici 使用原装脸影和头发
+Matcap
+数据，表情辅助层使用共享细节材质；旧描边与原工程已禁用的叠层不参与对照。风格预设不是任何游戏的完整管线复刻，仍须对齐高光、遮罩、曝光与原作画面。官方
+Toon 在 5.8 中为实验功能。<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes">官方功能范围</a>。检查沿用统一入口（本地文件：<code>Docs/engineering/verification.md#角色着色框架</code>）。</p>
+<p>项目采用 Adaptive GBuffer，Profile 开启阴影参与 Diffuse
+Ramp，使实际投影进入绘制的明暗色阶。两项须配合使用：本机 UE 5.8 的
+Blendable GBuffer 光照路径还会在材质光照之外乘表面阴影，仅切换 Profile
+不能保住投影暗部的颜色。该选择保留投影与颜色控制，代价是比 Blendable
+存储更多材质数据；按实际研究场景测量开销，不把它概括为所有角色和平台都更快。</p>
+<h2 id="终末地研究">终末地研究</h2>
+<h3 id="终末地人物移植">终末地人物移植</h3>
+<p>人物移植保留两种用途：CaptureStudy.blend（本地文件：<code>ArtSource/Endfield/CaptureStudy.blend</code>）
+是该帧姿态与贴图对照；OriginalRigStudy.blend（本地文件：<code>ArtSource/Endfield/OriginalRigStudy.blend</code>）
+使用原装层级、原装骨骼表、截帧中的蒙皮前顶点/权重及解码后的原装动作。UE
+对应 <code>/Game/Reference/Endfield/Maps/L_PerlicaStudy</code> 和
+<code>L_PerlicaOriginalStudy</code>。前者不能播放动画，后者默认播放角色界面待机，可在
+Action Editor
+中切换原装待机与对话行走。研究材质保留底色、法线与头发裁剪，脸影、头发高光和最终色调仍是近似。</p>
+<p>原装 prefab 名为 <code>chr_0004_pelica_uimodel</code>，资源索引须使用
+<code>pelica</code>。游戏在运行时补入身体、脸和配饰，单独导出 prefab
+会缺少三部分；这也是必须核对 RDC 与原装源的原因。眉毛的截帧输入已在 CPU
+变形且使用 Y-up，须采用原装眉毛的绑定姿势，不能当成身体的 Z-up
+蒙皮前顶点。原始压缩动作由 ACL
+解码，再按路径哈希匹配原装节点；不能把带名称却零轨道的 FBX
+当作动画。当前恢复骨骼动作及眉毛 Morph
+目标，不包含原游戏的状态机、动态物理和独立的标量/Morph 动画曲线。</p>
+<p>动画格式的公开研究必须按后续更正理解：<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Eu9BBuExe/">五月的角色还原视频</a>作者曾用
+IK 补偿关节异常，并推测运行时程序驱动四肢；<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1SnKg6cEkQ/">七月的 Blender
+导入工具视频</a>简介明确撤回这个判断，指出新增 Humanoid
+肌肉曲线导致索引错位。这是作者对其导出器的诊断，不能直接当作本地佩丽卡模型的已确认原因。<a
+target="_blank" rel="noopener" href="https://github.com/ShiyumeMeguri/RuriRipperImporter/blob/main/Host/Blender/animation_builder.py">公开导入器的动画代码</a>说明肌肉曲线先由
+C# 求解器结合目标 Avatar 转为骨骼 Transform 曲线，Blender 再烘焙；仅解码
+ACL 数组和匹配路径哈希不等于完成这个流程。</p>
+<p>现有佩丽卡源的动作直接应用 Transform 采样，尚未解释 Avatar
+肌肉曲线、独立 Float/RootMotion
+缓冲、常量/默认绑定表的完整语义。手部近景对照显示绑定姿势正常，而界面动作出现明显手腕折转及僵直的手指姿态；该动作包含双手及手指
+Transform
+轨道，不能简单归因于缺手指骨骼或缺材质。须对照同一动作、同一时刻的游戏姿态，核实曲线映射、绑定矩阵与修正骨骼后再确定原因；不要用手工
+IK
+掩盖未确认的导入错误。黄色掌心在原始游戏画面中已有。千夏已有原装动作及眨眼曲线验证，佩丽卡尚未达到同等完整度；脸影、发光泽与衣料质感的差距则另属材质和光照还原。</p>
+<h3
+id="终末地角色帧可核实的渲染数据">终末地角色帧：可核实的渲染数据</h3>
+<p>这一帧的人物先参与深度/阴影绘制，再写入五张 GBuffer
+附件；其后有全屏光照、角色部位的后续材质绘制、透明叠层、计算后处理与
+UI。这些阶段依据事件输出和资源读写关系确认。某段计算是否为 AO、Bloom
+或特定抗锯齿，仍需追踪实际
+Shader，不能只按事件顺序命名。保留的顶点、Shader
+与绑定数据（本地文件：<code>ArtSource/Endfield/Raw/scene.json</code>）是具体参数的来源。</p>
+<p>Vulkan 资源绑定须同时看 descriptor set 与
+binding，单独看槽号会混淆不同集合。顶点法线中存在以浮点位保存的整数编码，导出必须保留位模式；不能把
+NaN 替换为零。GPU 顶点输入是蒙皮前数据，VS
+输出是这一帧已蒙皮的姿态；相机相对坐标还需还原投影、Y 翻转与
+jitter，并用独立世界位置输出交叉检查。身体和头发等不同 Shader
+的输入布局也不同，不能共用固定的权重槽号。</p>
+<p>已从头发 GBuffer Shader 验证：裁剪遮罩取红通道，阈值为
+<code>0.5</code>；法线使用 RG 重建
+Z，底色来自独立纹理并乘材质色。脸与头发的后续颜色绘制还绑定一维颜色表及其他遮罩，说明底色本身不足以恢复最终外观。某张方形贴图是否为
+SDF，以及衣料遮罩每个通道的用途，仍以实际 Shader
+采样为准，不直接套用下面公开仿制的通道约定。</p>
+<p>与其他研究对象相比，星际拓荒重点在实例地表、世界坐标和实际光源；伊苏
+VIII 丹娜的 D3D11 网格与 IT3
+原装骨骼较直接；千夏的截帧还涉及蒙皮流输出及原装 ACL
+动作。佩丽卡这条路线需要 Vulkan descriptor set、压缩顶点属性、五附件
+GBuffer、部位后续材质绘制，以及运行时补入网格。复杂度不会自动等于画面质量；值得迁移的是可验证的部位控制与材质细节，不把整个管线照搬进
+Orbit。</p>
+<h3
+id="终末地人物画风公开实现与复刻边界">终末地人物画风：公开实现与复刻边界</h3>
+<p>开发者在<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/opus/1136927664898048018">机核对三位主创的直接采访</a>中说明，游戏重写了
+Unity 的底层渲染框架、渲染管线与图形 API 调用层；因此不能把一个 Unity
+URP 仿制 Shader
+称为游戏原版管线。下面的具体公式来自复刻作者公开的代码或本人说明，应与上面的实测人物帧证据分别阅读。不能因视觉相似而认为原游戏采用完全相同的公式、贴图通道或
+Pass 顺序。</p>
+<p>可学习的核心是<strong>按部位混合写实质感与可控的卡通明暗</strong>：衣服、金属保留材质细节，脸与头发另算阴影和高光，再统一光照、描边与后处理。它需要相应的
+UV、遮罩、法线和灯光设计，换一张底色贴图或加一层全屏色阶不能得到完整效果。<a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering">Unity
+仿制项目</a>、<a
+target="_blank" rel="noopener" href="https://github.com/blurfeng/arknights-endfield-npr">UE 5.8
+仿制项目作者说明</a>。</p>
 <table>
 <colgroup>
-<col style="width: 30%" />
-<col style="width: 69%" />
+<col style="width: 4%" />
+<col style="width: 58%" />
+<col style="width: 36%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>内容</th>
-<th>文件</th>
+<th>部分</th>
+<th>公开仿制中的可核实方法</th>
+<th>在 UE 复刻时的重点</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>NH03 设备树、I²C/GPIO、存储和 PHY</td>
-<td><code>target/linux/layerscape/files-6.12/arch/arm64/boot/dts/freescale/fsl-nh03-sdk.dts</code></td>
+<td>衣服与金属</td>
+<td><code>EndfieldLitInput.hlsl</code> 的 Cloth 分支读取遮罩 R 的
+Metallic、B 的 AO、A 的 Smoothness；<code>EndfieldLighting.hlsl</code>
+保留 URP BRDF 直射与环境反射</td>
+<td>先还原贴图数值和法线细节，再匹配亮暗；不能把贴图名中的 MRO
+当成统一通道标准</td>
 </tr>
 <tr class="even">
-<td>板级默认 LAN/WAN 端口</td>
-<td><code>target/linux/layerscape/base-files/etc/board.d/02_network</code></td>
+<td>脸部</td>
+<td><code>LightningFaceSDF</code> 用 SDF
+贴图与头部相对光照角度控制阴影边界，再合成场景阴影、下巴遮罩及
+Ramp；<code>SetSDFProperty.cs</code> 随头部更新方向与角度</td>
+<td>SDF 是美术控制的脸影形状，需要对应脸部 UV
+和专用贴图；头转动时参数须跟随骨骼，不是固定世界方向</td>
 </tr>
 <tr class="odd">
-<td><code>fsl_nh03</code> 镜像 profile 和板载驱动包</td>
-<td><code>target/linux/layerscape/image/armv8_64b.mk</code></td>
+<td>头发与眼睛</td>
+<td><code>LightningHair</code> 将 Half-Lambert、场景阴影送入
+Ramp，并用切线与半角向量计算各向异性高光，再由遮罩限制；<code>EndfieldIris.shader</code>
+提供视差 UV 和 MatCap 分支</td>
+<td>保留发束高光的形状与位置，单独处理眼睛；MatCap
+和各向异性高光是不同计算，不能互相替代</td>
 </tr>
 <tr class="even">
-<td>Layerscape 6.12 平台内核选项</td>
-<td><code>target/linux/layerscape/armv8_64b/config-6.12</code></td>
+<td>描边与边缘光</td>
+<td>Outline Pass 外扩平滑法线、剔除正面；<code>DepthRim</code>
+按视空间法线偏移深度采样</td>
+<td>外轮廓线与亮边是两种效果；细线宽度、法线接缝、距离变化、遮挡和时序抗锯齿都需要画面对照</td>
 </tr>
 </tbody>
 </table>
-<h3 id="以太网与-phy-映射">以太网与 PHY 映射</h3>
-<p>NH03 的映射不是标准 LS1043A-RDB 映射：</p>
+<p>以上代码见 <a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering/blob/master/Assets/Shaders/Library/EndfieldLitInput.hlsl#L313">LitInput
+的部位分支</a>、<a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering/blob/master/Assets/Shaders/Library/EndfieldLighting.hlsl">脸影、头发与边缘光公式</a>、<a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering/blob/master/Assets/Scripts/SetSDFProperty.cs">头部参数更新</a>、<a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering/blob/master/Assets/Shaders/Library/EndfieldOutlinePass.hlsl">描边顶点处理</a>、<a
+target="_blank" rel="noopener" href="https://github.com/congyuxiaoyoudao/Endfield_Character_Rendering/blob/master/Assets/Shaders/EndfieldIris.shader">眼睛
+Shader</a>。这份工程有实验代码，必须逐项核验实际启用的分支与数值；不能把注释、未使用变量或效果名称当作已完成实现。</p>
+<p><a target="_blank" rel="noopener" href="https://www.s7arry.top/article/zmd1">S7arry
+的衣服复刻记录</a>采用 GGX 配合高光 Ramp、相机相关补光、虚拟顶光和
+Cubemap，并叠加 AO、Ramp Alpha
+与阴影；作者明确有未完成的特殊材质。这说明衣服也可在 PBR
+基础上做美术控制，不能简化为“身体完全物理、只有脸是卡通”。<a
+target="_blank" rel="noopener" href="https://sku11zz.github.io/AnimTA_ShuyuanJi/project-endfield-character-rendering.html">Shuyuan
+Ji 的本人项目说明</a>展示 UE 5.8 与 Blender Cycles
+两套混合方案，强调减轻脸/发阴影、保留衣服细节、联调天空光、亮边和后处理；该页面没有足以复现每个节点的完整源码，不据此推断游戏原版实现。</p>
+<p>UE 5.8 可以先用独立部位材质和实例做画风样板：衣服保留引擎
+PBR，脸/发采用自定义明暗，轮廓与亮边用几何或 Custom Depth/Stencil
+后处理分开验证。<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/post-process-materials-in-unreal-engine">Epic
+后处理材质说明</a>明确了深度、模板与时序抗锯齿的关系；这类后处理不能单独恢复原作的每盏灯和自阴影响应。UE
+仿制仓库以二进制 <code>.uasset</code> 材质为主，README 所述头发
+MatCap/Kajiya-Kay 与后处理亮边仍需打开节点和实际运行核验，尚未导入
+Orbit。验收固定曝光并覆盖正面、侧面、背光、头部转动与动作中的近远景，分别比较底色、衣料/金属、高光、脸影、描边及最终色调，避免单张静态图掩盖运动问题。</p>
+<h2
+id="场景与人物两份实际捕获怎样比较">场景与人物：两份实际捕获怎样比较</h2>
+<p>两份素材都经过“定位绘制 → 读取缓冲和贴图 → 验证 Shader 计算 → Blender
+整理 → UE 重建 →
+对照画面”。差别在于要恢复的数据，以及哪些错误最容易让画面失真。以下结论针对当前木炉星场景和千夏「梦想营业中」角色界面，不能代表两款游戏所有场景。</p>
 <table>
 <colgroup>
-<col style="width: 18%" />
-<col style="width: 14%" />
-<col style="width: 27%" />
-<col style="width: 9%" />
 <col style="width: 7%" />
-<col style="width: 22%" />
+<col style="width: 31%" />
+<col style="width: 60%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Linux 接口</th>
-<th>FMan MAC</th>
-<th>PHY</th>
-<th>MDIO</th>
-<th>地址</th>
-<th>用途</th>
+<th>比较点</th>
+<th>木炉星场景</th>
+<th>绝区零人物</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>eth0</td>
-<td>e0000</td>
-<td>Marvell 88E1545</td>
-<td>fd000</td>
-<td>4</td>
-<td>LAN/QSGMII</td>
+<td>几何组织</td>
+<td>地形、岩壁、建筑、树木分批提交；同一树木可有多个实例</td>
+<td>身体、衣服、头发、面部和随身物体按材质分区；辅助绘制还会重复使用部件</td>
 </tr>
 <tr class="even">
-<td>eth1</td>
-<td>e2000</td>
-<td>Marvell 88E1545</td>
-<td>fd000</td>
-<td>5</td>
-<td>LAN/QSGMII</td>
+<td>位置与姿态</td>
+<td>还原物体矩阵与每个实例矩阵，再放回星球附近</td>
+<td>读取本帧实际使用的变形顶点和各部件矩阵，组合成同一姿态；不能把定格顶点当成原始绑定姿势</td>
 </tr>
 <tr class="odd">
-<td>eth2</td>
-<td>e4000</td>
-<td>RTL8211F</td>
-<td>fc000</td>
-<td>1</td>
-<td>WAN/RGMII-ID</td>
+<td>表面颜色</td>
+<td>地貌贴图、顶点色、坡度/高度等数据共同控制岩石与草地混合</td>
+<td>颜色贴图保留服装图案、发色和五官；身体与脸部采用不同
+Shader，不能套同一个解码规则</td>
 </tr>
 <tr class="even">
-<td>eth3</td>
-<td>e6000</td>
-<td>RTL8211F</td>
-<td>fc000</td>
-<td>3</td>
-<td>LAN/RGMII-ID</td>
+<td>法线与遮罩</td>
+<td>已研究的地表包含打包法线、光滑度与地貌混合；树叶有透明裁剪</td>
+<td>身体法线采样的解码与木炉星不同；<code>_M</code>、<code>_A</code>
+的通道用途仍须逐条追踪，不能按文件名硬接 Metallic/AO</td>
 </tr>
 <tr class="odd">
-<td>eth4</td>
-<td>e8000</td>
-<td>Marvell 88E1545</td>
-<td>fd000</td>
-<td>6</td>
-<td>LAN/QSGMII</td>
+<td>脸、头发与轮廓</td>
+<td>更依赖地貌体块、远近层次、太阳、雾和天空的关系</td>
+<td>面部绑定 <code>Female_Face_Lightmap</code>，Shader 用到多个
+UV/辅助数据；脸部阴影、头发高光和描边需分别研究</td>
 </tr>
 <tr class="even">
-<td>eth5</td>
-<td>ea000</td>
-<td>Marvell 88E1545</td>
-<td>fd000</td>
-<td>7</td>
-<td>LAN/QSGMII</td>
+<td>一帧之外的数据</td>
+<td>缺少未被捕获引用的区域；完整场景还需分块、实例和可见性管理</td>
+<td>GPU
+蒙皮流可以提供绑定前网格与权重，骨架层级、片段和表情还需资源包或其他来源；不能把一帧的矩阵表当成完整动画系统</td>
+</tr>
+<tr class="odd">
+<td>UE 样板的用途</td>
+<td>检查模块比例、摆放、地貌材质和场景浏览</td>
+<td>定格网格用于核对画面；新绑定与原装绑定分别验证骨架、权重、动画和跨引擎导入</td>
+</tr>
+<tr class="even">
+<td>性能首先看什么</td>
+<td>大范围几何、实例/分块、植被重叠和阴影</td>
+<td>材质分区、辅助
+Pass、描边、透明特效和皮肤变形；面数不能解释所有开销</td>
 </tr>
 </tbody>
 </table>
-<h3 id="板级-profile">板级 profile</h3>
-<p>板级 profile 位于：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target/linux/layerscape/image/armv8_64b.mk</span><br></pre></td></tr></table></figure>
-<p>文件中只有一个 NH03
-板级设备定义：<code>define Device/fsl_nh03</code>。它只提供 NH03
-板载硬件、设备树和可更换 Wi-Fi 模块所需驱动，不包含 Jungle
-的软件包选择或设备运行参数。</p>
-<h2 id="个人构建配置jungle">个人构建配置（Jungle）</h2>
-<p>个人配置种子位于 <code>configs/</code>，与板级支持分开维护：</p>
+<h3 id="截帧人物的恢复边界">截帧人物的恢复边界</h3>
+<p>人物源位于
+ZenlessZoneZero（本地文件：<code>ArtSource/ZenlessZoneZero/model.json</code>），与
+OuterWilds（本地文件：<code>ArtSource/OuterWilds/Scenes/TimberHearth/model.json</code>）
+共用导入和验证入口；UE 资产均在 <code>/Game/Reference</code>
+下。截帧源保留人物及随身物体的分区、UV、法线、当前姿态和纹理绑定，并保存所用
+VS/PS 反汇编与常量数据。各批次的 Event ID、资源槽和 Shader 证据以
+<code>model.json</code> 和 <code>Shaders</code> 中的数据为准。</p>
+<p>当前绘制 VS
+直接对输入位置做物体与相机变换；输入网格已经呈现捕获中的姿态。输入布局出现骨骼权重/索引名称，并不意味着已恢复一套可动画骨架。定格重建保留的是该帧实际读取的属性。</p>
+<p>向前追踪顶点缓冲的写入，可找到另一组负责蒙皮的流输出绘制：它读取绑定前的位置、法线、实际骨骼索引/权重和
+<code>texBones</code> 的 3×4
+矩阵，再写出绘制阶段使用的变形顶点。因此，截帧不只可能包含定格网格；必须查清生成顶点的步骤，不能把最终绘制中未使用的同名输入当作真实权重。身体和头发按原始顶点索引恢复绑定前造型，并验证蒙皮计算能重现捕获位置；脸和眼部经过额外
+GPU 细分，保留最终拓扑并用邻近源顶点的蒙皮矩阵逆变换，属于近似恢复。</p>
+<h3 id="原装人物资源">原装人物资源</h3>
+<p>解包是读取游戏存放的资源，解开容器并解析模型、骨架、权重、动画和贴图；它不等于逆向可执行程序。本机绝区零
+3.2.0 的 <code>.blk</code> 资源由 AnimeStudioUltimate 1.7.0
+读取，先建资源与 CAB 依赖索引，再把选中的千夏 Cuteness
+模型、Avatar、独立网格和动画一起加载。原装骨架来自 Avatar
+的层级与绑定数据，动画来自游戏的 ACL 压缩片段。<a
+target="_blank" rel="noopener" href="https://github.com/LegionInstaller/AnimeStudioUltimate/tree/v1.7.0">解析器与导出器源码</a>、<a
+target="_blank" rel="noopener" href="https://github.com/LegionInstaller/AnimeStudioUltimate/blob/v1.7.0/docs/zzz-animations.md">ZZZ
+动画说明</a></p>
+<p>现成解析器能读取时，无需先用 IDA。IDA 用来分析 EXE/DLL
+的程序逻辑；RenderDoc 用于研究当前帧的
+Shader、绑定与实际画面，解包用于获得绑定姿势、骨架和动画片段。</p>
+<p>千夏的可动画研究使用原装骨架、权重与动作。<code>Content/Reference</code>
+保留第三方来源素材，自行设计的骨架或动作属于第一方内容，不能放入模板目录。OriginalRigStudy.blend（本地文件：<code>ArtSource/ZenlessZoneZero/OriginalRigStudy.blend</code>）保留原装骨架及面部形变；原始转换源在
+<code>OriginalSource</code>，来源、片段和限制见
+original-rig.json（本地文件：<code>ArtSource/ZenlessZoneZero/original-rig.json</code>）。导出不能只选
+Mesh 或单个包：优化过的 Unity 骨架需要
+Avatar，独立网格还需加载依赖。导入时核对单位、贴图纵向原点和材质分区。</p>
+<p>UE 打开
+<code>Reference/ZenlessZoneZero/Maps/L_ChinatsuOriginalStudy</code>，选中
+<code>UI_Detail</code> 人物后按 F 框显，再按 Alt+S 模拟，Esc
+停止。关卡中的原装待机与角色界面动作已循环绑定，普通编辑视图不自动播放。单独查看动作时打开
+<code>Animations/AN_Original_UI_Detail</code>；查看网格、表情和层级时打开
+<code>Meshes/SK_OriginalStudy</code> 及其
+Skeleton。<code>L_ChinatsuStudy</code> 是静态抓帧样板。</p>
+<p>Blender 打开
+<code>OriginalRigStudy.blend</code>，鼠标放在人物画面按空格播放。切换原装片段时选中
+<code>Bone_Root</code>，按 N，在 <code>AnimeStudio</code> 页选择片段并点
+<code>Apply Take</code>；插件同时切换骨架、辅助节点与脸部动作。原装层级包括手指、关节修正及头发控制，UE
+导入还计入部分 FBX
+空节点，不能只根据骨骼数量判断还原程度。动态头发／衣服物理和游戏动作状态机未移植。</p>
+<p>脸部的 <code>Female_Face_Lightmap</code> 是半浮点数据纹理，研究源用
+EXR
+保留数值；它的名字不能证明它是普通烘焙光照。二次元人物常用方向相关的脸部阴影遮罩/SDF，学习时要结合采样
+UV、左右翻转、光照方向和阈值计算验证当前游戏具体怎样用。静态抓帧样板未完整移植这段计算，共享框架的实现另见<a
+href="#可复用角色着色">角色着色</a>。</p>
+<p>UE
+样板使用颜色贴图与一个明确标为近似的固定方向分段着色。法线细节、脸部专用阴影、原作描边、透明/发光物体的完整效果、角色
+LUT
+和后处理仍未完整重建。随身特效当前仅保留可导出的几何与底色；两个亚毫米特效批次无法通过
+UE 的退化几何清理，排除原因保存在源数据中。因此，Blender
+预览（本地文件：<code>ArtSource/ZenlessZoneZero/GeometryPreview.png</code>）用于看模型与贴图，UE
+预览（本地文件：<code>ArtSource/ZenlessZoneZero/UEReviewCamera.png</code>）用于核对跨引擎导入，原始捕获画面（本地文件：<code>ArtSource/ZenlessZoneZero/Capture.png</code>）用于看最终效果；不能把三者画面差异都归因于模型。</p>
+<h3 id="伊苏-viii-与绝区零的原装人物">伊苏 VIII 与绝区零的原装人物</h3>
+<p>丹娜的
+OriginalRigStudy.blend（本地文件：<code>ArtSource/YsVIII/OriginalRigStudy.blend</code>）保留
+IT3
+中的层级、原装蒙皮和选定动作；动作视频（本地文件：<code>ArtSource/YsVIII/NativeAnimations.mp4</code>）依次展示待机、走路、跑步和眨眼。原装来源与限制（本地文件：<code>ArtSource/YsVIII/original-rig.json</code>）记录解码版本和未恢复部分。打开
+Blender 文件后，鼠标放在人物视图按空格播放默认待机；切换片段需同时设置
+Armature 的 Action 和 Slot。</p>
+<p>丹娜的独立优化版（本地文件：<code>ArtSource/YsVIII/Optimized/OriginalRigStudy.blend</code>）放在
+<code>YsVIII/Optimized</code>，UE 对应
+<code>Reference/YsVIII/Maps/Optimized/L_DanaOptimizedStudy</code>。它沿千夏研究样板的部位分工改善柔和分段明暗、头发独立高光、冷色阴影与细描边，保留丹娜原装骨骼、贴图和动作；原移植版不随优化覆盖。并排对照（本地文件：<code>ArtSource/YsVIII/Optimized/Comparison.png</code>）使用同一姿势、镜头和曝光，优化动作视频（本地文件：<code>ArtSource/YsVIII/Optimized/NativeAnimations.mp4</code>）用于检查运动中的轮廓。两版打开时默认显示材质并隐藏骨骼叠层；看骨骼时在视图右上重新开启叠层，灰色“实体”视图不代表材质丢失。优化尚未新增高分辨率美术细节、脸影
+SDF 或千夏原版 Shader，不能把可调的研究材质称为原作技术的完整移植。</p>
 <table>
 <colgroup>
-<col style="width: 25%" />
-<col style="width: 74%" />
+<col style="width: 5%" />
+<col style="width: 64%" />
+<col style="width: 29%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>配置</th>
-<th>用途</th>
+<th>比较点</th>
+<th>伊苏 VIII 丹娜</th>
+<th>绝区零千夏</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>configs/jungle.config</code></td>
-<td>普通版：LuCI、ttyd、sing-box、网络诊断工具和主题包</td>
+<td>原装资源组织</td>
+<td>本地 IT3 文件包含网格、贴图与分节压缩动画，MTD
+文本定义动作范围；无需先解一个总资源包</td>
+<td>Unity 跨文件资源需要同时加载模型、Avatar、独立网格与动画依赖</td>
 </tr>
 <tr class="even">
-<td><code>configs/jungle-debug.config</code></td>
-<td>调试版：包含普通版内容，并额外启用
-perf、BPF/eBPF、BTF、FTrace、Kprobe 和 <code>bpftool</code></td>
+<td>绑定与动画解码</td>
+<td>保留 INFO 绑定矩阵；KAN7 旋转需区分四元数与 Euler，后者结合 JNTV
+预旋转；不能只读四个浮点数</td>
+<td>Avatar 恢复骨架与绑定关系，ACL 片段由对应解析器解压</td>
+</tr>
+<tr class="odd">
+<td>面部动作</td>
+<td>身体、眼睛和嘴部子动作分别调度；选定身体片段需要配上原装睁眼状态，眨眼由面部关节变形</td>
+<td>身体动作与面部 Morph 动作分开，需要同步切换</td>
+</tr>
+<tr class="even">
+<td>导入易错处</td>
+<td>基础 glTF 导出器给刚性眼睛写入零权重，需补上头部蒙皮；FBX
+必须保留动画根节点的米／厘米换算，排除零缩放的非蒙皮辅助节点；透明阈值与双面状态已对照
+GPU 帧</td>
+<td>贴图纵向原点、原始材质分区、多个骨架／脸部 Action Slot</td>
+</tr>
+<tr class="odd">
+<td>当前画面研究</td>
+<td>已回放丹娜 GPU
+帧，并与原装子网格核对透明与剔除设置；颜色着色仍为研究近似</td>
+<td>已有角色界面 GPU
+帧、原装导出和同动作简化骨架对比；完整着色也尚未移植</td>
 </tr>
 </tbody>
 </table>
-<p>两个种子都选择 <code>layerscape/armv8_64b</code> 下的
-<code>fsl_nh03</code> 目标；选择目标是为了生成 NH03
-镜像，软件包和调试选项才是个人配置的差异。</p>
-<p>自定义主题源码目录也属于个人配置，必须保存在 Git 中：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">package/luci-theme/</span><br><span class="line">package/luci-theme-argon/</span><br><span class="line">package/luci-theme-aurora/</span><br><span class="line">package/luci-theme-proton2025/</span><br></pre></td></tr></table></figure>
-<p>选择主题包并不会自动保存这些未跟踪源码。</p>
-<h2 id="编译个人配置">编译个人配置</h2>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> configs/jungle-debug.config .config</span><br><span class="line">make defconfig</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br></pre></td></tr></table></figure>
-<p>关键产物：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\Image</span><br><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\image-fsl-nh03-sdk.dtb</span><br><span class="line">bin\targets\layerscape\armv8_64b\openwrt-*-rootfs.tar.gz</span><br></pre></td></tr></table></figure>
-<h2 id="u-boot-启动参数">U-Boot 启动参数</h2>
-<p>把 SATA 和 eMMC 分成两个子命令，<code>bootcmd_manual</code>
-按顺序先运行 SATA、再运行 eMMC。SATA 成功执行 <code>booti</code>
-后不会返回；只有 SATA 加载或启动失败并返回时，才会继续尝试 eMMC：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setenv bootcmd_manual_emmc <span class="string">&quot;mmc dev 0; if ext4load mmc 0:1 0xa0000000 Image &amp;&amp; ext4load mmc 0:1 0xb0000000 image-fsl-nh03-sdk.dtb; then setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/mmcblk0p2 rw rootwait; booti 0xa0000000 - 0xb0000000; else echo eMMC boot failed; fi&quot;</span></span><br><span class="line">setenv bootcmd_manual_sata <span class="string">&quot;if scsi scan &amp;&amp; scsi dev 0 &amp;&amp; ext4load scsi 0:1 0xa0000000 Image &amp;&amp; ext4load scsi 0:1 0xb0000000 image-fsl-nh03-sdk.dtb; then setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/sda2 rw rootwait; booti 0xa0000000 - 0xb0000000; fi&quot;</span></span><br><span class="line">setenv bootcmd_manual <span class="string">&quot;run bootcmd_manual_sata; run bootcmd_manual_emmc&quot;</span></span><br><span class="line">setenv bootcmd <span class="string">&quot;run bootcmd_manual&quot;</span></span><br><span class="line">saveenv &amp;&amp; reset</span><br></pre></td></tr></table></figure>
-<p>本机只有一块 SATA SSD，AHCI 驱动也已编入内核，因此 SATA
-根分区直接使用 <code>/dev/sda2</code>。eMMC 回退分支使用
-<code>/dev/mmcblk0p2</code>。如果以后增加其他 SCSI/SATA
-磁盘，设备枚举顺序可能变化，此时再改用 PARTUUID 更稳妥。</p>
-<h3 id="首次启动">首次启动</h3>
-<p>新 DTB 下：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/board.json</span><br><span class="line">board_name = xspeed,nh03[sdboot]</span><br><span class="line">LAN = eth3 eth0 eth1 eth4 eth5</span><br><span class="line">WAN = eth2</span><br></pre></td></tr></table></figure>
-<p>首次启动且没有旧 <code>/etc/config/network</code> 时，OpenWrt 会创建
-<code>br-lan</code>，LAN 默认地址通常为：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.1.1/24</span><br></pre></td></tr></table></figure>
-<p>首次连接优先使用已经验证可 Link Up 的 <code>eth3</code> 或
-<code>eth0</code>：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.1.1</span><br></pre></td></tr></table></figure>
-<p>若恢复旧网络配置，COM12 使用 <code>192.168.2.1</code>，COM14 使用
-<code>192.168.3.1</code>：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.2.1</span><br><span class="line">ssh root@192.168.3.1</span><br></pre></td></tr></table></figure>
-<p>首次登录立即设置密码：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
-<h3 id="手工恢复基础网络">手工恢复基础网络</h3>
-<p>以下命令建议通过串口执行。下面按 COM14 配置为
-<code>192.168.3.1</code>；COM12 保持
-<code>192.168.2.1</code>。网络重启后原 SSH 会话会断开。</p>
-<p>如果不采用板级脚本生成的默认网络配置，先显式创建
-<code>br-lan</code>，并把五个 LAN
-口加入网桥。下面第一条命令用于兼容全新系统中已有的匿名
-<code>br-lan</code> 设备；没有该设备时也不会影响后续创建：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">uci -q rename network.@device[0]=<span class="string">&#x27;br_lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan=<span class="string">&#x27;device&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.name=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.type=<span class="string">&#x27;bridge&#x27;</span></span><br><span class="line">uci -q delete network.br_lan.ports</span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth3&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth0&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth1&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth4&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth5&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.proto=<span class="string">&#x27;static&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.device=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ipaddr=<span class="string">&#x27;192.168.3.1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.netmask=<span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ip6assign=<span class="string">&#x27;60&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.proto=<span class="string">&#x27;dhcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.proto=<span class="string">&#x27;dhcpv6&#x27;</span></span><br><span class="line">uci show network</span><br><span class="line">uci commit network</span><br><span class="line">/etc/init.d/network restart</span><br></pre></td></tr></table></figure>
-<h3 id="关闭硬件-bypass">关闭硬件 bypass</h3>
-<p>先确认驱动和本次启动分配的 GPIO 范围：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dmesg | grep -Ei <span class="string">&#x27;gpio|pca953|pca955|pca957&#x27;</span></span><br><span class="line"><span class="built_in">cat</span> /sys/kernel/debug/gpio</span><br></pre></td></tr></table></figure>
-<p>使用 OpenWrt 自带的 <code>gpio_switch</code>
-持久化，重启后仍自动输出低电平：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> system.bypass=<span class="string">&#x27;gpio_switch&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.name=<span class="string">&#x27;bypass_off&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.gpio_pin=<span class="string">&#x27;647&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.value=<span class="string">&#x27;0&#x27;</span></span><br><span class="line">uci commit system</span><br><span class="line">/etc/init.d/gpio_switch <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/gpio_switch restart</span><br></pre></td></tr></table></figure>
-<h3 id="手工恢复防火墙">手工恢复防火墙</h3>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">uci show firewall | grep <span class="string">&quot;\.name=&quot;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_luci</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.name=<span class="string">&#x27;Allow-LuCI-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.dest_port=<span class="string">&#x27;80&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ssh</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.name=<span class="string">&#x27;Allow-SSH-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.dest_port=<span class="string">&#x27;22&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ssh_forward</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.name=<span class="string">&#x27;Allow-SSH-to-LAN&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest=<span class="string">&#x27;lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest_ip=<span class="string">&#x27;192.168.3.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest_port=<span class="string">&#x27;22&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ttyd</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.name=<span class="string">&#x27;Allow-ttyd-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.dest_port=<span class="string">&#x27;7681&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.k3s_api</span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api=rule</span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.name=<span class="string">&#x27;Allow-K3s-API-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.src_ip=<span class="string">&#x27;192.168.13.160&#x27;</span></span><br><span class="line"><span class="comment"># uci set firewall.k3s_api.dest=&#x27;lan&#x27; 尽量不要把 lan 暴露给外面 ！！！</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.dest_port=<span class="string">&#x27;6443&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
-<h3 id="手工恢复-ttyd">手工恢复 ttyd</h3>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].<span class="built_in">command</span>=<span class="string">&#x27;/bin/login&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].listen=<span class="string">&#x27;0.0.0.0&#x27;</span></span><br><span class="line">uci commit ttyd</span><br><span class="line">/etc/init.d/ttyd <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/ttyd restart</span><br><span class="line">netstat -lntp | grep <span class="string">&#x27;:7681 &#x27;</span></span><br></pre></td></tr></table></figure>
-<h2 id="进阶操作">进阶操作</h2>
-<h3 id="手工恢复-sing-box">手工恢复 sing-box</h3>
-<p>先手工创建并检查： 参考hexo_posts代理与 TUN 模式配置.md</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/sing-box/config.json</span><br></pre></td></tr></table></figure>
-<p>不要把包含订阅、密码或密钥的配置提交到公开仓库。然后启用服务：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> sing-box.main.enabled=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> sing-box.main.user=<span class="string">&#x27;root&#x27;</span></span><br><span class="line">uci commit sing-box</span><br><span class="line">/etc/init.d/sing-box <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/sing-box restart</span><br><span class="line">/etc/init.d/sing-box status</span><br><span class="line"></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun=interface</span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.device=<span class="string">&#x27;tun0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.proto=<span class="string">&#x27;unmanaged&#x27;</span></span><br><span class="line">uci commit network</span><br><span class="line">uci -q del_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci add_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/network reload</span><br><span class="line">/etc/init.d/firewall restart</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>确认 sing-box 已经监听 <code>127.0.0.1:5353</code> 后，再把 dnsmasq
-DNS 转发过去：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">netstat -lnup | grep <span class="string">&#x27;:5353&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete dhcp.@dnsmasq[0].server</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server=<span class="string">&#x27;127.0.0.1#5353&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> dhcp.@dnsmasq[0].noresolv=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci -q del_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci add_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci commit dhcp</span><br><span class="line">/etc/init.d/dnsmasq restart</span><br><span class="line"><span class="comment"># sysctl -w net.ipv4.conf.all.rp_filter=0</span></span><br></pre></td></tr></table></figure>
-<h3 id="恢复后检查">恢复后检查</h3>
-<p>检查：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ubus call system board</span><br><span class="line">ip addr show</span><br><span class="line">ip route</span><br><span class="line">ubus call network.interface dump</span><br><span class="line">ubus call network.interface.wan status</span><br><span class="line">dmesg | grep -E <span class="string">&#x27;fsl_dpaa_mac|PHY|Link is&#x27;</span></span><br><span class="line">uci show firewall | grep -E <span class="string">&quot;name=&#x27;wan&#x27;|input|output|forward|masq&quot;</span></span><br><span class="line">ip rule</span><br><span class="line">ip route show table all</span><br></pre></td></tr></table></figure>
-<h2 id="dtb-调试">DTB 调试</h2>
-<p>反编译仅用于检查生成结果：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dtc -I dtb -O dts -o /tmp/fsl-nh03-sdk.generated.dts fsl-nh03-sdk.dtb</span><br></pre></td></tr></table></figure>
-<p>正式修改始终编辑源码树中的
-<code>fsl-nh03-sdk.dts</code>。不要再直接反编译、修改并覆盖唯一的
-DTB。</p>
-<h2 id="wi-fi-ap-配置">Wi-Fi AP 配置</h2>
-<p>当前设备的 <code>radio0</code> 是 2.4 GHz 无线网卡，默认 AP
-配置已绑定到 <code>lan</code>，但
-<code>wireless.default_radio0.disabled='1'</code>，因此不会创建无线接口或广播
-SSID。</p>
-<p><code>encryption='psk2'</code> 表示仅使用 WPA2-Personal。更推荐使用
-<code>sae-mixed</code>（WPA2/WPA3-Personal 混合模式）：支持 WPA3
-的设备使用 SAE，旧设备仍可使用 WPA2-PSK。</p>
-<p>设备已有 <code>radio0</code>、2.4 GHz、信道、AP 模式以及
-<code>lan</code> 绑定，无需重复配置。 只需设置
-SSID、加密方式、密码并解除禁用。密码建议使用至少 12 位随机字符：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.ssid=<span class="string">&#x27;替换为SSID&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;sae-mixed&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.key=<span class="string">&#x27;替换为至少8位的密码&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.disabled=<span class="string">&#x27;0&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
-<p>检查无线接口、SSID 和客户端关联状态：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubus call network.wireless status</span><br><span class="line">iwinfo</span><br><span class="line">wifi status</span><br></pre></td></tr></table></figure>
-<p>正常情况下，<code>radio0</code> 应显示
-<code>up: true</code>，<code>interfaces</code> 不再为空，并能看到 AP
-接口和配置的 SSID。 无线客户端会接入 <code>lan</code>。COM14 由 LAN DHCP
-分配 <code>192.168.3.0/24</code> 网段地址；COM12 仍使用
-<code>192.168.2.0/24</code>。</p>
-<p>如果 <code>wifi reload</code> 报 SAE/WPA3 不受支持，说明固件中的
-wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;psk2&#x27;</span></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
-<p>不要使用 <code>encryption='none'</code>，否则会建立无密码热点。</p>
-<h2 id="主题替换">主题替换</h2>
-<p>outline 的登录界面好看，直接改</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&#123;% include(&#x27;themes/outline/sysauth&#x27;, &#123;</span><br><span class="line">    media: &#x27;/luci-static/outline&#x27;,</span><br><span class="line">    theme: &#x27;outline&#x27;</span><br><span class="line">&#125;) %&#125;&quot; &gt; /usr/share/ucode/luci/template/themes/proton2025/sysauth.ut</span><br><span class="line"></span><br><span class="line">rm -rf /tmp/luci-indexcache /tmp/luci-modulecache</span><br><span class="line">/etc/init.d/uhttpd restart</span><br></pre></td></tr></table></figure>
+<p>丹娜选定颜色绘制使用底色、渐变／卡通着色与高光纹理，Shader
+中能看到基于视线与法线的渐变采样、光源累加、透明测试和输出
+Alpha。衣服等绘制的裁剪阈值约为 <code>15/255</code>，头发和眼睛等约为
+<code>240/255</code>，并启用 <code>SrcAlpha / InvSrcAlpha</code>
+混合；部分双面几何用成对三角形提交。统一用 <code>0.5</code>
+裁剪会把半透明衣料切成破洞。这项经验值得保留：先读实际渲染状态，再决定遮罩、混合和双面，不能凭贴图外观猜。</p>
+<p>这些绘制同时进行深度测试与深度写入，不能直接替换成 UE
+的普通透明材质，否则会出现身体／衣服层之间的穿透。UE
+研究样板暂用实际裁剪阈值的遮罩材质保留遮挡关系，部分透明的颜色混合仍为近似；Blender
+预览保留贴图 Alpha
+混合。这是跨引擎移植限制，不是推荐给原创人物的新着色方案。</p>
+<p>原创角色的视觉升级优先研究千夏的脸部专用阴影、头发高光与细节、表情，以及模型轮廓和后处理配合。丹娜的纹理斜坡着色只用于理解该游戏和核对导入，不作为新的角色材质方案；当前两套移植样板的固定方向分段着色也不代表原作技术水平。模型年代、贴图分辨率、动画和材质共同影响观感，不能仅凭移植预览判定原作
+Shader 优劣。</p>
+<p>两者都不能只加一个骨架就完成移植。要分别保留绑定姿势、权重、动作解码与面部状态，再在
+UE 重建材质、物理和游戏动作切换。当前不能宣称原作完整
+Shader、动态头发／衣服或动画状态机已恢复。</p>
+<h3 id="cicitoon-原工程学习">CiciToon 原工程学习</h3>
+<p><a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gLVczuEfV/">视频</a>对应次次先生的
+<a
+target="_blank" rel="noopener" href="https://www.fab.com/listings/5506e030-5fe4-406d-adaa-0f2201ef3b0a">CiciToon
+Character Shader Pak</a>。下载的 5.5 工程保留原样，旁边的
+<code>CiciToonCharacterShaderPa_UE58</code> 是 5.8
+副本。原演示关卡、菜单和 Sequencer 在独立副本中学习；Orbit 的
+<code>Reference/CiciToon/Maps/L_CiciStudy</code> 使用原作者装配角色
+Blueprint、材质、骨架与动画，便于独立研究。它不接入正式游戏流程。</p>
+<p>这份工程直接提供材质节点和参数，适合先学习，再对照游戏抓帧。角色分成主表面、描边、深度和向量遮罩等渲染部件；材质由
+Blueprint
+的组件覆盖分配，单看网格资产中为空的材质槽不能判定资源缺失。先在学习关卡选中
+<code>CiciReviewCamera</code>，右键 <strong>Pilot</strong>
+查看人物，再打开角色的材质实例，从底色、明暗分界、阴影颜色和描边宽度逐项修改；通过实例的父材质追踪节点，每次只改变一个参数。</p>
+<p>Blender 打开
+CiciStudy.blend（本地文件：<code>ArtSource/CiciToon/CiciStudy.blend</code>），默认待机，鼠标放在人物视图按空格播放。原骨架、UV、权重、表情形变和动作保留，贴图已打包；动作名和来源由
+model.json（本地文件：<code>ArtSource/CiciToon/model.json</code>）管理。切换动作时，骨架
+Action 使用 <code>OBJECT</code> Slot，网格 Shape Keys 使用同名 Action 的
+<code>KEY</code>
+Slot；两者都要切换，才能同步表情和服装隐藏状态。没有小键盘时用 F3 搜索
+<code>Frame Selected</code> 框显所选。</p>
+<p>UE 保留原作者材质图；Blender
+提供可编辑的底色与分段明暗近似，原描边和遮罩辅助表面隐藏，尚未等价移植动态脸影、Matcap、深度通道和后处理。不要把
+Blender
+预览当作作者系统的完整效果。作者页面说明个人使用免费，模型和材质商用须联系作者；研究素材保留在第三方目录。</p>
+<h3 id="按这个顺序学习人物">按这个顺序学习人物</h3>
+<ol type="1">
+<li>在 Blender 打开
+CaptureStudy.blend（本地文件：<code>ArtSource/ZenlessZoneZero/CaptureStudy.blend</code>）。先看完整轮廓，再分别隐藏身体、脸部与随身物体。没有小键盘时，选中部件后按
+F3 搜索
+<code>Frame Selected</code>（框显所选），滚轮缩放、中键旋转；用材质预览检查
+UV 和贴图，用线框看三角化后的运行时拓扑。</li>
+<li>在 UE 的内容浏览器打开
+<code>Reference/ZenlessZoneZero/Maps/L_ChinatsuStudy</code>。先看静态网格的材质槽和法线，再看研究材质节点及镜头。这里先验证导入是否正确，之后才研究脸部阴影与描边。</li>
+<li>回到 RenderDoc 分析脸部：跟踪颜色贴图与辅助纹理的采样，确定
+UV、参数和输出，再单独重写这段材质。之后研究头发高光、轮廓和透明特效，最后对齐曝光与后处理。</li>
+<li>要做自己的可动画人物，再进入原画/三视图 → 基础体型 → 头脸与头发 →
+动画拓扑/UV → 材质 → 绑定/表情 → 动画 → UE
+的流程。原画解决设计一致性，成熟基础模型解决结构起点；AI
+可以协助调整和整理，生成网格仍需检查眼口关节拓扑、UV 与绑定。</li>
+</ol>
+<h2 id="原装资源的本地操作示例">原装资源的本地操作示例</h2>
+<p>示例中的
+<code>$blenderPath</code>、<code>$editorCmdPath</code>、<code>$editorPath</code>
+分别指向本机 Blender 与 UE 编辑器工具，<code>$PWD</code> 为 Orbit
+项目根目录；素材路径和选择须依据对应版本的来源数据填写。</p>
+<h3 id="原装资源">原装资源</h3>
+<p>原装分支使用资源导出桥接入口（本地文件：<code>Scripts/README.md</code>）读取本地资源及依赖。保持游戏、索引和导出工具版本一致；换版本需要重新建索引。<code>OriginalSource</code>
+保留原始 FBX 与
+<code>export.json</code>，后者包含导入时恢复材质分区所需的子网格范围。不能只取单个包，或丢弃同名
+CAB 的其他位置。当前整理配方针对已验证的 Summer Cuteness
+角色，不能直接套到其他人物。</p>
+<p>终末地变体使用 <code>ArknightsEndfield</code> 和 VFS 的
+<code>*.chk</code>，在独立工作目录创建
+<code>Maps</code>，避免覆盖其他游戏的
+<code>part_0</code>。佩丽卡的原装名称为
+<code>chr_0004_pelica_uimodel</code>；选择具体 Animator 的路径 ID
+与块偏移，保留依赖骨骼表和 <code>hierarchy.json</code>。不读取不需要的
+AnimatorController，选定动作显式导出。桥接
+<code>decode-endfield &lt;OriginalSource&gt;</code> 使用本机已验证的 ACL
+解码器生成 <code>.decoded.json</code>；它必须包含有效采样，且全部
+Transform 路径哈希匹配原装节点。原始导出的 FBX
+可能零轨道，最终整理必须使用解码数据。</p>
+<p>佩丽卡源按其来源报告核对；在 Blender
+中编辑已保存的模型与动画。完整模型从 GPU 蒙皮前顶点/权重恢复，按原装
+renderer
+的骨骼次序绑定；对透明衣料分别核实另一套输入槽，不能沿用身体的槽号。源检查要求完整部件、归一化权重、原父子关系、正确动作时长及实际蒙皮顶点变化；脸部骨骼动作不能等同于恢复了独立
+Morph 曲线。</p>
+<p>路径哈希全部匹配、四元数归一化和顶点发生移动只验证基础解码与播放，不验证姿态忠实度。佩丽卡手部须增加绑定姿势、动作姿势和游戏同一动作时刻的近景对照，检查手腕折转、指节弯曲、蒙皮拉伸及修正骨骼。当前手部姿态异常仍未解决；在解释
+Avatar 肌肉/常量曲线映射并通过这个对照前，不将其标记为完整动画还原。</p>
+<p>佩丽卡 UE 使用
+<code>-ArtReference=Endfield -ArtReferenceOriginal</code>
+导入和验证，<code>-ArtReferenceRender</code> 输出
+<code>UEOriginalPreview.png</code>。检查骨架引用、研究地图的播放绑定、骨骼轨道变化、尺度、材质依赖和无重定向。本机验证进程使用
+<code>-DisablePlugins=SemanticSearch -RenderOffscreen</code>，仅对该检查进程停用触发退出回调错误的引擎搜索插件，不修改项目插件配置。运行日志必须同时检查脚本标记与进程退出状态，再看实际预览。</p>
+<p>以下 <code>$study</code> 指向
+<code>../ArtSource/ZenlessZoneZero</code>；检查已保存的原装模型与动作。原装源复用研究材质和镜头，不依赖自行绑定的骨架。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&amp; <span class="variable">$blenderPath</span> <span class="literal">-b</span> <span class="literal">--factory-startup</span> <span class="literal">--python-exit-code</span> <span class="number">1</span> `</span><br><span class="line">  <span class="literal">-P</span> Scripts/Art/VerifyModelSources.py <span class="literal">--</span> `</span><br><span class="line">  <span class="string">&quot;<span class="variable">$study</span>\OriginalRigStudy.blend&quot;</span></span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorCmdPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\ImportArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtImport</span>=reference <span class="literal">-ArtReference</span>=ZenlessZoneZero <span class="literal">-ArtReferenceOriginal</span> `</span><br><span class="line">  <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span></span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\VerifyArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtCheck</span>=reference <span class="literal">-ArtReference</span>=ZenlessZoneZero <span class="literal">-ArtReferenceOriginal</span> <span class="literal">-ArtReferenceRender</span> `</span><br><span class="line">  <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span> <span class="literal">-windowed</span></span><br></pre></td></tr></table></figure>
+<p>Blender
+检查原骨架层级、手指、权重、材质分区、身体实际顶点位移及真实眨眼曲线。FBX
+多动作要同时分配骨架和 Shape Keys 的
+Action/Slot；只切骨架动作会留下错误的脸部动画。UE
+检查原装动画的骨架引用、时长、实际轨道变化、Morph Targets
+和眨眼曲线、模型来源及原装研究地图绑定。原装 Blender 骨架为 226 根；UE
+导入同时接纳 FBX 辅助节点，因此导入数量为
+321，不能把辅助节点当成新增的原装变形骨骼。</p>
+<p>查看 <code>OriginalPreview.png</code> 与
+<code>UEOriginalPreview.png</code>，确认模型、原装姿势和材质正确；骨骼轨道与眨眼曲线必须实际变化。头发／衣服物理、完整游戏
+Shader 和动画状态机尚未恢复。</p>
+<h3 id="cicitoon-工程分支">CiciToon 工程分支</h3>
+<p>升级先复制原工程，再用 5.8 打开副本，保留原始 5.5 工程。通过 Editor
+依赖复制与迁移导入核心角色、材质和动画，原演示 UI、关卡与 Sequencer
+留在副本。<code>ImportArtRevision.py -ArtImport=cicitoon -ArtTarget=&lt;Orbit 绝对目录&gt;</code>
+在源副本导出、迁移；在 Orbit
+中执行相同入口装配学习关卡。首次迁移要求目标目录为空，避免覆盖已有精修。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&amp; <span class="variable">$blenderPath</span> <span class="literal">-b</span> <span class="literal">--factory-startup</span> <span class="literal">--python-exit-code</span> <span class="number">1</span> `</span><br><span class="line">  <span class="literal">-P</span> Scripts/Art/VerifyModelSources.py <span class="literal">--</span> ../ArtSource/CiciToon/CiciStudy.blend</span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorCmdPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> /Engine/Maps/Entry `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\VerifyArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtCheck</span>=cicitoon <span class="literal">-ArtReferenceRender</span> <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span> <span class="literal">-RenderOffscreen</span> <span class="literal">-NoSound</span></span><br></pre></td></tr></table></figure>
+<p>Blender
+检查骨架、权重、材质、贴图、实际顶点变化、原装动作时长与形变曲线。动画
+FBX 的对象单位缩放不应用于模型绑定，保留骨骼缩放；独立导出 UE
+浮点曲线恢复表情和服装隐藏形变。UE 编译
+Blueprint，核对原装骨架、片段时长、材质绑定、缺失依赖与重定向；查看
+<code>Preview.png</code> 和
+<code>UEPreview.png</code>，另检查表情特写与多角度轮廓。骨骼 FBX 导出和
+GPU 材质验收需要真实 RHI，不能用 <code>-nullrhi</code> 代替。</p>
+<h3 id="ys-viii-原装分支">Ys VIII 原装分支</h3>
+<p><code>$ysStudy</code> 指向 <code>../ArtSource/YsVIII</code>。原始
+<code>c005_p.it3</code>、<code>c005.it3</code> 与 <code>c005.mtd</code>
+连同基础 glTF、bin 和已解码 PNG 保存在
+<code>OriginalSource</code>；基础转换使用 Ys8_IT3 的
+<code>ys8_it3_to_basic_gltf.py -o</code>，其 glTF
+不是完整动画或材质移植。已有源保留在素材库中，后续在 Blender
+中编辑并导出。</p>
+<p>按捕获方法（本地文件：<code>Docs/content/assets.md#不同游戏怎样捕获</code>）获得可回放的丹娜帧后，用本节前面的
+GPU 导出入口保存到
+<code>$ysStudy\GpuSource</code>。<code>scene.json</code>
+必须包含目标子网格及 Shader
+常量布局；整理模型时按已核对的索引数对应子网格，核对 <code>altest</code>
+和剔除状态，不接受歧义对应。更换人物或捕获后必须重新核对，不能复用这一帧的
+Event ID。透明混合、渐变纹理 Alpha
+和深度写入的完整原作行为仍须与最终画面对照；研究材质只恢复已验证的部分。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&amp; <span class="variable">$blenderPath</span> <span class="literal">-b</span> <span class="literal">--factory-startup</span> <span class="literal">--python-exit-code</span> <span class="number">1</span> `</span><br><span class="line">  <span class="literal">-P</span> Scripts/Art/VerifyModelSources.py <span class="literal">--</span> <span class="string">&quot;<span class="variable">$ysStudy</span>\OriginalRigStudy.blend&quot;</span></span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorCmdPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\ImportArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtImport</span>=reference <span class="literal">-ArtReference</span>=YsVIII <span class="literal">-ArtReferenceOriginal</span> <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span> <span class="literal">-nullrhi</span></span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorCmdPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\VerifyArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtCheck</span>=reference <span class="literal">-ArtReference</span>=YsVIII <span class="literal">-ArtReferenceOriginal</span> <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span> <span class="literal">-nullrhi</span></span><br></pre></td></tr></table></figure>
+<p>源码检查绑定姿势误差、归一化权重、头与手臂层级以及每个片段的实际网格变形。眨眼由骨骼变形验证，不套用千夏的
+Morph 曲线检查。UE
+核对绑定网格高度、动画根节点与参考姿势的缩放一致性、原生片段时长、关节变化、材质绑定、导入来源和研究地图；需要画面输出时使用带
+RHI 的 Editor 加 <code>-ArtReferenceRender</code>，检查
+<code>UEOriginalPreview.png</code>。独立导入与结构检查可使用
+<code>-nullrhi</code>，它不能验收实际 GPU 材质编译与画面。</p>
 
       
     </div>
@@ -563,7 +905,7 @@ wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal�
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -586,14 +928,14 @@ wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal�
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">59k</span>
+    <span title="站点总字数">84k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">54 分钟</span>
+    <span title="站点阅读时长">1:16</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="本文整理 Orbit 的本地学习记录。案例结论限于记录中的游戏版本、捕获和研究样板，不代表完整原作实现。文中的 ArtSource 路径是本地证据索引；工程当前约束与验收要求由 Orbit 项目文档维护。 从建模到最终画面 制作流程决定资产怎样产生，渲染流程决定 GPU 怎样使用这些资产。RenderDoc 能观察后者，不能还原作者的概念设计、Blender 修改器、原始拓扑编辑历史或完整工程。抓">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渲染与抓帧研究">
+<meta property="og:url" content="https://errorworld2000.github.io/other/%E6%B8%B2%E6%9F%93%E4%B8%8E%E6%8A%93%E5%B8%A7%E7%A0%94%E7%A9%B6/index.html">
+<meta property="og:site_name" content="a Blog">
+<meta property="og:description" content="本文整理 Orbit 的本地学习记录。案例结论限于记录中的游戏版本、捕获和研究样板，不代表完整原作实现。文中的 ArtSource 路径是本地证据索引；工程当前约束与验收要求由 Orbit 项目文档维护。 从建模到最终画面 制作流程决定资产怎样产生，渲染流程决定 GPU 怎样使用这些资产。RenderDoc 能观察后者，不能还原作者的概念设计、Blender 修改器、原始拓扑编辑历史或完整工程。抓">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-09T09:20:15.000Z">
+<meta property="article:author" content="jungle">
+<meta property="article:tag" content="graphics">
+<meta property="article:tag" content="renderdoc">
+<meta property="article:tag" content="unreal">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://errorworld2000.github.io/other/%E6%B8%B2%E6%9F%93%E4%B8%8E%E6%8A%93%E5%B8%A7%E7%A0%94%E7%A9%B6/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/other/%E6%B8%B2%E6%9F%93%E4%B8%8E%E6%8A%93%E5%B8%A7%E7%A0%94%E7%A9%B6/","path":"other/渲染与抓帧研究/","title":"渲染与抓帧研究"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>渲染与抓帧研究 | a Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%BB%BA%E6%A8%A1%E5%88%B0%E6%9C%80%E7%BB%88%E7%94%BB%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">从建模到最终画面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%B8%A7%E6%80%8E%E6%A0%B7%E8%A2%AB%E7%94%BB%E5%87%BA%E6%9D%A5"><span class="nav-number">2.</span> <span class="nav-text">一帧怎样被画出来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#renderdoc-%E4%B8%8E-aimcp-%E7%9A%84%E7%A0%94%E7%A9%B6%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">RenderDoc 与 AI&#x2F;MCP
+的研究流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rdc-%E5%92%8C%E5%B7%A5%E5%85%B7%E5%90%84%E8%B4%9F%E8%B4%A3%E4%BB%80%E4%B9%88"><span class="nav-number">3.1.</span> <span class="nav-text">RDC 和工具各负责什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E6%B8%B8%E6%88%8F%E6%80%8E%E6%A0%B7%E6%8D%95%E8%8E%B7"><span class="nav-number">3.2.</span> <span class="nav-text">不同游戏怎样捕获</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E4%B8%8E%E9%87%8D%E5%BB%BA%E6%8D%95%E8%8E%B7"><span class="nav-number">4.</span> <span class="nav-text">阅读与重建捕获</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%BC%80-rdc-%E5%90%8E%E6%8C%89%E8%BF%99%E4%B8%AA%E9%A1%BA%E5%BA%8F%E7%9C%8B"><span class="nav-number">4.1.</span> <span class="nav-text">打开 RDC 后按这个顺序看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E6%8D%95%E8%8E%B7%E6%95%B0%E6%8D%AE%E5%88%B0-ue-%E7%9A%84%E9%87%8D%E5%BB%BA"><span class="nav-number">4.2.</span> <span class="nav-text">从捕获数据到 UE 的重建</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E4%B8%8E%E5%AF%BC%E5%85%A5%E7%9A%84%E6%9C%AC%E5%9C%B0%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">导出与导入的本地操作示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%BB%E8%B4%A8%E4%B8%8E%E6%80%A7%E8%83%BD%E4%B8%80%E8%B5%B7%E5%AD%A6%E4%B9%A0"><span class="nav-number">6.</span> <span class="nav-text">画质与性能一起学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E7%BB%83%E4%B9%A0%E4%B8%8E%E9%A1%B9%E7%9B%AE%E5%85%A5%E5%8F%A3"><span class="nav-number">7.</span> <span class="nav-text">学习练习与项目入口</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jungle</p>
+  <div class="site-description" itemprop="description">压力来自避而不赴</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E6%B8%B2%E6%9F%93%E4%B8%8E%E6%8A%93%E5%B8%A7%E7%A0%94%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jungle">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a Blog">
+      <meta itemprop="description" content="压力来自避而不赴">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="渲染与抓帧研究 | a Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          渲染与抓帧研究
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-10-09 00:00:00 / 修改时间：17:20:15" itemprop="dateCreated datePublished" datetime="2026-10-09T00:00:00+08:00">2026-10-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文整理 Orbit
+的本地学习记录。案例结论限于记录中的游戏版本、捕获和研究样板，不代表完整原作实现。文中的
+ArtSource 路径是本地证据索引；工程当前约束与验收要求由 Orbit
+项目文档维护。</p>
+<h2 id="从建模到最终画面">从建模到最终画面</h2>
+<p>制作流程决定资产怎样产生，渲染流程决定 GPU
+怎样使用这些资产。RenderDoc 能观察后者，不能还原作者的概念设计、Blender
+修改器、原始拓扑编辑历史或完整工程。抓帧研究用于理解成熟作品的做法，再用原创资产实现合适的方案。</p>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 48%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>阶段</th>
+<th>做什么、为什么</th>
+<th>进入下一阶段前看什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>探索设计与灰盒</td>
+<td>确定尺度、路线、落点、地标和视线；先验证空间可用</td>
+<td>地面能辨认路径，轨道上能辨认目的地</td>
+</tr>
+<tr class="even">
+<td>模块建模</td>
+<td>分开地形、岩壁、植被和建筑；用轮廓与几何表达重要形状</td>
+<td>纯灰材质下轮廓清楚、比例可信、入口可通行</td>
+</tr>
+<tr class="odd">
+<td>法线、UV 与贴图</td>
+<td>处理硬边、切线和 UV；绘制颜色、法线及混合遮罩</td>
+<td>贴图不拉伸，远近细节层次一致，材质分区自然</td>
+</tr>
+<tr class="even">
+<td>引擎资产准备</td>
+<td>统一坐标与单位，配置碰撞、分块、实例复用、LOD 或适用的 Nanite</td>
+<td>原始网格与导入结果一致，碰撞和可见性符合用途</td>
+</tr>
+<tr class="odd">
+<td>材质与场景装配</td>
+<td>用共享材质和实例控制变化；在真实关卡中组合模块</td>
+<td>未照明视图中的底色正确，参数变化不会破坏同系列风格</td>
+</tr>
+<tr class="even">
+<td>光照与后处理</td>
+<td>联调太阳、环境光、局部灯、雾、曝光和色调映射</td>
+<td>昼夜、地面与轨道视角均可读，不靠曝光掩盖材质错误</td>
+</tr>
+<tr class="odd">
+<td>画面与性能验收</td>
+<td>固定机位比较，再实际移动、旋转和穿行</td>
+<td>视觉、运动稳定性和帧时间同时达标</td>
+</tr>
+</tbody>
+</table>
+<p>《星际拓荒》官方解释了硬边模块化岩石如何服务路径识别，以及几何细节、贴图大色阶、动态太阳和球形雾如何共同形成画面。学习它应先理解这些关系，再决定原创星球的造型与材质。<a
+target="_blank" rel="noopener" href="https://www.mobiusdigitalgames.com/news/taking-on-timber-hearth">木炉星美术制作说明</a></p>
+<h2 id="一帧怎样被画出来">一帧怎样被画出来</h2>
+<p>Mesh 是顶点与三角形；Texture 是 Shader 读取的数据；Material 组织
+Shader 和参数；Shader 在 GPU 上执行计算；Pass
+是为某个目的执行的一组渲染工作；Draw 是一次绘制提交。一个 Mesh
+可以因阴影、深度、底色等用途被多次绘制，Draw
+数量不等于独立模型数量。</p>
+<p>下面是常见延迟渲染的学习示意，具体游戏的顺序、资源格式与额外阶段必须从实际捕获确认；它不是木炉星已验证的完整渲染流程。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">  A[网格、贴图、材质参数] --&gt; B[顶点处理与光栅化]</span><br><span class="line">  B --&gt; C[GBuffer：表面颜色、法线等]</span><br><span class="line">  S[阴影结果] --&gt; D[光照计算]</span><br><span class="line">  C --&gt; D</span><br><span class="line">  D --&gt; E[透明物体、雾等场景效果]</span><br><span class="line">  E --&gt; F[曝光、色调映射等后处理]</span><br><span class="line">  F --&gt; G[屏幕画面]</span><br></pre></td></tr></table></figure>
+<p>VS（顶点 Shader）常负责顶点位置变换并输出可插值数据；PS（像素
+Shader）常负责采样贴图、计算表面属性或颜色。延迟渲染的表面 Pass 通常写入
+GBuffer
+中间纹理，最终灯光和屏幕颜色还要经过后续阶段。因此，只搬模型和表面材质，不能保证最终画面一致。</p>
+<p>Base Color/Albedo 是表面的底色；Normal
+描述着色时使用的表面方向，不会直接改变轮廓；Roughness
+控制反射的锐利或模糊；Metallic 控制金属性质；AO
+表达局部遮蔽，不能替代所有实时阴影。UV 告诉 Shader
+到贴图的哪里取样，顶点颜色也可以存混合权重。一张贴图的 RGBA
+四个通道可能存不同数据，Alpha 不一定表示透明度。</p>
+<p>颜色贴图常用 sRGB 编码，Shader
+中的颜色计算通常在线性空间进行；法线、粗糙度、遮罩等数值数据不应随意进行
+sRGB
+转换。把颜色和数据用错色彩空间，会改变底色或混合权重，不能靠调灯补救。</p>
+<h2 id="renderdoc-与-aimcp-的研究流程">RenderDoc 与 AI/MCP
+的研究流程</h2>
+<p>用户提供的<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/2011851609727059384">《RenderDoc —
+打造自己 AI 工作流》</a>演示了用 AI/MCP
+分析帧流程、研究效果、导出依赖并在 Unity
+重建；作者也记录了贴图与选取范围问题。本文把这种方法用于 Blender 与
+UE，并以原始数据和画面对比校验 AI
+的推断。文中的终末地技术不能直接当成木炉星的实现。</p>
+<h3 id="rdc-和工具各负责什么">RDC 和工具各负责什么</h3>
+<p><code>.rdc</code> 保存一帧的图形 API
+调用、状态及重放所需的资源内容。它体积大，主要因为包含贴图和缓冲数据；具体占比需要统计，不能仅凭文件大小判断模型复杂度。它能包含镜头外但被该帧引用的资源，也可能缺少未加载或未引用的区域。<a
+target="_blank" rel="noopener" href="https://github.com/baldurk/renderdoc/blob/v1.x/docs/behind_scenes/how_works.rst">捕获与重放原理</a></p>
+<p>AI 客户端通过 MCP 服务请求数据，RenderDoc 扩展访问当前捕获和重放
+API；本项目所用桥接通过文件 IPC 在两个进程之间传递请求。Blender
+负责网格整理，UE MCP/Editor Python
+负责引擎中的资产和场景操作。工具能自动读写数据，不能保证 Shader
+推断正确。<a
+target="_blank" rel="noopener" href="https://github.com/halby24/RenderDocMCP">文章使用的桥接项目</a>、<a
+target="_blank" rel="noopener" href="https://github.com/Hengle/RenderDocMCP2">本项目所用分支</a></p>
+<h3 id="不同游戏怎样捕获">不同游戏怎样捕获</h3>
+<p>各游戏的启动方式、权限/API 对照、抓帧快捷键、RDC 归档及 RenderDoc
+故障修正统一维护在 RenderDoc
+本机抓帧文档（本地文件：<code>C:/Users/error/Repos/renderdoc/docs/local-game-captures.md</code>）。本节只保留移植研究与素材使用的关系；不要在
+Orbit 再复制一套启动参数。</p>
+<h2 id="阅读与重建捕获">阅读与重建捕获</h2>
+<h3 id="打开-rdc-后按这个顺序看">打开 RDC 后按这个顺序看</h3>
+<p>先用 <code>File → Open Capture</code>
+打开捕获，选一块岩壁或一棵树作为目标；先研究一个对象，确认正确后再扩大范围。以下窗口中的数据随所选事件变化。</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 35%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>顺序与窗口</th>
+<th>操作与问题</th>
+<th>应获得的证据</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. Event Browser</td>
+<td>沿事件顺序观察中间结果；定位目标被绘制的事件</td>
+<td>Event ID、所在 Pass、输入输出资源；暂不能确定的用途单独标记</td>
+</tr>
+<tr class="even">
+<td>2. Pipeline State</td>
+<td>检查顶点输入、VS/PS、资源绑定、深度、剔除和混合设置</td>
+<td>这个对象实际使用的缓冲、贴图槽、参数与渲染状态</td>
+</tr>
+<tr class="odd">
+<td>3. Mesh Viewer</td>
+<td>对照 VS Input 与 VS Output；实例绘制要切换 Instance</td>
+<td>顶点属性、索引、局部几何、实例差异及变换后的结果</td>
+</tr>
+<tr class="even">
+<td>4. Texture Viewer</td>
+<td>查看绑定纹理的 RGBA、mip 和格式，检查输出中间纹理</td>
+<td>颜色、法线、遮罩或其他数据的候选含义；由 Shader
+的用法进一步确认</td>
+</tr>
+<tr class="odd">
+<td>5. Shader Viewer 与常量缓冲</td>
+<td>追踪采样、乘法、混合、裁剪和矩阵计算</td>
+<td>贴图、参数到输出之间的实际计算链</td>
+</tr>
+<tr class="even">
+<td>6. Pixel History / Shader 调试</td>
+<td>在受支持的 API 与事件上追踪目标像素</td>
+<td>哪些绘制改写该像素、在哪一步出现颜色或遮挡差异</td>
+</tr>
+</tbody>
+</table>
+<p>Shader Viewer
+有源码调试信息时可以显示源码，否则通常只能得到编译后的反汇编；不能把反编译推断称为原作者源码。Mesh
+Viewer 的变换后预览也可能使用估计的投影参数，不应直接当作精确相机。<a
+target="_blank" rel="noopener" href="https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/mesh_viewer.rst">官方
+Mesh Viewer</a>、<a
+target="_blank" rel="noopener" href="https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/pipeline_state.rst">Pipeline
+State</a>、<a
+target="_blank" rel="noopener" href="https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/texture_viewer.rst">Texture
+Viewer</a>、<a
+target="_blank" rel="noopener" href="https://github.com/baldurk/renderdoc/blob/v1.x/docs/window/shader_viewer.rst">Shader
+Viewer</a></p>
+<h3 id="从捕获数据到-ue-的重建">从捕获数据到 UE 的重建</h3>
+<ol type="1">
+<li><strong>确定范围与依赖。</strong>
+从目标事件出发，沿资源读写关系查找相关阶段，区分表面、阴影、辅助和透明绘制。不要把同一几何的不同
+Pass 当成不同物体反复导出。</li>
+<li><strong>恢复几何与摆放。</strong>
+读取顶点输入和索引，再确定物体与实例矩阵。普通网格优先研究 VS
+Input；动画、风和程序化变形还需要分析
+VS，输入网格可能不是屏幕上最终形状。</li>
+<li><strong>确认纹理与参数。</strong> 保存绑定关系、格式、UV
+变换和常量值，区分 sRGB
+颜色与线性数据。贴图通道用途由实际计算确认，不能只按图片看起来像什么判断。</li>
+<li><strong>重写可验证的材质计算。</strong> 把已确认的公式转换成 UE
+节点或 Custom
+HLSL，再匹配透明裁剪、双面、深度等设置；未还原的部分明确保留为近似。</li>
+<li><strong>逐阶段比较。</strong>
+先对照几何和未照明底色，再比较法线与表面属性，最后补光照、雾、透明效果、曝光和色调映射。每次只调整一个影响来源。</li>
+<li><strong>整理为可用资产。</strong>
+保留模块和实例复用关系，配置可见性、LOD/适用的
+Nanite、碰撞和性能预算。研究用导出结果不能直接当成生产资产。</li>
+</ol>
+<p>坐标与矩阵要单独验证：物体局部坐标先通过物体矩阵进入世界，再通过相机和投影进入裁剪空间。Unity、Blender、UE
+的轴向、单位、手性和导入器处理不同；错误会导致镜像、反面或相机翻转。法线在非均匀缩放时需要逆转置矩阵，不能直接当位置变换。常量缓冲还包含对齐、矩阵布局和整数位模式，不能把每个值都当普通浮点参数。</p>
+<p>一个简化的表面例子是
+<code>BaseColor = ColorTexture × Tint</code>，岩石与草地可以通过遮罩
+<code>w</code> 做 <code>lerp(Rock, Grass, w)</code>，树叶可用 Alpha
+与阈值进行裁剪。真实遮罩可能组合坡度、高度、顶点色和贴图；有些法线还采用打包编码。重建时必须以所选
+Shader 的公式与数据为准，这些例子不是所有游戏通用的解码规则。</p>
+<p>UE
+的共享主材质承载共用逻辑，材质实例负责资产间的参数变化。跨引擎时即使表面公式一致，光照模型、法线约定、阴影与后处理也可能不同；完成材质编译只证明它可执行，还需要画面对比。</p>
+<h2 id="导出与导入的本地操作示例">导出与导入的本地操作示例</h2>
+<p>示例中的路径和 Event ID
+由当前研究环境填写；<code>$qrenderdocPath</code>、<code>$blenderPath</code>、<code>$editorCmdPath</code>、<code>$editorPath</code>
+分别指向本机工具，<code>$PWD</code> 为 Orbit 项目根目录。</p>
+<p>先按素材研究流程（本地文件：<code>Docs/content/assets.md</code>）保存并回放
+RDC，再选择目标绘制。RenderDoc 嵌入式 Python 使用
+<code>ExportGpuCapture.py</code>；请求中的事件编号必须来自当前捕获，不能跨帧复用。输出目录保存中间数据，原始
+RDC 可保留在仓库之外。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 替换为自己的捕获、输出目录和已确认的 Event ID。</span></span><br><span class="line"><span class="variable">$taskRequest</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">    capture = <span class="variable">$capturePath</span></span><br><span class="line">    output = <span class="variable">$rawExportDirectory</span></span><br><span class="line">    events = <span class="variable">$selectedEvents</span></span><br><span class="line">    frame = <span class="variable">$verifiedFrameNumber</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$taskRequest</span> | <span class="built_in">ConvertTo-Json</span> <span class="literal">-Depth</span> <span class="number">4</span> | <span class="built_in">Set-Content</span> <span class="literal">-LiteralPath</span> <span class="variable">$requestPath</span></span><br><span class="line"><span class="variable">$env:ORBIT_CAPTURE_REQUEST</span> = <span class="variable">$requestPath</span></span><br><span class="line">&amp; <span class="variable">$qrenderdocPath</span> <span class="literal">--python</span> <span class="string">&quot;<span class="variable">$PWD</span>\Scripts\Art\ExportGpuCapture.py&quot;</span></span><br><span class="line"><span class="built_in">Get-Content</span> (<span class="built_in">Join-Path</span> <span class="variable">$rawExportDirectory</span> <span class="string">&#x27;export-status.json&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><code>export-status.json</code> 必须没有
+<code>error</code>。补充已确认的纹理输入时，同一入口可使用
+<code>mode: textures</code>、<code>event</code> 与资源 ID 列表
+<code>textures</code>；它保留数组各层，浮点与 BC6 数据输出
+EXR，来源记录在
+<code>textures.json</code>。检查所选几何、索引和纹理槽后才重建模型。字符分支分别处理已确认的绝区零
+D3D11 与终末地 Vulkan 布局；不同游戏/Shader 必须重新验证物体矩阵、UV
+和常量布局，断言失败时不能跳过验证硬套。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&amp; <span class="variable">$blenderPath</span> <span class="literal">-b</span> <span class="literal">--factory-startup</span> <span class="literal">--python-exit-code</span> <span class="number">1</span> `</span><br><span class="line">  <span class="literal">-P</span> Scripts/Art/VerifyModelSources.py <span class="literal">--</span> ../ArtSource/ZenlessZoneZero/CaptureStudy.blend</span><br></pre></td></tr></table></figure>
+<p>在 Blender
+中整理已导出的场景和人物源。人物源检查应确认批次/面数、UV、材质、有限坐标和图片依赖，并明确其为定格网格。检查预览与原始捕获的左右方向、部件摆放和贴图；必要时输出多视角轮廓、灰模及线框。</p>
+<p>UE 导入与检查共用现有入口；以下 <code>$editorCmdPath</code> 指向 UE
+5.8 的 <code>UnrealEditor-Cmd.exe</code>，<code>$editorPath</code> 指向
+<code>UnrealEditor.exe</code>，执行前保存并关闭其他使用本项目的
+Editor。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&amp; <span class="variable">$editorCmdPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\ImportArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtImport</span>=reference <span class="literal">-ArtReference</span>=ZenlessZoneZero <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span></span><br><span class="line"></span><br><span class="line">&amp; <span class="variable">$editorPath</span> <span class="string">&quot;<span class="variable">$PWD</span>\orbit.uproject&quot;</span> `</span><br><span class="line">  <span class="string">&quot;-ExecutePythonScript=<span class="variable">$PWD</span>\Scripts\Art\VerifyArtRevision.py&quot;</span> `</span><br><span class="line">  <span class="literal">-ArtCheck</span>=reference <span class="literal">-ArtReference</span>=ZenlessZoneZero <span class="literal">-ArtReferenceRender</span> `</span><br><span class="line">  <span class="literal">-unattended</span> <span class="literal">-nopause</span> <span class="literal">-nosplash</span> <span class="literal">-windowed</span></span><br></pre></td></tr></table></figure>
+<p>星际拓荒使用同一 UE
+入口，<code>-ArtReference=OuterWilds/Scenes/TimberHearth</code>
+选择木炉星；其他场景使用
+<code>OuterWilds/Scenes/&lt;场景名&gt;</code>。验证材质编译、网格
+UV/绑定、研究相机和无重定向，检查 <code>UECaptureCamera.png</code> 与
+<code>UEReviewCamera.png</code>。截图完成后关闭本次检查实例。检查新增资产的来源路径、引用和
+LFS 属性；不以简单分段着色的截图声称完成原作渲染管线或骨骼动画恢复。</p>
+<p>太阳系总览复用上述入口的 <code>-ArtImport=reference-overview</code>
+与
+<code>-ArtCheck=reference-overview</code>。先同步各天体，再装配总览；检查各天体引用、坐标转换、重复网格和无重定向。验证时附加
+<code>-ArtReferenceRender</code> 输出
+<code>UEOverview.png</code>，核对实际构图与可见性。</p>
+<p>人物蒙皮数据导出使用
+<code>skinning_events</code>，仅填写已核实的流输出事件；核对
+Shader、顶点对应与矩阵后再使用。GPU
+矩阵表不包含原骨骼名称和父子层级，不能当成原装骨架。</p>
+<h2 id="画质与性能一起学习">画质与性能一起学习</h2>
+<p>木炉星研究样板说明：恢复网格可以帮助研究造型，但把整星的多次绘制合成一个普通大网格，会丢失原有分块与实例管理的优势。没有合适的细节控制时，转动镜头仍可能处理大量几何，阴影还会增加开销。暂时关闭动态投影是预览取舍，不能当成正式性能优化完成。</p>
+<p>先固定机位、分辨率与运行环境，再区分 CPU、GPU
+和内存瓶颈。比较帧时间而非只看面数：60 FPS 的整帧时间预算约为 16.7
+ms。GPU
+研究中还要看可见三角形、屏幕像素开销、树叶遮罩/双面重叠、材质采样、阴影和纹理内存；CPU
+则可能受绘制提交与场景管理影响。</p>
+<p>LOD
+用不同距离或屏幕尺寸的网格降低细节；实例化让重复物体共享网格数据；分块允许按区域剔除。Nanite
+提供自动细节管理和细粒度几何处理，但不能替代材质、植被重叠和阴影开销的测量，启用前仍需检查支持条件及实际结果。<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine">UE
+Nanite</a>、<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/virtual-shadow-maps-in-unreal-engine">虚拟阴影</a></p>
+<p>最小验收顺序是：几何与坐标 → 材质绑定与底色 → 法线及透明遮罩 →
+光照与后处理 →
+实际移动和性能。技术检查入口与职责见验证（本地文件：<code>Docs/engineering/verification.md</code>）；每步保存可比较的证据，不能用单张好看的截图替代运行检查。</p>
+<h2 id="学习练习与项目入口">学习练习与项目入口</h2>
+<p>先研究一块岩壁、一棵树和一段桥：分别练习地貌混合、透明遮罩与实例、普通表面材质。对每个目标回答“形状靠什么、颜色靠什么、光照增加了什么、性能花在哪里”，再在
+UE 做一个对应的原创小样。</p>
+<p>可以向 AI 提这样的请求：</p>
+<blockquote>
+<p>只分析选中岩壁的绘制事件。列出输入网格、绑定贴图与参数，以及通向表面颜色和法线输出的计算。每个判断给出
+Event ID、资源槽或 Shader
+指令依据，区分已确认、推断和未解决项；先不要修改或导出整场景。</p>
+</blockquote>
+<blockquote>
+<p>对比该对象的捕获结果与 UE
+同机位画面，按几何、UV/色彩空间、材质、光照、后处理逐项定位差异，每次只验证一个因素。</p>
+</blockquote>
+<p>当前项目使用
+ExportGpuCapture.py（本地文件：<code>Scripts/Art/ExportGpuCapture.py</code>）
+从选定 RDC 批次导出数据，在 Blender 中整理现有研究源，使用
+ImportArtRevision.py（本地文件：<code>Scripts/Art/ImportArtRevision.py</code>）
+批量导入，以及
+VerifyArtRevision.py（本地文件：<code>Scripts/Art/VerifyArtRevision.py</code>）
+检查绑定和输出画面。当前检查要求见验证（本地文件：<code>Docs/engineering/verification.md</code>），材质参数与来源证据保存在资产和研究源数据中。工具分工见Scripts（本地文件：<code>Scripts/README.md</code>）。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/other/%E6%B8%B2%E6%9F%93%E4%B8%8E%E6%8A%93%E5%B8%A7%E7%A0%94%E7%A9%B6/" title="渲染与抓帧研究">https://errorworld2000.github.io/other/渲染与抓帧研究/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/graphics/" rel="tag"># graphics</a>
+              <a href="/tags/unreal/" rel="tag"># unreal</a>
+              <a href="/tags/renderdoc/" rel="tag"># renderdoc</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/other/%E8%A7%92%E8%89%B2%E6%9D%90%E8%B4%A8%E4%B8%8E%E5%8A%A8%E7%94%BB%E7%A0%94%E7%A9%B6/" rel="prev" title="角色材质与动画研究">
+                  <i class="fa fa-angle-left"></i> 角色材质与动画研究
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">jungle</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">84k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:16</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>
