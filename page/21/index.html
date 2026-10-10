@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/ow%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/other/%E9%A1%B9%E7%9B%AE%E8%A7%84%E8%8C%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/other/ow%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">《守望先锋》架构与网络同步</a>
+          <a href="/other/%E9%A1%B9%E7%9B%AE%E8%A7%84%E8%8C%83/" class="post-title-link" itemprop="url">项目规范</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2025-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-16T00:00:00+08:00">2025-09-16</time>
+      <time title="创建时间：2026-02-09 00:00:00" itemprop="dateCreated datePublished" datetime="2026-02-09T00:00:00+08:00">2026-02-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-10-09 18:29:29" itemprop="dateModified" datetime="2026-10-09T18:29:29+08:00">2026-10-09</time>
+      <time title="修改时间：2026-10-10 15:29:55" itemprop="dateModified" datetime="2026-10-10T15:29:55+08:00">2026-10-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,7 +276,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>978</span>
+      <span>59</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -294,89 +294,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="核心架构">核心架构</h2>
-<ul>
-<li>Overwatch 采用 <strong>ECS 架构</strong> 管理复杂度
-<ul>
-<li><strong>Entity</strong>：ID +
-一组组件（Component，仅存储状态，无行为）</li>
-<li><strong>System</strong>：执行行为，关注特定组件组合（tuple /
-component-slice），在这些组件上处理逻辑</li>
-</ul></li>
-<li><strong>优点</strong>：
-<ul>
-<li>状态与行为分离，System 更纯洁、可组合</li>
-<li>组件只存储数据，行为集中在 System</li>
-<li>大多数 System 纯函数式（只读组件），少数修改状态</li>
-</ul></li>
-<li><strong>单例组件（Singleton Component）</strong>
-<ul>
-<li>存储全局共享数据，例如输入状态（键盘、手柄等）</li>
-<li>减少 System 间耦合</li>
-</ul></li>
-<li><strong>Utility 函数</strong>
-<ul>
-<li>封装共享行为（被多个 System 调用的小逻辑）</li>
-<li>依赖少组件、低副作用，避免 System 之间互相调用</li>
-</ul></li>
-</ul>
-<hr />
-<h2 id="ecs-设计规范与权衡">ECS 设计规范与权衡</h2>
-<ul>
-<li><p><strong>组件无行为，System 尽量无状态</strong></p></li>
-<li><p>如果 System 需要状态 → 放在 Singleton Component</p></li>
-<li><p><strong>副作用控制</strong>：</p>
-<ul>
-<li><strong>Deferred
-Execution（推迟执行）</strong>：将副作用（如创建实体、特效）暂存到帧尾统一处理</li>
-<li>防止 System 在帧中间互相依赖造成脏状态或竞态问题</li>
-</ul></li>
-<li><p><strong>实体创建与销毁</strong></p>
-<ul>
-<li>销毁推迟到帧末端安全</li>
-<li>创建推迟可能导致同帧 System 无法获取新实体 → 需谨慎</li>
-</ul></li>
-</ul>
-<hr />
-<h2 id="网络同步-netcode">网络同步 / Netcode</h2>
-<h3 id="预测与回滚prediction-reconciliation">1. 预测与回滚（Prediction
-&amp; Reconciliation）</h3>
-<ul>
-<li>客户端响应用户输入立即做预测，不等服务器确认</li>
-<li>使用固定帧率 / 命令帧（command frames）同步模拟</li>
-<li>客户端保存输入历史和移动状态历史</li>
-<li>收到服务器确认后回滚到最后确认帧，然后重放客户端输入</li>
-</ul>
-<h3 id="输入滑动窗口-丢包补偿">2. 输入滑动窗口 + 丢包补偿</h3>
-<ul>
-<li>每个发送包包含自上次确认以来的所有输入帧</li>
-<li>服务器缓冲区接收输入并补偿丢失帧</li>
-</ul>
-<h3 id="延迟-缓冲-时间膨胀buffering-time-dilation">3. 延迟 / 缓冲 /
-时间膨胀（Buffering / Time Dilation）</h3>
-<ul>
-<li>网络不稳定时，客户端加速或扩大缓冲区，减少预测错误带来的卡顿</li>
-<li>网络恢复稳定后，缩小缓冲区</li>
-</ul>
-<h3 id="命中判定hit-registration">4. 命中判定（Hit Registration）</h3>
-<ul>
-<li>客户端可能预测子弹命中，但服务器是最终权威</li>
-<li>远端实体使用插值，服务端回滚远端实体状态判断命中</li>
-<li>高延迟情况下可能放弃客户端预测，直接等待服务器确认</li>
-</ul>
-<hr />
-<h2 id="设计原则总结">设计原则总结</h2>
-<ol type="1">
-<li>架构为 <strong>可维护性与可扩展性服务</strong>
-<ul>
-<li>ECS + 严格准则（组件无行为，System 少状态）</li>
-</ul></li>
-<li>网络同步：预测 + 回滚 + 丢包/延迟/预测错误补偿</li>
-<li>Utility、Singleton、Deferred 操作用于缓解 System 间耦合与副作用</li>
-</ol>
-<hr />
-<p>参考资料： <a
-target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-architecture-and-netcode/">《守望先锋》架构设计和网络同步</a></p>
+          <p>本地开发：LSP + 保存格式化 + 静态检查（可选） → 实时提示 +
+自动排版</p>
+<p>CI / PR：静态检查 + 格式化 → 保证代码质量 + 风格一致</p>
 
       
     </div>
@@ -396,7 +316,7 @@ target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-archi
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/20/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/22/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/20/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/22/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -419,14 +339,14 @@ target="_blank" rel="noopener" href="https://www.lfzxb.top/ow-gdc-gameplay-archi
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">84k</span>
+    <span title="站点总字数">91k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:16</span>
+    <span title="站点阅读时长">1:23</span>
   </span>
 </div>
 <div class="busuanzi-count">

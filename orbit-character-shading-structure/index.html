@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Orbit 在 UE 原生渲染流程上实现了可复用的角色着色框架，再用参考角色验证材质和纹理配置。通用能力属于 Orbit，针对千夏、Cici 和佩丽卡的适配内容按参考来源归属。 本文以 2026 年 10 月 10 日的工程代码、渲染配置及 139 个角色资产的原生引用审核为依据。“当前位置”是已经存在的结构；“整理方案”已经采用，尚未执行迁移。参数和最新实现以工程为准。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Orbit 角色着色结构：共享材质、参考实例与渲染管线">
+<meta property="og:url" content="https://errorworld2000.github.io/orbit-character-shading-structure/index.html">
+<meta property="og:site_name" content="a Blog">
+<meta property="og:description" content="Orbit 在 UE 原生渲染流程上实现了可复用的角色着色框架，再用参考角色验证材质和纹理配置。通用能力属于 Orbit，针对千夏、Cici 和佩丽卡的适配内容按参考来源归属。 本文以 2026 年 10 月 10 日的工程代码、渲染配置及 139 个角色资产的原生引用审核为依据。“当前位置”是已经存在的结构；“整理方案”已经采用，尚未执行迁移。参数和最新实现以工程为准。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-10T07:29:55.000Z">
+<meta property="article:author" content="jungle">
+<meta property="article:tag" content="graphics">
+<meta property="article:tag" content="shading">
+<meta property="article:tag" content="unreal">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://errorworld2000.github.io/orbit-character-shading-structure/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/orbit-character-shading-structure/","path":"/orbit-character-shading-structure/","title":"Orbit 角色着色结构：共享材质、参考实例与渲染管线"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Orbit 角色着色结构：共享材质、参考实例与渲染管线 | a Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E8%A7%92%E8%89%B2%E7%9A%84%E5%A4%96%E8%A7%82%E7%90%86%E8%A7%A3%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">从角色的外观理解文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E6%A1%86%E6%9E%B6%E7%9A%84%E5%8D%81%E4%B9%9D%E4%B8%AA%E8%B5%84%E4%BA%A7"><span class="nav-number">2.</span> <span class="nav-text">共享框架的十九个资产</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E5%8D%81%E4%B8%80%E9%A1%B9%E8%A7%92%E8%89%B2%E9%80%82%E9%85%8D%E4%B8%BA%E4%BD%95%E8%B7%9F-reference-%E8%B5%B0"><span class="nav-number">3.</span> <span class="nav-text">九十一项角色适配为何跟
+Reference 走</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-%E5%92%8C%E7%BC%96%E8%BE%91%E5%99%A8%E5%B7%A5%E5%85%B7%E5%88%86%E5%88%AB%E5%81%9A%E4%BB%80%E4%B9%88"><span class="nav-number">4.</span> <span class="nav-text">C++ 和编辑器工具分别做什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%8B%E5%89%8D%E6%90%AD%E5%BB%BA%E7%9A%84%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="nav-number">5.</span> <span class="nav-text">之前搭建的渲染管线在哪里</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E4%BD%8D%E7%BD%AE%E4%B8%8E%E5%B7%B2%E9%87%87%E7%94%A8%E7%9A%84%E6%95%B4%E7%90%86%E6%96%B9%E6%A1%88"><span class="nav-number">6.</span> <span class="nav-text">当前位置与已采用的整理方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E6%A0%B7%E9%98%85%E8%AF%BB%E4%B8%8E%E9%AA%8C%E8%AF%81"><span class="nav-number">7.</span> <span class="nav-text">怎样阅读与验证</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jungle</p>
+  <div class="site-description" itemprop="description">压力来自避而不赴</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/orbit-character-shading-structure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jungle">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a Blog">
+      <meta itemprop="description" content="压力来自避而不赴">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Orbit 角色着色结构：共享材质、参考实例与渲染管线 | a Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Orbit 角色着色结构：共享材质、参考实例与渲染管线
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-10-10 00:00:00 / 修改时间：15:29:55" itemprop="dateCreated datePublished" datetime="2026-10-10T00:00:00+08:00">2026-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Orbit 在 UE
+原生渲染流程上实现了可复用的角色着色框架，再用参考角色验证材质和纹理配置。通用能力属于
+Orbit，针对千夏、Cici 和佩丽卡的适配内容按参考来源归属。</p>
+<p>本文以 2026 年 10 月 10 日的工程代码、渲染配置及 139
+个角色资产的原生引用审核为依据。“当前位置”是已经存在的结构；“整理方案”已经采用，尚未执行迁移。参数和最新实现以工程为准。</p>
+<span id="more"></span>
+<h2 id="从角色的外观理解文件">从角色的外观理解文件</h2>
+<p>看到一个角色时，模型决定几何形状，动画使骨骼和表情变化，材质描述表面如何显色、反光或透明，灯光及后处理参与形成最后的画面。</p>
+<p>材质编辑器里的节点执行计算，连线传递结果。材质函数把一组可复用的节点组织起来；材质实例选择已有材质，再调整贴图、颜色、开关和其他参数。<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-substrate-materials-in-unreal-engine">UE
+Substrate 材质概览</a>。</p>
+<p>几个常见前缀可用于辨认文件：</p>
+<table>
+<thead>
+<tr class="header">
+<th>前缀</th>
+<th>文件类型</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>M_</code></td>
+<td>材质，组织完整的表面或后处理计算</td>
+<td><code>M_Character_Soft</code></td>
+</tr>
+<tr class="even">
+<td><code>MF_</code></td>
+<td>材质函数，保存可复用的计算块</td>
+<td><code>MF_CharacterFace</code></td>
+</tr>
+<tr class="odd">
+<td><code>MI_</code></td>
+<td>材质实例，保存具体对象的配置</td>
+<td>佩丽卡某个部位的研究实例</td>
+</tr>
+<tr class="even">
+<td><code>TP_</code></td>
+<td>Toon Profile，配置明暗及高光响应</td>
+<td><code>TP_Soft</code></td>
+</tr>
+<tr class="odd">
+<td><code>T_</code></td>
+<td>贴图或纹理数组，提供采样数据</td>
+<td><code>T_WhiteMatcapArray</code></td>
+</tr>
+</tbody>
+</table>
+<p>Toon Profile 是 UE 原生 Toon BSDF 使用的外观配置。<a
+target="_blank" rel="noopener" href="https://dev.epicgames.com/documentation/en-us/unreal-engine/python-api/class/MaterialExpressionSubstrateToonBSDF">UE
+5.8 Toon 节点接口</a>。</p>
+<p>运行时的 MID 是动态材质实例，用来更新实时参数；保存到 Content 的
+<code>MI_*</code> 是可编辑资产。</p>
+<h2 id="共享框架的十九个资产">共享框架的十九个资产</h2>
+<p>这些资产目前都位于
+<code>Content/Orbit/Characters/Shading</code>，直接依赖中没有
+<code>Reference</code> 内容，可以继续作为项目通用角色着色能力。</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 64%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>分组</th>
+<th>文件</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Functions，3 项</td>
+<td><code>MF_CharacterSurface</code>、<code>MF_CharacterFace</code>、<code>MF_CharacterHair</code></td>
+<td>组织表面、脸部及头发相关的通用计算</td>
+</tr>
+<tr class="even">
+<td>Materials，3 项</td>
+<td><code>M_Character_Graphic</code>、<code>M_Character_Illustrated</code>、<code>M_Character_Soft</code></td>
+<td>三套可配置的主要外观风格</td>
+</tr>
+<tr class="odd">
+<td>Materials，5 项</td>
+<td><code>M_CharacterDetail</code>、<code>M_CharacterFace</code>、<code>M_CharacterHairColor</code>、<code>M_CharacterHidden</code>、<code>M_CharacterOutline</code></td>
+<td>细节、脸部、彩色头发高光、隐藏层和描边用途</td>
+</tr>
+<tr class="even">
+<td>Profiles，7 项</td>
+<td>Graphic、Illustrated、Soft 的表面/头发 Profile，以及
+<code>TP_HairColor</code></td>
+<td>用 UE 配置控制明暗与高光响应</td>
+</tr>
+<tr class="odd">
+<td>Textures，1 项</td>
+<td><code>T_WhiteMatcapArray</code></td>
+<td>通用默认 Matcap 采样数据</td>
+</tr>
+</tbody>
+</table>
+<p>Matcap
+是按视线与表面法线计算采样位置的纹理表达方式，可以提供绘制的高光或颜色响应。白色默认数组给材质提供中性的输入；具体参考角色需要的采样数据由其适配实例配置。</p>
+<p>高光优先由 UE Profile 曲线和材质参数配置。第一方源模型负责几何、UV
+与需要的贴图，最终着色在 UE 中维护。</p>
+<h2 id="九十一项角色适配为何跟-reference-走">九十一项角色适配为何跟
+Reference 走</h2>
+<p>当前 <code>Shading/Study</code> 有 92 项：90
+个材质实例、一个佩丽卡专属 Profile、一个实验地面材质。</p>
+<table>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 52%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>研究对象</th>
+<th>内容</th>
+<th>原生审核确认的来源</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>千夏</td>
+<td>12 个实例：4 组配置 × 3 种风格</td>
+<td><code>Reference/ZenlessZoneZero</code> 的纹理</td>
+</tr>
+<tr class="even">
+<td>Cici / Hayakawa</td>
+<td>45 个实例：15 个部位 × 3 种风格</td>
+<td><code>Reference/CiciToon</code> 的纹理</td>
+</tr>
+<tr class="odd">
+<td>佩丽卡</td>
+<td>33 个实例：11 个部位 × 3 种风格；另有
+<code>TP_PerlicaHair</code></td>
+<td><code>Reference/Endfield</code> 的纹理</td>
+</tr>
+<tr class="even">
+<td>实验地面</td>
+<td><code>M_StudyFloor</code></td>
+<td>供 <code>L_CharacterShadingLab</code> 使用</td>
+</tr>
+</tbody>
+</table>
+<p>数量来自不同材质槽和三套外观配置。90
+个实例均被着色实验关卡引用；专属头发 Profile
+被三个佩丽卡头发实例引用。</p>
+<p>通用材质提供计算，角色实例提供贴图及参数，网格的材质槽决定使用哪个实例。例如一个佩丽卡研究实例可以同时引用
+Orbit 的通用材质和 Endfield 的研究纹理。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Orbit 通用材质与函数</span><br><span class="line">            ↑ 由角色实例选择、配置</span><br><span class="line">Reference 的模型和贴图 → 角色适配实例 → 实验关卡中的角色</span><br></pre></td></tr></table></figure>
+<p>因此，把适配实例按来源整理，仍然可以共用 Orbit 的着色框架。</p>
+<h2 id="c-和编辑器工具分别做什么">C++ 和编辑器工具分别做什么</h2>
+<table>
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>文件位置</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Source/orbit/Private/Player/Characters/CharacterShadingComponent.*</code></td>
+<td>更新主光方向、头部坐标、动态材质参数，以及辅助网格各 LOD
+的可见材质槽</td>
+</tr>
+<tr class="even">
+<td><code>Source/orbit/Private/Player/Characters/MaterialExpressionCharacterToon.*</code></td>
+<td>扩展 UE 原生 Toon 材质节点的编译，补齐方向性高光需要的切线基底</td>
+</tr>
+<tr class="odd">
+<td><code>Source/orbitEditor/Private/Player/Characters/CharacterShadingAuthoringLibrary.*</code></td>
+<td>编辑器中设置材质实例的 Toon Profile，补充 Python
+未直接开放的接口</td>
+</tr>
+</tbody>
+</table>
+<p><code>CharacterShadingComponent</code>
+读取角色的头骨朝向和主光，将参数传给材质。附加头发高光层还需要正确的网格、姿势同步及材质槽可见性配置。骨骼动画的职责见<a
+href="../orbit-motion-matching-structure/">Motion Matching
+结构</a>。</p>
+<p>自定义 <code>Character Toon BSDF</code> 节点最终仍调用 UE 的
+Substrate Toon 编译能力。当前标准材质编译路径补齐了切线信息，MIR
+分支尚未实现同等支持。</p>
+<h2 id="之前搭建的渲染管线在哪里">之前搭建的渲染管线在哪里</h2>
+<p>可以沿一帧的生成过程理解这些内容：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">动画更新骨骼姿势与表情</span><br><span class="line">  → 网格蒙皮与形变</span><br><span class="line">  → 深度和阴影绘制</span><br><span class="line">  → 材质、Substrate 表面数据与灯光计算</span><br><span class="line">  → 按材质设置进行透明和高光层合成</span><br><span class="line">  → 描边、景深及其他后处理</span><br><span class="line">  → 最终画面</span><br></pre></td></tr></table></figure>
+<p>这是理解职责的流程示意。具体渲染阶段、并行关系和合成顺序应以引擎配置及实际
+GPU 捕获为准。</p>
+<table>
+<colgroup>
+<col style="width: 61%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>部分</th>
+<th>当前落地位置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>深度、阴影、光照和透明等底层渲染执行</td>
+<td>UE 原生渲染器</td>
+</tr>
+<tr class="even">
+<td>Substrate、Adaptive GBuffer、Custom Depth/Stencil、Sorted Pixels OIT
+等项目选择</td>
+<td><code>Config/DefaultEngine.ini</code></td>
+</tr>
+<tr class="odd">
+<td>项目可复用角色着色能力</td>
+<td>Orbit 的 C++ 扩展和 <code>Characters/Shading</code> 共享资产</td>
+</tr>
+<tr class="even">
+<td>参考角色的模型、贴图及适配配置</td>
+<td>对应来源的 <code>Reference</code> 内容</td>
+</tr>
+<tr class="odd">
+<td>用来观察和比较效果的场景</td>
+<td><code>Maps/Tests/L_CharacterShadingLab</code></td>
+</tr>
+</tbody>
+</table>
+<p>Orbit 当前实现的是角色着色框架及材质节点扩展。渲染工作由 UE
+执行，项目配置和内容决定这些能力怎样用于角色；参考角色用来提供可追溯的对照案例。</p>
+<h2 id="当前位置与已采用的整理方案">当前位置与已采用的整理方案</h2>
+<p>19 个共享资产保留原有分组：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Content/Orbit/Characters/Shading/</span><br><span class="line">├── Functions/</span><br><span class="line">├── Materials/</span><br><span class="line">├── Profiles/</span><br><span class="line">└── Textures/</span><br></pre></td></tr></table></figure>
+<p>91 项角色适配的目标位置按来源分开：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Content/Reference/</span><br><span class="line">├── ZenlessZoneZero/CharacterShading/    # 千夏的 12 个实例</span><br><span class="line">├── CiciToon/CharacterShading/           # Cici 的 45 个实例</span><br><span class="line">└── Endfield/CharacterShading/           # 佩丽卡的 33 个实例及专属 Profile</span><br></pre></td></tr></table></figure>
+<p>实验地面材质随着色实验关卡组织。原装素材继续保留；这些整理只改变配置资产的位置与引用。</p>
+<h2 id="怎样阅读与验证">怎样阅读与验证</h2>
+<p>先打开 <code>L_CharacterShadingLab</code>，选中角色，找到网格的
+Materials，打开一个
+<code>MI_*</code>。查看它选择了哪个父材质、哪些贴图和
+Profile，再沿父材质进入
+<code>MF_*</code>，最后检查角色着色组件里的主光、头骨与附加网格配置。</p>
+<p>验证时需要分别检查 Shader
+编译、引用和实际画面。脸部阴影应随头部与主光变化；发束高光、透明边缘、描边及正常投影需要固定机位对照。研究纹理的通道和色彩空间以来源证据为准。</p>
+<p>本轮引用审核确认了共享框架与研究适配的边界，没有重新完成所有动态画面和
+GPU 性能验收。现有工程文档仍记录 OIT 空透明批次的渲染图校验问题；MIR
+支持、完整原作光照及景深效果恢复也仍有边界。后续优化应以对应检查和真实画面对照确认。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/orbit-character-shading-structure/" title="Orbit 角色着色结构：共享材质、参考实例与渲染管线">https://errorworld2000.github.io/orbit-character-shading-structure/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/unreal/" rel="tag"># unreal</a>
+              <a href="/tags/graphics/" rel="tag"># graphics</a>
+              <a href="/tags/shading/" rel="tag"># shading</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/orbit-motion-matching-structure/" rel="prev" title="Orbit Motion Matching：动作、数据库与测试关卡怎样协作">
+                  <i class="fa fa-angle-left"></i> Orbit Motion Matching：动作、数据库与测试关卡怎样协作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">jungle</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">91k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:23</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>

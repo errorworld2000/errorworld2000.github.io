@@ -176,7 +176,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -187,7 +187,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/sing-box/%E6%80%BB%E8%A7%88/">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/openwrt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/sing-box/%E6%80%BB%E8%A7%88/" class="post-title-link" itemprop="url">总览</a>
+          <a href="/openwrt/" class="post-title-link" itemprop="url">LS1043A NH03 OpenWrt 笔记</a>
         </h2>
 
         <div class="post-meta-container">
@@ -250,14 +250,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2026-03-13 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-13T00:00:00+08:00">2026-03-13</time>
+      <time title="创建时间：2026-07-28 14:25:25" itemprop="dateCreated datePublished" datetime="2026-07-28T14:25:25+08:00">2026-07-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-10-09 18:29:29" itemprop="dateModified" datetime="2026-10-09T18:29:29+08:00">2026-10-09</time>
+      <time title="修改时间：2026-10-10 15:29:55" itemprop="dateModified" datetime="2026-10-10T15:29:55+08:00">2026-10-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/sing-box/" itemprop="url" rel="index"><span itemprop="name">sing-box</span></a>
+          <a href="/categories/net/" itemprop="url" rel="index"><span itemprop="name">net</span></a>
         </span>
     </span>
 
@@ -276,14 +276,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1k</span>
+      <span>10k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>9 分钟</span>
     </span>
 </div>
 
@@ -294,44 +294,256 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="工作模型">工作模型</h2>
-<p>sing-box 的核心处理链路由三部分组成：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">应用或系统流量 → inbound → 路由规则 → outbound → 目标网络</span><br></pre></td></tr></table></figure>
+          <h2 id="当前方案概览">当前方案概览</h2>
 <ul>
-<li><code>inbound</code> 接收流量，例如 SOCKS、HTTP 或 TUN。</li>
-<li>路由规则根据域名、IP、协议和入站标签选择处理方式。</li>
-<li><code>outbound</code>
-决定流量直连、阻断，或者交给远端代理节点。</li>
+<li>板级硬件：XSPEED NH03，NXP Layerscape LS1043A，ARMv8。</li>
+<li>板级 target/profile：<code>layerscape/armv8_64b</code> /
+<code>fsl_nh03</code>（显示名称为 <code>XSPEED NH03</code>）。</li>
+<li>个人构建配置：<code>configs/jungle.config</code>（普通版）和
+<code>configs/jungle-debug.config</code>（调试版）。</li>
+<li>当前设备优先从 SATA SSD 启动：内核与 DTB 放在
+<code>sda1</code>，根系统位于 <code>sda2</code>；SATA 读取失败时回退到
+eMMC 的第一、第二分区。</li>
+<li>根系统生成 <code>rootfs.tar.gz</code>，解压到已经扩容的 ext4
+分区，避免每次写入 ext4 镜像后重新扩容。</li>
+<li>U-Boot 从第一分区读取 <code>Image</code> 和
+<code>fsl-nh03-sdk.dtb</code>。</li>
 </ul>
-<p>TUN 不是代理服务器协议，而是一个虚拟网络接口。启用
-<code>auto_route</code> 后，sing-box 可以安装系统路由，把匹配的 IP
-流量送入 TUN；在 Linux 上通常还会配合 <code>auto_redirect</code>
-改善路由和转发性能。应用无需单独配置代理，因此适合透明接管系统流量。</p>
-<p>SOCKS 入站则会在指定地址监听 SOCKS4、SOCKS4a 或 SOCKS5
-请求。只有显式使用该代理端口的应用流量才会进入
-sing-box，不会自动接管整个系统。</p>
-<h2 id="socks-入站调试">SOCKS 入站调试</h2>
-<p>下面的最小配置在 <code>127.0.0.1:1080</code> 创建 SOCKS 入站，并通过
-<code>direct</code> 出站直接访问目标网络：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="string">&quot;trace&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;socks&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen_port&quot;</span><span class="punctuation">:</span> <span class="number">1080</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>可以使用 <code>curl</code> 显式指定 SOCKS5 代理进行验证：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl.exe <span class="literal">--socks5-hostname</span> <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">1080</span> https://example.com <span class="literal">-v</span></span><br></pre></td></tr></table></figure>
-<p>这条调试链路是：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl → SOCKS 入站（127.0.0.1:1080）→ 路由规则 → direct 出站 → 目标站点</span><br></pre></td></tr></table></figure>
-<p>它与 TUN 接管是两种独立的入站方式。若要验证
-TUN，应检查虚拟网卡、系统路由以及 sing-box 路由日志，而不是给
-<code>curl</code> 指定 SOCKS 端口。</p>
-<h2 id="参考资料">参考资料</h2>
-<ul>
-<li><a
-target="_blank" rel="noopener" href="https://sing-box.sagernet.org/configuration/inbound/">sing-box：Inbound</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://sing-box.sagernet.org/configuration/inbound/socks/">sing-box：SOCKS
-inbound</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://sing-box.sagernet.org/configuration/inbound/tun/">sing-box：TUN
-inbound</a></li>
-</ul>
+<p>板级代码负责 NH03 的硬件描述、网口映射、默认 LAN/WAN
+端口和板载驱动；个人配置负责要安装的软件包、调试能力、主题以及每台设备的运行参数。不要把
+COM12/COM14 的地址或 sing-box 等个人设置写进板级 profile。</p>
+<h2 id="板级支持所有-nh03-构建共享">板级支持（所有 NH03 构建共享）</h2>
+<p>见 <code>target/linux/layerscape/</code>。各文件职责如下：</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>内容</th>
+<th>文件</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NH03 设备树、I²C/GPIO、存储和 PHY</td>
+<td><code>target/linux/layerscape/files-6.12/arch/arm64/boot/dts/freescale/fsl-nh03-sdk.dts</code></td>
+</tr>
+<tr class="even">
+<td>板级默认 LAN/WAN 端口</td>
+<td><code>target/linux/layerscape/base-files/etc/board.d/02_network</code></td>
+</tr>
+<tr class="odd">
+<td><code>fsl_nh03</code> 镜像 profile 和板载驱动包</td>
+<td><code>target/linux/layerscape/image/armv8_64b.mk</code></td>
+</tr>
+<tr class="even">
+<td>Layerscape 6.12 平台内核选项</td>
+<td><code>target/linux/layerscape/armv8_64b/config-6.12</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="以太网与-phy-映射">以太网与 PHY 映射</h3>
+<p>NH03 的映射不是标准 LS1043A-RDB 映射：</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 14%" />
+<col style="width: 27%" />
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Linux 接口</th>
+<th>FMan MAC</th>
+<th>PHY</th>
+<th>MDIO</th>
+<th>地址</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>eth0</td>
+<td>e0000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>4</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="even">
+<td>eth1</td>
+<td>e2000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>5</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="odd">
+<td>eth2</td>
+<td>e4000</td>
+<td>RTL8211F</td>
+<td>fc000</td>
+<td>1</td>
+<td>WAN/RGMII-ID</td>
+</tr>
+<tr class="even">
+<td>eth3</td>
+<td>e6000</td>
+<td>RTL8211F</td>
+<td>fc000</td>
+<td>3</td>
+<td>LAN/RGMII-ID</td>
+</tr>
+<tr class="odd">
+<td>eth4</td>
+<td>e8000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>6</td>
+<td>LAN/QSGMII</td>
+</tr>
+<tr class="even">
+<td>eth5</td>
+<td>ea000</td>
+<td>Marvell 88E1545</td>
+<td>fd000</td>
+<td>7</td>
+<td>LAN/QSGMII</td>
+</tr>
+</tbody>
+</table>
+<h3 id="板级-profile">板级 profile</h3>
+<p>板级 profile 位于：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target/linux/layerscape/image/armv8_64b.mk</span><br></pre></td></tr></table></figure>
+<p>文件中只有一个 NH03
+板级设备定义：<code>define Device/fsl_nh03</code>。它只提供 NH03
+板载硬件、设备树和可更换 Wi-Fi 模块所需驱动，不包含 Jungle
+的软件包选择或设备运行参数。</p>
+<h2 id="个人构建配置jungle">个人构建配置（Jungle）</h2>
+<p>个人配置种子位于 <code>configs/</code>，与板级支持分开维护：</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 74%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>配置</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>configs/jungle.config</code></td>
+<td>普通版：LuCI、ttyd、sing-box、网络诊断工具和主题包</td>
+</tr>
+<tr class="even">
+<td><code>configs/jungle-debug.config</code></td>
+<td>调试版：包含普通版内容，并额外启用
+perf、BPF/eBPF、BTF、FTrace、Kprobe 和 <code>bpftool</code></td>
+</tr>
+</tbody>
+</table>
+<p>两个种子都选择 <code>layerscape/armv8_64b</code> 下的
+<code>fsl_nh03</code> 目标；选择目标是为了生成 NH03
+镜像，软件包和调试选项才是个人配置的差异。</p>
+<p>自定义主题源码目录也属于个人配置，必须保存在 Git 中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">package/luci-theme/</span><br><span class="line">package/luci-theme-argon/</span><br><span class="line">package/luci-theme-aurora/</span><br><span class="line">package/luci-theme-proton2025/</span><br></pre></td></tr></table></figure>
+<p>选择主题包并不会自动保存这些未跟踪源码。</p>
+<h2 id="编译个人配置">编译个人配置</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> configs/jungle-debug.config .config</span><br><span class="line">make defconfig</span><br><span class="line">make -j$(<span class="built_in">nproc</span>)</span><br></pre></td></tr></table></figure>
+<p>关键产物：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\Image</span><br><span class="line">build_dir\target-aarch64_generic_musl\linux-layerscape_armv8_64b\image-fsl-nh03-sdk.dtb</span><br><span class="line">bin\targets\layerscape\armv8_64b\openwrt-*-rootfs.tar.gz</span><br></pre></td></tr></table></figure>
+<h2 id="u-boot-启动参数">U-Boot 启动参数</h2>
+<p>把 SATA 和 eMMC 分成两个子命令，<code>bootcmd_manual</code>
+按顺序先运行 SATA、再运行 eMMC。SATA 成功执行 <code>booti</code>
+后不会返回；只有 SATA 加载或启动失败并返回时，才会继续尝试 eMMC：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setenv bootcmd_manual_emmc <span class="string">&quot;mmc dev 0; if ext4load mmc 0:1 0xa0000000 Image &amp;&amp; ext4load mmc 0:1 0xb0000000 image-fsl-nh03-sdk.dtb; then setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/mmcblk0p2 rw rootwait; booti 0xa0000000 - 0xb0000000; else echo eMMC boot failed; fi&quot;</span></span><br><span class="line">setenv bootcmd_manual_sata <span class="string">&quot;if scsi scan &amp;&amp; scsi dev 0 &amp;&amp; ext4load scsi 0:1 0xa0000000 Image &amp;&amp; ext4load scsi 0:1 0xb0000000 image-fsl-nh03-sdk.dtb; then setenv bootargs console=ttyS0,115200 earlycon=uart8250,mmio,0x21c0500 root=/dev/sda2 rw rootwait; booti 0xa0000000 - 0xb0000000; fi&quot;</span></span><br><span class="line">setenv bootcmd_manual <span class="string">&quot;run bootcmd_manual_sata; run bootcmd_manual_emmc&quot;</span></span><br><span class="line">setenv bootcmd <span class="string">&quot;run bootcmd_manual&quot;</span></span><br><span class="line">saveenv &amp;&amp; reset</span><br></pre></td></tr></table></figure>
+<p>本机只有一块 SATA SSD，AHCI 驱动也已编入内核，因此 SATA
+根分区直接使用 <code>/dev/sda2</code>。eMMC 回退分支使用
+<code>/dev/mmcblk0p2</code>。如果以后增加其他 SCSI/SATA
+磁盘，设备枚举顺序可能变化，此时再改用 PARTUUID 更稳妥。</p>
+<h3 id="首次启动">首次启动</h3>
+<p>新 DTB 下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/board.json</span><br><span class="line">board_name = xspeed,nh03[sdboot]</span><br><span class="line">LAN = eth3 eth0 eth1 eth4 eth5</span><br><span class="line">WAN = eth2</span><br></pre></td></tr></table></figure>
+<p>首次启动且没有旧 <code>/etc/config/network</code> 时，OpenWrt 会创建
+<code>br-lan</code>，LAN 默认地址通常为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.1.1/24</span><br></pre></td></tr></table></figure>
+<p>首次连接优先使用已经验证可 Link Up 的 <code>eth3</code> 或
+<code>eth0</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.1.1</span><br></pre></td></tr></table></figure>
+<p>若恢复旧网络配置，COM12 使用 <code>192.168.2.1</code>，COM14 使用
+<code>192.168.3.1</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh root@192.168.2.1</span><br><span class="line">ssh root@192.168.3.1</span><br></pre></td></tr></table></figure>
+<p>首次登录立即设置密码：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复基础网络">手工恢复基础网络</h3>
+<p>以下命令建议通过串口执行。下面按 COM14 配置为
+<code>192.168.3.1</code>；COM12 保持
+<code>192.168.2.1</code>。网络重启后原 SSH 会话会断开。</p>
+<p>如果不采用板级脚本生成的默认网络配置，先显式创建
+<code>br-lan</code>，并把五个 LAN
+口加入网桥。下面第一条命令用于兼容全新系统中已有的匿名
+<code>br-lan</code> 设备；没有该设备时也不会影响后续创建：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">uci -q rename network.@device[0]=<span class="string">&#x27;br_lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan=<span class="string">&#x27;device&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.name=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.br_lan.type=<span class="string">&#x27;bridge&#x27;</span></span><br><span class="line">uci -q delete network.br_lan.ports</span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth3&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth0&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth1&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth4&#x27;</span></span><br><span class="line">uci add_list network.br_lan.ports=<span class="string">&#x27;eth5&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.proto=<span class="string">&#x27;static&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.device=<span class="string">&#x27;br-lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ipaddr=<span class="string">&#x27;192.168.3.1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.netmask=<span class="string">&#x27;255.255.255.0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.lan.ip6assign=<span class="string">&#x27;60&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan.proto=<span class="string">&#x27;dhcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.device=<span class="string">&#x27;eth2&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.wan6.proto=<span class="string">&#x27;dhcpv6&#x27;</span></span><br><span class="line">uci show network</span><br><span class="line">uci commit network</span><br><span class="line">/etc/init.d/network restart</span><br></pre></td></tr></table></figure>
+<h3 id="关闭硬件-bypass">关闭硬件 bypass</h3>
+<p>先确认驱动和本次启动分配的 GPIO 范围：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dmesg | grep -Ei <span class="string">&#x27;gpio|pca953|pca955|pca957&#x27;</span></span><br><span class="line"><span class="built_in">cat</span> /sys/kernel/debug/gpio</span><br></pre></td></tr></table></figure>
+<p>使用 OpenWrt 自带的 <code>gpio_switch</code>
+持久化，重启后仍自动输出低电平：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> system.bypass=<span class="string">&#x27;gpio_switch&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.name=<span class="string">&#x27;bypass_off&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.gpio_pin=<span class="string">&#x27;647&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> system.bypass.value=<span class="string">&#x27;0&#x27;</span></span><br><span class="line">uci commit system</span><br><span class="line">/etc/init.d/gpio_switch <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/gpio_switch restart</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复防火墙">手工恢复防火墙</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">uci show firewall | grep <span class="string">&quot;\.name=&quot;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_luci</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.name=<span class="string">&#x27;Allow-LuCI-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.dest_port=<span class="string">&#x27;80&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_luci.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ssh</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.name=<span class="string">&#x27;Allow-SSH-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.dest_port=<span class="string">&#x27;22&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ssh_forward</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.name=<span class="string">&#x27;Allow-SSH-to-LAN&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest=<span class="string">&#x27;lan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest_ip=<span class="string">&#x27;192.168.3.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.dest_port=<span class="string">&#x27;22&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ssh_forward.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.wan_ttyd</span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd=<span class="string">&#x27;rule&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.name=<span class="string">&#x27;Allow-ttyd-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.src_ip=<span class="string">&#x27;192.168.13.0/24&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.dest_port=<span class="string">&#x27;7681&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.wan_ttyd.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete firewall.k3s_api</span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api=rule</span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.name=<span class="string">&#x27;Allow-K3s-API-from-upstream&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.src=<span class="string">&#x27;wan&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.src_ip=<span class="string">&#x27;192.168.13.160&#x27;</span></span><br><span class="line"><span class="comment"># uci set firewall.k3s_api.dest=&#x27;lan&#x27; 尽量不要把 lan 暴露给外面 ！！！</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.proto=<span class="string">&#x27;tcp&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.dest_port=<span class="string">&#x27;6443&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.target=<span class="string">&#x27;ACCEPT&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> firewall.k3s_api.family=<span class="string">&#x27;ipv4&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/firewall restart</span><br></pre></td></tr></table></figure>
+<h3 id="手工恢复-ttyd">手工恢复 ttyd</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].<span class="built_in">command</span>=<span class="string">&#x27;/bin/login&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> ttyd.@ttyd[0].listen=<span class="string">&#x27;0.0.0.0&#x27;</span></span><br><span class="line">uci commit ttyd</span><br><span class="line">/etc/init.d/ttyd <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/ttyd restart</span><br><span class="line">netstat -lntp | grep <span class="string">&#x27;:7681 &#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="进阶操作">进阶操作</h2>
+<h3 id="手工恢复-sing-box">手工恢复 sing-box</h3>
+<p>先手工创建并检查： 参考hexo_posts代理与 TUN 模式配置.md</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/sing-box/config.json</span><br></pre></td></tr></table></figure>
+<p>不要把包含订阅、密码或密钥的配置提交到公开仓库。然后启用服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> sing-box.main.enabled=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> sing-box.main.user=<span class="string">&#x27;root&#x27;</span></span><br><span class="line">uci commit sing-box</span><br><span class="line">/etc/init.d/sing-box <span class="built_in">enable</span></span><br><span class="line">/etc/init.d/sing-box restart</span><br><span class="line">/etc/init.d/sing-box status</span><br><span class="line"></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun=interface</span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.device=<span class="string">&#x27;tun0&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> network.singbox_tun.proto=<span class="string">&#x27;unmanaged&#x27;</span></span><br><span class="line">uci commit network</span><br><span class="line">uci -q del_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci add_list firewall.@zone[0].network=<span class="string">&#x27;singbox_tun&#x27;</span></span><br><span class="line">uci commit firewall</span><br><span class="line">/etc/init.d/network reload</span><br><span class="line">/etc/init.d/firewall restart</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>确认 sing-box 已经监听 <code>127.0.0.1:5353</code> 后，再把 dnsmasq
+DNS 转发过去：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">netstat -lnup | grep <span class="string">&#x27;:5353&#x27;</span></span><br><span class="line"></span><br><span class="line">uci -q delete dhcp.@dnsmasq[0].server</span><br><span class="line">uci add_list dhcp.@dnsmasq[0].server=<span class="string">&#x27;127.0.0.1#5353&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> dhcp.@dnsmasq[0].noresolv=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">uci -q del_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci add_list dhcp.@dnsmasq[0].rebind_domain=<span class="string">&#x27;fzcsxl.com&#x27;</span></span><br><span class="line">uci commit dhcp</span><br><span class="line">/etc/init.d/dnsmasq restart</span><br><span class="line"><span class="comment"># sysctl -w net.ipv4.conf.all.rp_filter=0</span></span><br></pre></td></tr></table></figure>
+<h3 id="恢复后检查">恢复后检查</h3>
+<p>检查：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ubus call system board</span><br><span class="line">ip addr show</span><br><span class="line">ip route</span><br><span class="line">ubus call network.interface dump</span><br><span class="line">ubus call network.interface.wan status</span><br><span class="line">dmesg | grep -E <span class="string">&#x27;fsl_dpaa_mac|PHY|Link is&#x27;</span></span><br><span class="line">uci show firewall | grep -E <span class="string">&quot;name=&#x27;wan&#x27;|input|output|forward|masq&quot;</span></span><br><span class="line">ip rule</span><br><span class="line">ip route show table all</span><br></pre></td></tr></table></figure>
+<h2 id="dtb-调试">DTB 调试</h2>
+<p>反编译仅用于检查生成结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dtc -I dtb -O dts -o /tmp/fsl-nh03-sdk.generated.dts fsl-nh03-sdk.dtb</span><br></pre></td></tr></table></figure>
+<p>正式修改始终编辑源码树中的
+<code>fsl-nh03-sdk.dts</code>。不要再直接反编译、修改并覆盖唯一的
+DTB。</p>
+<h2 id="wi-fi-ap-配置">Wi-Fi AP 配置</h2>
+<p>当前设备的 <code>radio0</code> 是 2.4 GHz 无线网卡，默认 AP
+配置已绑定到 <code>lan</code>，但
+<code>wireless.default_radio0.disabled='1'</code>，因此不会创建无线接口或广播
+SSID。</p>
+<p><code>encryption='psk2'</code> 表示仅使用 WPA2-Personal。更推荐使用
+<code>sae-mixed</code>（WPA2/WPA3-Personal 混合模式）：支持 WPA3
+的设备使用 SAE，旧设备仍可使用 WPA2-PSK。</p>
+<p>设备已有 <code>radio0</code>、2.4 GHz、信道、AP 模式以及
+<code>lan</code> 绑定，无需重复配置。 只需设置
+SSID、加密方式、密码并解除禁用。密码建议使用至少 12 位随机字符：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.ssid=<span class="string">&#x27;替换为SSID&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;sae-mixed&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.key=<span class="string">&#x27;替换为至少8位的密码&#x27;</span></span><br><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.disabled=<span class="string">&#x27;0&#x27;</span></span><br><span class="line"></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
+<p>检查无线接口、SSID 和客户端关联状态：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubus call network.wireless status</span><br><span class="line">iwinfo</span><br><span class="line">wifi status</span><br></pre></td></tr></table></figure>
+<p>正常情况下，<code>radio0</code> 应显示
+<code>up: true</code>，<code>interfaces</code> 不再为空，并能看到 AP
+接口和配置的 SSID。 无线客户端会接入 <code>lan</code>。COM14 由 LAN DHCP
+分配 <code>192.168.3.0/24</code> 网段地址；COM12 仍使用
+<code>192.168.2.0/24</code>。</p>
+<p>如果 <code>wifi reload</code> 报 SAE/WPA3 不受支持，说明固件中的
+wpad/hostapd 版本未包含 SAE 支持。 可以先回退到仅 WPA2-Personal：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uci <span class="built_in">set</span> wireless.default_radio0.encryption=<span class="string">&#x27;psk2&#x27;</span></span><br><span class="line">uci commit wireless</span><br><span class="line">wifi reload</span><br></pre></td></tr></table></figure>
+<p>不要使用 <code>encryption='none'</code>，否则会建立无密码热点。</p>
+<h2 id="主题替换">主题替换</h2>
+<p>outline 的登录界面好看，直接改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&#123;% include(&#x27;themes/outline/sysauth&#x27;, &#123;</span><br><span class="line">    media: &#x27;/luci-static/outline&#x27;,</span><br><span class="line">    theme: &#x27;outline&#x27;</span><br><span class="line">&#125;) %&#125;&quot; &gt; /usr/share/ucode/luci/template/themes/proton2025/sysauth.ut</span><br><span class="line"></span><br><span class="line">rm -rf /tmp/luci-indexcache /tmp/luci-modulecache</span><br><span class="line">/etc/init.d/uhttpd restart</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -351,7 +563,7 @@ inbound</a></li>
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
@@ -374,14 +586,14 @@ inbound</a></li>
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">84k</span>
+    <span title="站点总字数">91k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:16</span>
+    <span title="站点阅读时长">1:23</span>
   </span>
 </div>
 <div class="busuanzi-count">
