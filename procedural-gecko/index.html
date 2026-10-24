@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"errorworld2000.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="让一只蜥蜴盯着目标、向前追赶、转身并交替迈步，不一定需要先制作一组动画片段。另一种做法是保存脚踩在哪里，再根据身体和脚的关系计算关节姿势。 本文记录 Orbit 中一只程序化蜥蜴的实现：参考 WeaverDev 的 Bonehead 思路，在 UE 5.8 中用 C++ 更新运动与姿态，以原创蒙皮模型呈现结果。重点是各层怎样协作，以及为什么“每条腿都能做 IK”仍然不足以让它稳定行走。 文中的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画">
+<meta property="og:url" content="https://errorworld2000.github.io/procedural-gecko/index.html">
+<meta property="og:site_name" content="a Blog">
+<meta property="og:description" content="让一只蜥蜴盯着目标、向前追赶、转身并交替迈步，不一定需要先制作一组动画片段。另一种做法是保存脚踩在哪里，再根据身体和脚的关系计算关节姿势。 本文记录 Orbit 中一只程序化蜥蜴的实现：参考 WeaverDev 的 Bonehead 思路，在 UE 5.8 中用 C++ 更新运动与姿态，以原创蒙皮模型呈现结果。重点是各层怎样协作，以及为什么“每条腿都能做 IK”仍然不足以让它稳定行走。 文中的实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-24T13:19:15.000Z">
+<meta property="article:author" content="jungle">
+<meta property="article:tag" content="animation">
+<meta property="article:tag" content="ik">
+<meta property="article:tag" content="procedural-animation">
+<meta property="article:tag" content="unreal">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://errorworld2000.github.io/procedural-gecko/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://errorworld2000.github.io/procedural-gecko/","path":"/procedural-gecko/","title":"不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画 | a Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"ams","mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">a Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E6%8A%8A%E5%8A%A8%E7%94%BB%E5%92%8C%E7%89%A9%E7%90%86%E5%88%86%E6%B8%85"><span class="nav-number">1.</span> <span class="nav-text">先把“动画”和“物理”分清</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%E8%BA%AB%E4%BD%93%E7%A7%BB%E5%8A%A8%E8%84%9A%E5%85%88%E7%95%99%E5%9C%A8%E5%8E%9F%E5%9C%B0"><span class="nav-number">2.</span> <span class="nav-text">第一层：身体移动，脚先留在原地</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%E8%B0%81%E5%8F%AF%E4%BB%A5%E6%8A%AC%E8%84%9A%E6%AF%94%E6%80%8E%E6%A0%B7%E6%8A%AC%E8%84%9A%E6%9B%B4%E9%87%8D%E8%A6%81"><span class="nav-number">3.</span> <span class="nav-text">第二层：谁可以抬脚，比怎样抬脚更重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%E5%85%88%E6%89%BE%E5%88%B0%E8%90%BD%E7%82%B9%E5%86%8D%E9%87%8A%E6%94%BE%E6%94%AF%E6%92%91"><span class="nav-number">4.</span> <span class="nav-text">第三层：先找到落点，再释放支撑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%E8%84%9A%E7%AB%AF%E5%86%B3%E5%AE%9A%E8%85%BF%E7%9A%84%E5%A7%BF%E5%8A%BF"><span class="nav-number">5.</span> <span class="nav-text">第四层：脚端决定腿的姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BD%93%E5%A4%B4%E7%9C%BC%E7%9D%9B%E5%92%8C%E5%B0%BE%E5%B7%B4%E6%80%8E%E6%A0%B7%E6%8E%A5%E4%B8%8A%E6%9D%A5"><span class="nav-number">6.</span> <span class="nav-text">身体、头、眼睛和尾巴怎样接上来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E7%9C%8B%E8%B5%B7%E6%9D%A5%E5%BE%88%E5%B0%8F%E5%AE%9E%E9%99%85%E5%BD%B1%E5%93%8D%E5%BE%88%E5%A4%A7%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">7.</span> <span class="nav-text">两个看起来很小、实际影响很大的错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BE%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%90%8E%E8%85%BF%E9%95%BF%E9%A2%84%E7%AE%97%E4%BB%8D%E5%81%9C%E5%9C%A8%E5%8E%9F%E5%B0%BA%E5%AF%B8"><span class="nav-number">7.1.</span> <span class="nav-text">放大模型后，腿长预算仍停在原尺寸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%94%A8%E4%BA%86%E7%BC%93%E5%8A%A8%E6%97%8B%E8%BD%AC%E5%8D%B4%E5%9C%A8%E8%BF%BD%E9%80%90%E8%BA%AB%E4%BD%93"><span class="nav-number">7.2.</span> <span class="nav-text">位置用了缓动，旋转却在追逐身体</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%A1%BA%E5%BA%8F%E6%97%B6%E9%97%B4%E6%AD%A5%E4%B8%8E%E8%81%8C%E8%B4%A3"><span class="nav-number">8.</span> <span class="nav-text">更新顺序、时间步与职责</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E6%A0%B7%E8%AF%81%E6%98%8E%E8%84%9A%E7%9C%9F%E7%9A%84%E8%B8%A9%E4%BD%8F%E4%BA%86"><span class="nav-number">9.</span> <span class="nav-text">怎样证明“脚真的踩住了”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E7%BB%AD%E6%89%A9%E5%B1%95%E6%97%B6%E5%85%88%E4%BF%9D%E7%95%99%E5%93%AA%E6%9D%A1%E5%9B%A0%E6%9E%9C%E9%93%BE"><span class="nav-number">10.</span> <span class="nav-text">继续扩展时，先保留哪条因果链</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E4%B8%8E%E7%BD%B2%E5%90%8D"><span class="nav-number">11.</span> <span class="nav-text">参考与署名</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jungle"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">jungle</p>
+  <div class="site-description" itemprop="description">压力来自避而不赴</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/errorworld2000" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;errorworld2000" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:errorworld123@163.com" title="E-Mail → mailto:errorworld123@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://errorworld2000.github.io/procedural-gecko/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="jungle">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="a Blog">
+      <meta itemprop="description" content="压力来自避而不赴">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画 | a Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-10-24 00:00:00 / 修改时间：21:19:15" itemprop="dateCreated datePublished" datetime="2026-10-24T00:00:00+08:00">2026-10-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>让一只蜥蜴盯着目标、向前追赶、转身并交替迈步，不一定需要先制作一组动画片段。另一种做法是保存脚踩在哪里，再根据身体和脚的关系计算关节姿势。</p>
+<p>本文记录 Orbit 中一只程序化蜥蜴的实现：参考 WeaverDev 的 Bonehead
+思路，在 UE 5.8 中用 C++
+更新运动与姿态，以原创蒙皮模型呈现结果。重点是各层怎样协作，以及为什么“每条腿都能做
+IK”仍然不足以让它稳定行走。</p>
+<p>文中的实现与验证以 2026 年 10 月 24
+日的本地版本为准。它是运动学动画演示，尚未完成与参考影片的视觉等价验收；工程最新契约以项目的
+<code>Docs/engineering/environment.md</code> 和验证约定为准。</p>
+<span id="more"></span>
+<video controls muted playsinline preload="metadata" poster="current.png" style="width:100%;height:auto">
+<source src="current.mp4" type="video/mp4" />
+浏览器无法播放时，可打开同目录的 current.mp4。
+</video>
+<p>这是当前版本的 24 秒实机记录，原生画幅为 984×708、30
+fps。视频中的模型和贴图为原创，动作没有使用 Animation Sequence
+或关键帧曲线。</p>
+<h2 id="先把动画和物理分清">先把“动画”和“物理”分清</h2>
+<p>传统骨骼动画保存一系列姿势，再根据时间播放、混合。这里保存的是目标、接触点、摆脚进度等状态，程序在每个模拟步重新计算姿势。</p>
+<p>它依然需要模型、骨架和蒙皮权重。区别在于骨骼变换由程序生成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">外部目标</span><br><span class="line">  → 身体位移与转向</span><br><span class="line">  → 每只脚的 home 与世界接触状态</span><br><span class="line">  → 对角组调度及摆脚轨迹</span><br><span class="line">  → 身体起伏、头眼追踪、尾部弯曲</span><br><span class="line">  → 两段 IK 连接腿与脚端</span><br><span class="line">  → 完整局部骨骼姿势</span><br><span class="line">  → 蒙皮与渲染</span><br></pre></td></tr></table></figure>
+<p>这里没有求解足底反力、肌肉力矩或质心动力学。两只对角脚留在地面也不意味着已经满足真实静力平衡。它通过有限的规则形成可信的运动，适合做可交互的生物表现；若要攀墙、跳跃或被外力撞倒，需要另外设计对应状态与约束。</p>
+<h2 id="第一层身体移动脚先留在原地">第一层：身体移动，脚先留在原地</h2>
+<p>理解程序行走，最关键的是区分两个位置：</p>
+<table>
+<thead>
+<tr class="header">
+<th>状态</th>
+<th>含义</th>
+<th>身体移动时是否一起移动</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>home</td>
+<td>这只脚在身体附近的理想休息位置</td>
+<td>是</td>
+</tr>
+<tr class="even">
+<td>contact</td>
+<td>这只脚目前踩住的世界位置</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>home 可以由参考姿势中的脚骨位置经过 Actor 变换得到。站立脚的 contact
+则必须保存在世界空间。身体向前移动时，home 逐渐离开
+contact；距离超过阈值，才产生迈步需求。</p>
+<p>如果把 contact
+也作为身体的子节点一起移动，脚会始终停在身体旁边，看起来像四肢摆动的滑行玩具。锁脚不是某个最后补上的视觉特效，它直接决定了换脚的触发条件。</p>
+<p>当前每只脚保存世界位置、旋转、接触法线、home、摆动起终点与进度。站立期间不更新位置和旋转；起步后由摆脚状态更新它们。</p>
+<p>身体跟随目标时，距离过远就靠近，进入休息距离区间后减速停下，过近时以较低速度后退。目标在身后时优先转身，接近最大转速时降低平移速度。根运动还要检查未来支撑点和障碍，不能先移动身体，再指望
+IK 把脚拉回来。</p>
+<h2
+id="第二层谁可以抬脚比怎样抬脚更重要">第二层：谁可以抬脚，比怎样抬脚更重要</h2>
+<p>只让每条腿独立判断“离 home
+太远就迈步”，容易让四条腿同时离地。因此把四只脚分成两组：前左／后右，以及前右／后左。</p>
+<p>一组获得迈步机会后，其中每只脚分别判断是否确实需要移动。已经处在合适位置的搭档继续支撑，不强制一起抬起；当前组运动期间，还会继续检查尚未起步的另一只脚，让它可以稍后加入。整个组完成后，再优先检查另一组。</p>
+<p>当前实现额外记录一组内哪些脚已经起步，每脚每轮最多开始一次，避免移动太快时某一组持续重启、另一组长期得不到机会。它保留了对角组的基本方式，但并非照搬原协程的全部调度细节。</p>
+<p>调度也必须与速度配合。若身体一秒走过的距离远大于两组脚能补回的距离，再公平的调度也会让腿被拉直。当前用一个保守的容量估计限制速度：</p>
+<p><span class="math display">\[
+v_{\mathrm{safe}} = \frac{d_{\min}\,s_{\min}(1+o)}{2\tau}
+\]</span></p>
+<p>其中，<code>d_min</code> 是前后腿步距中的较小值，<code>s_min</code>
+是 Actor 各轴绝对缩放的最小值，<code>o</code>
+是前送比例，<code>tau</code> 是单步时长。分母中的 2
+表示两组脚都需要时间。它是工程保护，不是生物步频定律；实际根运动还受当前脚端可达范围约束。</p>
+<h2 id="第三层先找到落点再释放支撑">第三层：先找到落点，再释放支撑</h2>
+<p>迈步申请成功之前，要先找到可用的结束位置。当前从 home 加一段朝向 home
+的前送偏移，向下进行有界地面查询。命中点还要满足坡度和腿长约束；找不到有效落点，就保持原接触。</p>
+<p>前送距离取步距阈值的一定比例，而不是任意乘上当前误差。这样既给身体留出继续前进的余量，也降低落地后立刻再次超出阈值的风险。</p>
+<p>脚骨通常在脚掌上方，因此 IK
+目标并不等于地面命中点。当前使用沿接触法线的脚踝偏移；模型等比放大后，这个偏移也随之放大，否则脚踝高度正确、脚掌几何却可能穿入地面。</p>
+<p>确定起点 P0、终点 P2 后，用二次贝塞尔生成摆脚轨迹：</p>
+<p><span class="math display">\[
+B(u)=(1-u)^2P_0+2(1-u)uP_1+u^2P_2
+\]</span></p>
+<p>控制点取起终点中点，再沿身体上方向抬高半个实际跨步长度：</p>
+<p><span class="math display">\[
+P_1=\frac{P_0+P_2}{2}+\hat n\frac{\lVert P_2-P_0\rVert}{2}
+\]</span></p>
+<p>注意，控制点抬高半个步长，不代表脚会抬到半个步长。起终点等高时，中点的额外抬升只有四分之一个步长，因为贝塞尔控制点在参数
+0.5 处的权重为 0.5。控制点高度与实际轨迹高度不能混为一谈。</p>
+<p>归一化时间 t 先经过三次缓入缓出，再作为曲线参数 u：</p>
+<p><span class="math display">\[
+u=E(t)=
+\begin{cases}
+4t^3,&amp;t&lt;\frac12\\
+1-\frac{(-2t+2)^3}{2},&amp;t\ge\frac12
+\end{cases}
+\]</span></p>
+<p>旋转也使用同一个
+u。起步时固定完整的世界起止旋转，终点朝向沿地面切线、上方向沿接触法线，随后用四元数
+Slerp 插值。这与作者 <a
+target="_blank" rel="noopener" href="https://github.com/WeaverDev/Bonehead/blob/acc989256fa0fe8bc70dcfd5da29f032b3765fd6/Assets/Scripts/Gecko/LegStepper_Full.cs">Full
+迈步器</a> 的固定终点和共享缓动方式一致。</p>
+<h2 id="第四层脚端决定腿的姿势">第四层：脚端决定腿的姿势</h2>
+<p>IK
+要解决的问题是：已知腿根、两段骨长和脚端目标，求中间关节在哪里。</p>
+<p>若两段长度为 a、b，腿根到目标的距离为
+d，那么腿根处夹角可由余弦定理得到：</p>
+<p><span class="math display">\[
+\cos\theta=\frac{a^2+d^2-b^2}{2ad}
+\]</span></p>
+<p>仅有距离还不足以确定膝肘往哪边弯，需要 pole 给出弯曲平面。没有稳定的
+pole，关节可能绕腿根到脚端的轴突然翻转。</p>
+<p>作者提供了自写的两段 IK。Orbit 使用 UE 的
+<code>AnimationCore::SolveTwoBoneIK</code>，并在输入端处理退化情况：目标与腿根重合时补一个有效方向，pole
+共线时换用备用平面，目标距离限制在两段骨长能形成三角形的范围内，并关闭拉伸。</p>
+<p>IK
+中的距离截断只保证解算有效，不会把不可达目标变成真实接触。如果实际脚骨停在最大伸展位置、内部
+contact
+却仍留在更远处，就会出现“目标已经锁脚，模型仍在滑动”的假象。因此要在根移动和落脚决策时约束可达性，并在测试中比较实际脚骨位置与
+contact。</p>
+<p>最后，程序把世界脚端目标变换到模型空间，旋转上、下腿使脚端到达目标，再设置脚掌旋转。当前通过
+<code>UPoseableMeshComponent</code>
+一次写入整套局部姿势，没有再叠加另一个动画实例来争夺这些骨骼的控制权。</p>
+<h2 id="身体头眼睛和尾巴怎样接上来">身体、头、眼睛和尾巴怎样接上来</h2>
+<p>只有换脚，生物仍然像一张移动的桌子。身体起伏、注视和转弯尾摆提供了动作的连续感，但它们也会改变腿根的位置，所以必须服从接触约束。</p>
+<p>当前在每个模拟步先更新根运动和脚状态，再构造身体姿态。身体起伏使用多轴周期变化与运动状态权重；这部分是程序生成的循环，不是脚步由正弦直接驱动。若起伏会让腿根离支撑脚太远，就缩减起伏幅度，保持脚端接触。</p>
+<p>头部从上一模拟步的实际头位指向目标，限制三维转角，再把部分转角分给脊柱和胸部，髋部适当反倾。躯干弯曲过大会消耗腿长，因此继续按接触预算减小躯干转动，由头部补足剩余朝向。</p>
+<p>眼睛必须在头部姿态确定后求解。先把真实目标方向转换到已经转动的头部坐标系，再求眼睛需要补偿的剩余方向；如果只读取“已经限角的头部目标”，头到达限角后，眼睛就可能失去继续注视的依据。左右眼分别限制向鼻侧的转动，允许更大的向外转动。</p>
+<p>尾巴由实际角速度驱动反向弯曲，经过平滑后分配到七节尾骨。它采用
+FK，不是 Verlet 绳链，也没有模拟尾部质量和惯性。</p>
+<p>这里与作者 <a
+target="_blank" rel="noopener" href="https://github.com/WeaverDev/Bonehead/blob/acc989256fa0fe8bc70dcfd5da29f032b3765fd6/Assets/Scripts/Gecko/GeckoController_Full.cs">Full
+控制器</a> 存在需要说明的差异：Orbit
+显式分配躯干转角并加接触保护，眼睛采用局部欧拉角平滑；作者使用骨链局部旋转反馈，眼睛则在世界空间做四元数平滑后限制局部角度。参数看起来相同，不代表瞬态响应相同。当前回归确认了限角和持续追踪，尚未完成两者的同输入轨迹对照。</p>
+<h2
+id="两个看起来很小实际影响很大的错误">两个看起来很小、实际影响很大的错误</h2>
+<h3
+id="放大模型后腿长预算仍停在原尺寸">放大模型后，腿长预算仍停在原尺寸</h3>
+<p>最初实现把 Hip 与 contact 放在世界空间比较，但 Reach
+直接取参考骨架中的原始长度。模型放大两倍，世界距离跟着放大，腿长预算却没有变，结果每次根移动都被拒绝。更隐蔽的是，骨架初始化正常，系统仍报告“就绪”。</p>
+<p>修复时选择统一计算空间：用包含位置、旋转和缩放的候选 Actor
+变换，把世界接触点转回模型空间，再与参考骨架腿长比较。未来 home
+的预测也使用完整变换，而不是只旋转偏移。</p>
+<p>缩小模型还暴露了另一个相关问题：若 home 到 contact
+的距离按世界单位触发，原步距对小腿来说可能太长。因此步距与前送偏移也改为模型空间定义，安全速度容量随缩放变化。配置的移动速度仍是世界厘米每秒，小尺寸实例可能先受到步态容量限制。</p>
+<p>验证覆盖 0.5、1、2 倍等比缩放的 30/120 fps
+运动、接触和一致性。非等比缩放、负缩放，以及行走期间动态改变尺寸，未纳入这次验证范围，不应由等比结果推断它们已经可用。</p>
+<h3
+id="位置用了缓动旋转却在追逐身体">位置用了缓动，旋转却在追逐身体</h3>
+<p>另一个错误是脚端位置使用缓动后的 u，脚掌旋转却使用原始
+t，并且每个模拟步把当前身体朝向当作新的旋转终点。</p>
+<p>对固定 90° 转角，在单步 25% 时，三次缓动参数为 1/16，对应
+5.625°；线性插值却已经转了
+22.5°。这还没计算终点随身体转动带来的额外变化。脚的位置看起来正常，掌面却会提早扭过去。</p>
+<p>修复后的核心关系可以缩成三行：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">float</span> U = <span class="built_in">EaseInOutCubic</span>(Phase);</span><br><span class="line">Position = <span class="built_in">QuadraticBezier</span>(Start, Control, End, U);</span><br><span class="line">Rotation = FQuat::<span class="built_in">Slerp</span>(StartRotation, EndRotation, U);</span><br></pre></td></tr></table></figure>
+<p>这里是说明原理的伪代码。起止位置和旋转在起步时捕获；落地保留结束旋转，之后身体怎么转，都不再改写这一只站立脚的世界朝向。</p>
+<h2 id="更新顺序时间步与职责">更新顺序、时间步与职责</h2>
+<p>当前模拟以 120 Hz
+固定步长推进，渲染帧累计时间后执行必要的模拟步。过长帧限制追赶量，避免补算无限增长；代价是严重卡顿时不会追上全部墙钟时间。固定步长也不意味着任意移动输入在所有帧率下自然相同：外部目标仍需要相同时间采样，相关一致性测试使用明确的输入条件。</p>
+<p>主体的几个职责保持在一个生物 Actor
+内：根运动、接触状态、对角调度和姿态。独立的 Lab Actor
+只负责演示路线、目标胶囊、注视方块和调试输入；移除 Lab
+后，生物仍可由其他对象提供世界目标。Blueprint
+保存模型引用与内容默认值，C++ 不写死某个素材路径。</p>
+<p>这种边界让以后给生物更换目标来源时，不必把演示输入、装备或游戏进度塞进动画控制器。当前骨名和腿布局是这只原创蜥蜴的资产契约，没有把它提前包装成通用四足动画框架。</p>
+<h2 id="怎样证明脚真的踩住了">怎样证明“脚真的踩住了”</h2>
+<p>测试要观察实际结果，不能只检查内部状态是否自洽。</p>
+<table>
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>检查</th>
+<th>关注的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>实际脚骨与 contact 的世界距离</td>
+<td>IK 有没有真的到达目标</td>
+</tr>
+<tr class="even">
+<td>站立期间的脚端位置与旋转</td>
+<td>身体转动有没有把脚拖走</td>
+</tr>
+<tr class="odd">
+<td>活动脚组合与总数</td>
+<td>是否跨对角组同时抬脚</td>
+</tr>
+<tr class="even">
+<td>两组的实际步数</td>
+<td>调度有没有长期饿死某一组</td>
+</tr>
+<tr class="odd">
+<td>相同输入下的不同帧率</td>
+<td>固定时钟与状态重置是否成立</td>
+</tr>
+<tr class="even">
+<td>坡面、缺失地面与 IK 退化输入</td>
+<td>无效几何是否导致假接触或无效数值</td>
+</tr>
+<tr class="odd">
+<td>转弯中四分之一、四分之三时刻的真实脚骨旋转</td>
+<td>是否使用正确缓动和固定终点</td>
+</tr>
+</tbody>
+</table>
+<p>当前版本通过了 20 项原生回归，蓝图编译与模型绑定检查通过。另用
+D3D12/SM6 固定画幅记录了 24 秒、720
+帧的路线，复核连续运动。修复前后根位置、速度、目标和迈步时序逐帧相同，脚掌朝向按修复发生变化。</p>
+<p>这些结果证明了本实现的若干约束，没有证明与作者影片完全一致。作者场景初始相机参数下拍出的原创模型画面，也依然是本实现，不是参考影片。手动镜头、目标操作、头眼响应和造型差异需要分别比较。当前没有性能采样，也没有验证大量实例同时运行的成本。</p>
+<h2 id="继续扩展时先保留哪条因果链">继续扩展时，先保留哪条因果链</h2>
+<p>最值得保留的是“真实身体移动改变 home
+与接触点的关系，触发有支撑条件的迈步，脚端再决定关节姿态”。头眼和尾巴可以暂时关闭，模型可以先用简单骨架替代，但这条因果链应该仍然成立。</p>
+<p>落脚与姿态稳定后，再增加地形适应、行为选择或更精细的表现。遇到步态异常时，先检查坐标空间、骨长、目标可达性和更新顺序，再调整频率与幅度；扩大容差通常只能让错误暂时不那么显眼。</p>
+<h2 id="参考与署名">参考与署名</h2>
+<ul>
+<li>WeaverDev：<a
+target="_blank" rel="noopener" href="https://weaverdev.io/projects/proc-anim-tutorial/">Procedural
+Animation 教程</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/WeaverDev/Bonehead">Bonehead
+源码仓库</a>，本文对照版本为
+<code>acc989256fa0fe8bc70dcfd5da29f032b3765fd6</code>。</li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/WeaverDev/Bonehead/blob/acc989256fa0fe8bc70dcfd5da29f032b3765fd6/Assets/Scripts/Utils/InverseKinematics.cs">两段
+IK 源码</a>。</li>
+</ul>
+<p>Orbit 的相关实现保留 WeaverDev
+的代码许可与署名；本篇配图、视频和模型来自本地原创版本，没有使用作者的美术资源。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>jungle
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://errorworld2000.github.io/procedural-gecko/" title="不用关键帧的蜥蜴：从世界锁脚到 UE 程序化动画">https://errorworld2000.github.io/procedural-gecko/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/unreal/" rel="tag"># unreal</a>
+              <a href="/tags/animation/" rel="tag"># animation</a>
+              <a href="/tags/procedural-animation/" rel="tag"># procedural-animation</a>
+              <a href="/tags/ik/" rel="tag"># ik</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/orbit-character-shading-structure/" rel="prev" title="Orbit 角色着色结构：共享材质、参考实例与渲染管线">
+                  <i class="fa fa-angle-left"></i> Orbit 角色着色结构：共享材质、参考实例与渲染管线
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">jungle</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">96k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:27</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/errorworld2000" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"errorworld2000/errorworld2000.github.io","repo_id":"R_kgDONlSuQg","category":"Announcements","category_id":"DIC_kwDONlSuQs4C4Nhm","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":1,"theme":"preferred_color_scheme","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy","input-position":"top"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>
